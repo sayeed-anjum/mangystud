@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="mangystud">
+        <wb-resource deploy-path="/" source-path="/mail-0.9-grails-app-services"/>
+        <wb-resource deploy-path="/" source-path="/mail-0.9-grails-app-taglib"/>
+        <wb-resource deploy-path="/" source-path="/mail-0.9-grails-app-views"/>
+        <wb-resource deploy-path="/" source-path="/mail-0.9-src-groovy"/>
+        <wb-resource deploy-path="/" source-path="/nimble-0.4-SNAPSHOT-grails-app-conf"/>
+        <wb-resource deploy-path="/" source-path="/nimble-0.4-SNAPSHOT-grails-app-controllers"/>
+        <wb-resource deploy-path="/" source-path="/nimble-0.4-SNAPSHOT-grails-app-domain"/>
+        <wb-resource deploy-path="/" source-path="/nimble-0.4-SNAPSHOT-grails-app-i18n"/>
+        <wb-resource deploy-path="/" source-path="/nimble-0.4-SNAPSHOT-grails-app-realms"/>
+        <wb-resource deploy-path="/" source-path="/nimble-0.4-SNAPSHOT-grails-app-services"/>
+        <wb-resource deploy-path="/" source-path="/nimble-0.4-SNAPSHOT-grails-app-taglib"/>
+        <wb-resource deploy-path="/" source-path="/nimble-0.4-SNAPSHOT-grails-app-views"/>
+        <wb-resource deploy-path="/" source-path="/nimble-0.4-SNAPSHOT-src-java"/>
+        <wb-resource deploy-path="/" source-path="/nimble-0.4-SNAPSHOT-src-groovy"/>
+        <wb-resource deploy-path="/" source-path="/shiro-1.0.1-grails-app-conf"/>
+        <wb-resource deploy-path="/" source-path="/shiro-1.0.1-grails-app-i18n"/>
+        <wb-resource deploy-path="/" source-path="/shiro-1.0.1-grails-app-taglib"/>
+        <wb-resource deploy-path="/" source-path="/shiro-1.0.1-src-java"/>
+        <wb-resource deploy-path="/" source-path="/shiro-1.0.1-src-groovy"/>
+        <wb-resource deploy-path="/" source-path="/ui-performance-1.2.2-grails-app-taglib"/>
+        <wb-resource deploy-path="/" source-path="/ui-performance-1.2.2-src-java"/>
+        <wb-resource deploy-path="/" source-path="/ui-performance-1.2.2-src-groovy"/>
+    </wb-module>
+</project-modules>
