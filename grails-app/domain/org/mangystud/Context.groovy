@@ -4,10 +4,8 @@ class Context {
 
     static constraints = {
 		name(size:2..25,blank:false)
-		realm(nullable:false)
     }
+	static belongsTo = [realm:Realm]
 	
-	Realm realm;
 	String name;
-	
 }

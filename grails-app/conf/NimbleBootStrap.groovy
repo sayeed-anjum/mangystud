@@ -18,11 +18,10 @@
 
 import grails.plugins.nimble.InstanceGenerator
 
-import grails.plugins.nimble.core.LevelPermission
 import grails.plugins.nimble.core.Role
-import grails.plugins.nimble.core.Group
 import grails.plugins.nimble.core.AdminsService
-import grails.plugins.nimble.core.UserService
+import org.mangystud.Context 
+import org.mangystud.Realm 
 
 /*
  * Allows applications using Nimble to undertake process at BootStrap that are related to Nimbe provided objects
@@ -38,6 +37,11 @@ class NimbleBootStrap {
   def nimbleService
   def userService
   def adminsService
+  
+  def createRealm = {name, user, contextNames ->
+	  def contexts = contextNames.collect {new Context(name: it)}
+	  new Realm(name: name, user: user, contexts: contexts).save(failOnError: true)
+  }
 
   def init = {servletContext ->
 
@@ -88,6 +92,12 @@ class NimbleBootStrap {
     }
 
     adminsService.add(admin)
+	
+	if (!Realm.count()) {
+		createRealm "Work", admin, ["Phone", "Email", "Meeting", "Offline"]
+		createRealm "Office", admin, ["Call", "Play", "Chore"]
+	}
+
   }
 
   def destroy = {

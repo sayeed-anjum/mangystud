@@ -1,6 +1,7 @@
 
 import org.mangystud.Context 
 import org.mangystud.Realm 
+import org.mangystud.User 
 
 class BootStrap {
 	def initContext = { realmName, items ->
@@ -14,15 +15,10 @@ class BootStrap {
 			}
 		}
 	}
-
+	
     def init = { servletContext ->
-		if (!Realm.count()) {
-			new Realm(name: "Work").save(failOnError: true)
-			new Realm(name: "Home").save(failOnError: true)
-		}
-		initContext "Work", ["Phone", "Email", "Offline"]
-		initContext "Home", ["Call", "Play", "Chore"]
     }
-    def destroy = {
+
+	def destroy = {
     }
 }
