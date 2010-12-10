@@ -12,7 +12,7 @@ html * {
 }
 
 body {
-    background: #fff;
+	background-color: #CCCCCC;
     color: #333;
     font: 11px verdana, arial, helvetica, sans-serif;
 }
@@ -271,3 +271,36 @@ th.desc a {
     background: transparent url(../images/skin/database_save.png) 5px 50% no-repeat;
     padding-left: 28px;
 }
+
+div#header {
+	background-color: #0C113B;
+	color: white;
+	padding: 5px;
+}
+
+div#appname {
+	font-weight: bold;
+	font-size: 2em;
+}
+
+div#realm {
+	margin-top: 15px;
+}
+
+div#realm span {
+}
+
+span.realm {
+	margin: 5px;
+	padding: 5px;
+	background-color: #999999;
+	color: black;
+}
+
+span.realm-active {
+	background-color: #CCCCCC;
+}
+	
+div#content {
+}
+		

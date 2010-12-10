@@ -8,4 +8,5 @@ class Realm {
     }
 	
 	String name;
+	boolean active = true;
 }
