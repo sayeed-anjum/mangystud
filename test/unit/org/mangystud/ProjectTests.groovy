@@ -1,8 +1,8 @@
-package mangystud
+package org.mangystud
 
 import grails.test.*
 
-class TiddlerTests extends GrailsUnitTestCase {
+class ProjectTests extends GrailsUnitTestCase {
     protected void setUp() {
         super.setUp()
     }
