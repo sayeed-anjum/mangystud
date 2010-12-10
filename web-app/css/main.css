@@ -304,3 +304,12 @@ span.realm-active {
 div#content {
 }
 		
+div#realm span.spacer {
+	margin-left: 30px;
+	width: 5px;
+}
+
+div#realm span.button {
+	margin: 0 5px;
+	padding: 2px;
+}
