@@ -30,6 +30,41 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>jquery-1.4.3.2-grails-app-conf</name>
+			<type>2</type>
+			<location>F:/users/sayeed/.grails/1.3.5/projects/mangystud/plugins/jquery-1.4.3.2/grails-app/conf</location>
+		</link>
+		<link>
+			<name>jquery-1.4.3.2-grails-app-i18n</name>
+			<type>2</type>
+			<location>F:/users/sayeed/.grails/1.3.5/projects/mangystud/plugins/jquery-1.4.3.2/grails-app/i18n</location>
+		</link>
+		<link>
+			<name>jquery-1.4.3.2-grails-app-services</name>
+			<type>2</type>
+			<location>F:/users/sayeed/.grails/1.3.5/projects/mangystud/plugins/jquery-1.4.3.2/grails-app/services</location>
+		</link>
+		<link>
+			<name>jquery-1.4.3.2-grails-app-taglib</name>
+			<type>2</type>
+			<location>F:/users/sayeed/.grails/1.3.5/projects/mangystud/plugins/jquery-1.4.3.2/grails-app/taglib</location>
+		</link>
+		<link>
+			<name>jquery-1.4.3.2-src-groovy</name>
+			<type>2</type>
+			<location>F:/users/sayeed/.grails/1.3.5/projects/mangystud/plugins/jquery-1.4.3.2/src/groovy</location>
+		</link>
+		<link>
+			<name>jquery-ui-1.8.6.1-grails-app-i18n</name>
+			<type>2</type>
+			<location>F:/users/sayeed/.grails/1.3.5/projects/mangystud/plugins/jquery-ui-1.8.6.1/grails-app/i18n</location>
+		</link>
+		<link>
+			<name>jquery-ui-1.8.6.1-grails-app-taglib</name>
+			<type>2</type>
+			<location>F:/users/sayeed/.grails/1.3.5/projects/mangystud/plugins/jquery-ui-1.8.6.1/grails-app/taglib</location>
+		</link>
+		<link>
 			<name>mail-0.9</name>
 			<type>2</type>
 			<location>C:/Users/sayeed/.grails/1.3.5/projects/mangystud/plugins/mail-0.9</location>

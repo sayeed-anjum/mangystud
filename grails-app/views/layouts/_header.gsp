@@ -7,9 +7,9 @@
 	   	</g:each>
 	   	<span class="realm"> + </span>
 	   	<span class="spacer"></span>
-	   	<span class="button">+action</span> 
-	   	<span class="button">+project</span> 
-	   	<span class="button">+tickler</span> 
-	   	<span class="button">+reference</span> 
+	   	<span id="action" class="action_link">+action</span> 
+	   	<span id="project" class="action_link">+project</span> 
+	   	<span id="tickler" class="action_link">+tickler</span> 
+	   	<span id="reference" class="action_link">+reference</span> 
 	 </div>
 </div>

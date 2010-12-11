@@ -23,5 +23,12 @@
         <wb-resource deploy-path="/" source-path="/ui-performance-1.2.2-grails-app-taglib"/>
         <wb-resource deploy-path="/" source-path="/ui-performance-1.2.2-src-java"/>
         <wb-resource deploy-path="/" source-path="/ui-performance-1.2.2-src-groovy"/>
+        <wb-resource deploy-path="/" source-path="/jquery-1.4.3.2-grails-app-conf"/>
+        <wb-resource deploy-path="/" source-path="/jquery-1.4.3.2-grails-app-i18n"/>
+        <wb-resource deploy-path="/" source-path="/jquery-1.4.3.2-grails-app-services"/>
+        <wb-resource deploy-path="/" source-path="/jquery-1.4.3.2-grails-app-taglib"/>
+        <wb-resource deploy-path="/" source-path="/jquery-1.4.3.2-src-groovy"/>
+        <wb-resource deploy-path="/" source-path="/jquery-ui-1.8.6.1-grails-app-i18n"/>
+        <wb-resource deploy-path="/" source-path="/jquery-ui-1.8.6.1-grails-app-taglib"/>
     </wb-module>
 </project-modules>

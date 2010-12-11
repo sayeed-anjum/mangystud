@@ -309,7 +309,11 @@ div#realm span.spacer {
 	width: 5px;
 }
 
-div#realm span.button {
+span.button {
+}
+
+div#realm .action_link {
+	cursor: pointer;
 	margin: 0 5px;
 	padding: 2px;
 }
