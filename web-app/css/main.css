@@ -20,12 +20,6 @@ body {
 	padding:20px;
 }
 
-a:link, a:visited, a:hover {
-    color: #666;
-    font-weight: bold;
-    text-decoration: none;
-}
-
 h1 {
     color: #48802c;
     font-weight: normal;
@@ -317,3 +311,114 @@ div#realm .action_link {
 	margin: 0 5px;
 	padding: 2px;
 }
+
+
+a {
+    text-decoration: none;
+    color: #111144;
+}
+
+a:hover {
+   color: black;
+}
+
+.toolbar {
+    float: right;
+    visibility: hidden;
+    color: #393939;
+    font-size: 0.9em;
+    text-align: right;
+    margin-right: 10px;
+}
+
+.selected .toolbar {
+	visibility: visible;
+}
+
+.toolbar a {
+	margin: 0 1px;
+	padding: 3px;
+    color: #393939;
+}
+
+.selected .toolbar a:hover {
+	background-color: yellow;
+}
+
+.tiddler {
+	background-color: white;
+	border-right: 2px solid #999999; 
+	border-bottom: 2px solid #999999;
+	margin: 15px;
+	padding: 20px; 
+}
+
+.viewer {
+	border: 1px solid #BBB;
+	padding: 10px; 
+	line-height: 1.4em;
+	clear: both;
+}
+
+.viewer .button {
+    margin: 0 4px;
+    padding: 1px 4px;
+}
+
+.viewer .button.on {
+    background-color: #555555;
+    border-style: none !important;
+}
+
+.button.off {
+    background: none repeat scroll 0 0 #FFFFFF;
+    border-color: #EEEEEE;
+    color: #CCCCCC;
+    font-size: 100%;
+    font-weight: bold;
+    margin: 0;
+}
+
+.button.off:hover {
+	color:#333333;
+}
+
+.viewer .Next.button.on {
+    background: none repeat scroll 0 0 #CCFFAA;
+    border-color: #5555CC;
+    color: #44AA44;
+}
+
+.viewer .Starred.button.off {
+    background: none repeat scroll 0 0 #FFFFFF;
+    border-color: #FFFFFF;
+    color: #DDDDDD;
+}
+
+.viewer .button {
+    border: 1px solid #DDBB44;
+}
+
+.viewer .button {
+    background-color: #FFFFFF;
+}
+
+.viewer .tick, .viewer .title {
+	font-weight: bold;
+	font-size: 150%;
+}
+
+.viewer .smaller {
+	font-size: 85%;
+	color: #999;
+}
+
+.viewer .label {
+    color: #888888;
+    font-size: 90%;
+}
+
+.viewer .state {
+	margin: 0.5em 0;
+}
+

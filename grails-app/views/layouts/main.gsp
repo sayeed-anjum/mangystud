@@ -14,14 +14,5 @@
     	<div id="content">
         	<g:layoutBody />
         </div>
-        
-        <div id="tiddler_dialog" style="display:none">
-			<g:formRemote url="[controller:'tiddler',action:'add']" 
-			          update="[success:'message',failure:'error']" name="newTiddlerForm"
-			          onSuccess="tiddlerSaveSuccessHandler()">
-	        	<input type="hidden" id="tiddlerType" name="type" value=""/>
-	        	<input type="text" id="tiddler_title" name="title" value="" size="50"/>
-			</g:formRemote >
-        </div>
     </body>
 </html>
