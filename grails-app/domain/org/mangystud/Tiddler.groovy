@@ -4,18 +4,23 @@ package org.mangystud
 class Tiddler {
 
     static constraints = {
+		realm(nullable:false)
 		title(size:3..100, blank: false, unique:true)
 		notes(nullable:true)
-		realm(nullable:false)
 		owner(nullable:false)
     }
+	
+	static mappings = {
+		realm lazy: false
+	 }
 	
 	static hasMany = [ contexts : Context ]
 	
 	Realm realm
 	String title
 	String notes
+	User owner
+
 	Date lastUpdated
 	Date dateCreated
-	User owner
 }
