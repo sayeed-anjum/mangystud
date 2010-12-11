@@ -10,10 +10,6 @@ class Tiddler {
 		owner(nullable:false)
     }
 	
-	static mappings = {
-		realm lazy: false
-	 }
-	
 	static hasMany = [ contexts : Context ]
 	
 	Realm realm
