@@ -1,9 +1,9 @@
 package org.mangystud
 
 public enum State {
-	NEXT('next'),
-	WAITING('wait'),
-	FUTURE('future');
+	Next('Next'),
+	WaitingFor('WaitingFor'),
+	Future('Future');
 	
 	final String id;
 	

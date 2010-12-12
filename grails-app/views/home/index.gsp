@@ -68,7 +68,7 @@
 	       				<span class="subtitle"></span>
 					</div>
 					<div class="state">
-						<a class=" button Next on" title="Next" href="javascript:;">next</a>
+						<a class=" button Next off" title="Next" href="javascript:;">next</a>
 						<a class=" button WaitingFor off" title="Waiting For" href="javascript:;">waiting for</a>
 						<a class=" button Future off" title="Future" href="javascript:;">future</a>
 					</div>

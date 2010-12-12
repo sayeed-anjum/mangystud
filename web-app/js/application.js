@@ -63,6 +63,37 @@ function completeAction() {
 	}
 }
 
+function nextAction() {
+	if ($(this).hasClass('on')) return;
+	updateStatusAction(this, 'Next')
+}
+
+function waitingForAction() {
+	if ($(this).hasClass('on')) return;
+	updateStatusAction(this, 'WaitingFor')
+}
+
+function futureAction() {
+	if ($(this).hasClass('on')) return;
+	updateStatusAction(this, 'Future')
+}
+
+
+function updateStatusAction(obj, status) {
+	var actionId = determineActionId(obj);
+	if (actionId != null) {
+		$.ajax({
+			url: serverUrl + "action/status",
+			data: {actionId: actionId, status: status}, 
+			type: "POST",
+			dataType: "json",
+			success: function(data) {
+				raiseEvent('actionUpdate', {event: 'status', id: actionId, status: status});
+			}
+		});
+	}
+}
+
 function deleteAction(actionId) {
 	if (actionId != null) {
 		$.ajax({
@@ -152,6 +183,10 @@ function loadActionView(action) {
 	if (action.realm != null) {
 		$('.realm_select select', view).val(action.realm.id);
 	}
+	
+	$('.state a').removeClass('on').addClass('off');
+	$('.' + action.state.name, view).removeClass('off').addClass('on');
+	
 	$('.chkOptionInput', view).attr('checked', action.done);
 	$('.title', view).html(action.title);
 	
@@ -196,11 +231,11 @@ function tl_actionDashboard() {
 			var rightPanel = $('.rightPanel', view)[0]
 			$(rightPanel).empty();
 
-			var html = getContextActionsHtml(state.NEXT, 'Next Actions', ["on", "off", "off"]);
-			html += getContextActionsHtml(state.WAITING, 'Waiting Actions', ["off", "on", "off"]);
+			var html = getContextActionsHtml(state.Next, 'Next Actions', ["on", "off", "off"]);
+			html += getContextActionsHtml(state.WaitingFor, 'Waiting Actions', ["off", "on", "off"]);
 			$(leftPanel).append(html);
 
-			html = getContextActionsHtml(state.FUTURE, 'Future Actions', ["off", "off", "on"]);
+			html = getContextActionsHtml(state.Future, 'Future Actions', ["off", "off", "on"]);
 			html += getDoneActionsHtml(result.done, 'Done Actions')
 			$(rightPanel).append(html);
 			
@@ -230,6 +265,10 @@ jQuery(document).ready(function() {
 		deleteAction(actionId);
 	});
 	$('.tiddler .chkOptionInput').live('click', completeAction);
+	
+	$('.Next').live('click', nextAction);
+	$('.WaitingFor').live('click', waitingForAction);
+	$('.Future').live('click', futureAction);
 
 	$('.tiddlyLink').live('click', function() {
 		var name = $(this).attr('tiddlylink');

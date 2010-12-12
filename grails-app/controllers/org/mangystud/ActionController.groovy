@@ -80,7 +80,7 @@ class ActionController {
 		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
 		def action = Action.findByOwnerAndId(user, actionId)
 		
-		action.state = State.findById(status)	
+		action.state = State.find { it.id == status }	
 		action.save(failOnError: true)
 		
 		def model = [success: true]

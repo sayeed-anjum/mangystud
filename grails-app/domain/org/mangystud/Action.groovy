@@ -8,7 +8,7 @@ class Action extends Tiddler {
 		contact(nullable:true)
 	}
 
-	State state = State.NEXT
+	State state = State.Next
 	boolean done 
 	boolean star 
 	Area area
