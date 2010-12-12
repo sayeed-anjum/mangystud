@@ -62,8 +62,18 @@ table.panel td {
     padding: 0;
 }
 
+.tiddler .title {
+	font-size: 150%;
+	font-weight: bold;
+}
+	
 .mgtdList .innerList {
 	padding: 0.5em 1em 0;
+}
+
+.scroll10 .innerList {
+    height: 12em;
+    overflow: auto;
 }
 
 div#appname {
@@ -171,15 +181,18 @@ a:hover {
 	border-right: 2px solid #999999; 
 	border-bottom: 2px solid #999999;
 	margin: 15px;
-	padding: 20px; 
+	padding: 15px; 
 }
 
 .viewer {
-	border: 1px solid #BBB;
-	padding: 10px; 
-	line-height: 1.4em;
 	clear: both;
 }
+
+.controls {
+	border: 1px solid #BBB;
+	line-height: 1.4em;
+	padding: 10px; 
+}	
 
 .viewer .button {
     margin: 0 4px;

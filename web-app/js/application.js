@@ -1,3 +1,45 @@
+function determineActionId(obj) {
+	var controlDiv = $(obj).closest('.controls');
+	var actionId = null;
+	if (controlDiv.length > 0) {
+		actionId = controlDiv[0].id.substr(7);
+	} else {
+		var link = $(obj).siblings('.tiddlyLink');
+		if (link.length > 0) {
+			actionId = link[0].id.substr(10);
+		}
+	} 
+	return actionId;
+}
+
+function completeAction() {
+	var done = $(this).is(':checked');
+	var actionId = determineActionId(this);
+	if (actionId != null) {
+		$.ajax({
+			url: serverUrl + "action/complete",
+			data: {actionId: actionId, done: done}, 
+			type: "POST",
+			dataType: "json",
+			success: function(data) {
+			}
+		});
+	}
+}
+
+function deleteAction(actionId) {
+	if (actionId != null) {
+		$.ajax({
+			url: serverUrl + "action/remove",
+			data: {actionId: actionId}, 
+			type: "POST",
+			dataType: "json",
+			success: function(data) {
+			}
+		});
+	}
+}
+
 function getContextActionsHtml(stateMap, title, state) {
 	if (stateMap == undefined) return "";
 	
@@ -8,19 +50,38 @@ function getContextActionsHtml(stateMap, title, state) {
 		for (var j = 0; j < ctxActions.length; j++) {
 			var action = ctxActions[j];
 			html += "<span class='action'>" +
-					"<input type='checkbox' class='chkOptionInput'>" +
+					"<input type='checkbox' class='chkOptionInput'" + (action.done? " checked='checked'>" : ">") +  
 					"<a class='button Next " + state[0] + "' href='javascript:;' title='Next'>n</a>" +
 					"<a class='button WaitingFor off " + state[1] + "' href='javascript:;' title='Waiting For'>w</a>" +
 					"<a class='button Future off " + state[2] + "' href='javascript:;' title='Future'>f</a>" +
 					"<a class='button Starred off' href='javascript:;' title='Starred'>★</a>" +
 					"<span>&nbsp;</span>" + 
-					"<a class='tiddlyLink tiddlyLinkExisting' href='javascript:;' tiddlyLink='action_" + action.id + "'>" + action.title + "</a>" +
+					"<a class='tiddlyLink tiddlyLinkExisting' href='javascript:;' tiddlyLink='tl_viewAction' id='tl_action_" + action.id + "'>" + action.title + "</a>" +
 					"<a class='deleteTiddlerButton' href='javascript:;' title='Delete tiddler'>×</a>" + 
 					"</span><br>"
 		}
 		html += "</div>"
 	}
 	html += "</div>";
+	return html;
+}
+
+function getDoneActionsHtml(doneActions, title) {
+	if (doneActions == undefined) return "";
+	
+	var html = "<div class='scroll10'><div class='mgtdList'><h1>" + title + "</h1>";
+	html += "<br><div class='doneList'>";
+	for (var j = 0; j < doneActions.length; j++) {
+		var action = doneActions[j];
+		html += "<span class='action'>" +
+				"<input type='checkbox' class='chkOptionInput'" + (action.done? " checked='checked'>" : ">") +  
+				"<span>&nbsp;</span>" + 
+				"<a class='tiddlyLink tiddlyLinkExisting' href='javascript:;' tiddlyLink='tl_viewAction' id='tl_action_" + action.id + "'>" + action.title + "</a>" +
+				"<a class='deleteTiddlerButton' href='javascript:;' title='Delete tiddler'>×</a>" + 
+				"</span><br>"
+	}
+	html += "</div>";
+	html += "</div></div>";
 	return html;
 }
 
@@ -37,30 +98,60 @@ function getTiddlerView(id, viewName) {
 
 function tiddlerSaveSuccessHandler(data, textStatus) {
 	$('#tiddler_dialog').dialog("close");
-	
-	// var updatedOn = data.action.
-	var view = getTiddlerView('action_' + data.action.id, 'action_view_template')
+	loadActionView(data.action);
+}
 
-	var realmSelect = $('#realm_select_template select').clone();
-	$('.realm_select', view).append(realmSelect);
-	$('.title', view).html(data.action.title);
+function loadActionView(action) {
+	var tiddler = $('#td_action_' + action.id);
+	var view;
+	if (tiddler.length > 0) {
+		view = $('.viewer div', tiddler[0]);
+	} else {
+		view = getTiddlerView('td_action_' + action.id, 'action_view_template')
+		var realmSelect = $('#realm_select_template select').clone();
+		$('.realm_select', view).append(realmSelect);
+	}
+	$('.controls', view).attr('id', 'action_' + action.id);
+	if (action.realm != null) {
+		$('.realm_select select', view).val(action.realm.id);
+	}
+	$('.chkOptionInput', view).attr('checked', action.done);
+	$('.title', view).html(action.title);
+	
 	// $('.subtitle', view).html(updatedOn);
 	$(view).show();
 }
 
+function tl_viewAction(obj) {
+	var actionId = obj.id.substr(10);
+	$.ajax({
+		url: serverUrl + "action/view",
+		data: {actionId: actionId}, 
+		type: "GET",
+		dataType: "json",
+		success: function(data) {
+			loadActionView(data.action);
+		}
+	});
+}
+
 function tl_actionDashboard() {
 	$.ajax({
-		url: serverUrl + "tiddler/actionDashboard",
+		url: serverUrl + "action/dashboard",
 		type: "GET",
 		dataType: "json",
 		success: function(result) {
 			var tiddler = $('#actionDashboard');
+			var state = result.state;
 			var view;
 			if (tiddler.length > 0) {
 				view = $('.viewer div', tiddler[0]);
 			} else {
 				view = getTiddlerView("actionDashboard", 'action_dashboard_template')
+				tiddler = $('#actionDashboard');
 			}
+			
+			$('.title', tiddler).html('Action Dashboard By Context');
 			
 			var leftPanel = $('.leftPanel', view)[0]
 			$(leftPanel).empty();
@@ -68,11 +159,12 @@ function tl_actionDashboard() {
 			var rightPanel = $('.rightPanel', view)[0]
 			$(rightPanel).empty();
 
-			var html = getContextActionsHtml(result.NEXT, 'Next Actions', ["on", "off", "off"]);
-			html += getContextActionsHtml(result.WAITING, 'Waiting Actions', ["off", "on", "off"]);
+			var html = getContextActionsHtml(state.NEXT, 'Next Actions', ["on", "off", "off"]);
+			html += getContextActionsHtml(state.WAITING, 'Waiting Actions', ["off", "on", "off"]);
 			$(leftPanel).append(html);
 
-			html = getContextActionsHtml(result.FUTURE, 'Future Actions', ["off", "off", "on"]);
+			html = getContextActionsHtml(state.FUTURE, 'Future Actions', ["off", "off", "on"]);
+			html += getDoneActionsHtml(result.done, 'Done Actions')
 			$(rightPanel).append(html);
 			
 			$(view).show();
@@ -91,14 +183,22 @@ jQuery(document).ready(function() {
 		$(this).closest('.tiddler').remove();
 	});
 	$('.tiddler .command_deleteTiddler').live('click', function() {
-		var id = $(this).closest('.tiddler')[0].id;
-		alert('deleting ' + id);
+		var actionId = $(this).closest('.tiddler')[0].id;
+		if (actionId.substr(0, 10) === 'td_action_') {
+			deleteAction(actionId.substr(10));
+		}
 	});
+	$('.tiddler .deleteTiddlerButton').live('click', function() {
+		var actionId = determineActionId(this);
+		deleteAction(actionId);
+	});
+	$('.tiddler .chkOptionInput').live('click', completeAction);
+
 	$('.tiddlyLink').live('click', function() {
 		var name = $(this).attr('tiddlylink');
 		var fn = window[name];
 		if (typeof fn === 'function') {
-			fn();
+			fn(this);
 		} else {
 			alert('Missing tiddly method: ' + name);
 		}

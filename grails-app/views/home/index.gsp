@@ -20,7 +20,7 @@
    		</div>
 
         <div id="tiddler_dialog" style="display:none">
-			<g:formRemote url="[controller:'tiddler',action:'add']" 
+			<g:formRemote url="[controller:'action',action:'add']" 
 			          update="[success:'message',failure:'error']" name="newTiddlerForm"
 			          onSuccess="tiddlerSaveSuccessHandler(data, textStatus)">
 	        	<input type="hidden" id="tiddlerType" name="type" value=""/>
@@ -41,6 +41,7 @@
 					<span><a name="newHere" class="button" title="Create a new tiddler" href="javascript:;">new here</a></span>
 					<span style="padding: 1em;"></span>
         		</div>
+        		<div class="title"></div>
         		<div class="viewer">
         		</div>
         	</div>
@@ -55,20 +56,22 @@
         	</div>
         	
         	<div id="action_view_template">
+        		<div class="controls">
       				<div class="smaller" style="float: right;">
-					<span class="label">Realm:</span>
-					<span class="realm_select"></span>
+						<span class="label">Realm:</span>
+						<span class="realm_select"></span>
 					</div>
 					<div>
-       				<span class="tick"><input type="checkbox" name="action_done"/></span>
-       				<span class="title"></span>
-       				<span><a class="button Starred off" title="Starred" href="javascript:;">★</a></span>
-       				<span class="subtitle"></span>
-				</div>
-				<div class="state">
-					<a class=" button Next on" title="Next" href="javascript:;">next</a>
-					<a class=" button WaitingFor off" title="Waiting For" href="javascript:;">waiting for</a>
-					<a class=" button Future off" title="Future" href="javascript:;">future</a>
+	       				<span class="tick"><input type="checkbox" class="chkOptionInput"/></span>
+	       				<span class="title"></span>
+	       				<span><a class="button Starred off" title="Starred" href="javascript:;">★</a></span>
+	       				<span class="subtitle"></span>
+					</div>
+					<div class="state">
+						<a class=" button Next on" title="Next" href="javascript:;">next</a>
+						<a class=" button WaitingFor off" title="Waiting For" href="javascript:;">waiting for</a>
+						<a class=" button Future off" title="Future" href="javascript:;">future</a>
+					</div>
 				</div>
         	</div>
         	
@@ -77,7 +80,7 @@
        				<option value="">-</option>
         			<option value="__new__">New Realm...</option>
         			<g:each in="${realms}" var="realm">
-						<option value="${realm.name}">${realm.name}</span>
+						<option value="${realm.id}">${realm.name}</span>
 	   				</g:each>
        			</select>
         	</div>
