@@ -7,6 +7,9 @@
         <g:layoutHead />
 		<g:javascript library="jquery" plugin="jquery"/>
 		<g:javascript src="jquery/jquery-ui-1.8.7.custom.min.js"/>
+		<g:javascript>
+			serverUrl = "${resource(dir:'/')}";
+		</g:javascript>
 		<g:javascript src="application.js"/>
     </head>
     <body>

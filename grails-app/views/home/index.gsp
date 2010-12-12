@@ -7,6 +7,15 @@
 		<g:javascript library="jquery" plugin="jquery-ui"/>
 	</head>
    <body>
+   		<div id="sidebar">
+   			<div id="sidebarTabs">
+	   			<div class="tabContents">
+		   			<a class="tiddlyLink tiddlyLinkExisting" href="javascript:;" tiddlylink="tl_nextActionsByContext">Next Actions</a>
+		   			<a class="tiddlyLink tiddlyLinkExisting" href="javascript:;" tiddlylink="tl_actionDashboard">Action Dashboard</a>
+	   			</div>
+   			</div>
+   		</div>
+   		
    		<div id="stage">
    		</div>
 
@@ -20,7 +29,7 @@
         </div>
         
         <div id="template" style="display:none">
-        	<div id="action_div_template" class="tiddler">
+        	<div id="tiddler_template" class="tiddler">
         		<div class="toolbar">
 					<span style="padding: 1em;"></span>
 					<span>
@@ -32,23 +41,35 @@
 					<span><a name="newHere" class="button" title="Create a new tiddler" href="javascript:;">new here</a></span>
 					<span style="padding: 1em;"></span>
         		</div>
-       			<form class="viewer">
-       				<div class="smaller" style="float: right;">
-						<span class="label">Realm:</span>
-						<span class="realm_select"></span>
- 					</div>
- 					<div>
-	       				<span class="tick"><input type="checkbox" name="action_done"/></span>
-	       				<span class="title"></span>
-	       				<span><a class="button Starred off" title="Starred" href="javascript:;">★</a></span>
-	       				<span class="subtitle"></span>
+        		<div class="viewer">
+        		</div>
+        	</div>
+
+        	<div id="action_dashboard_template">
+        		<table class="panel">
+        		<tr>
+        		<td><div class="leftPanel"></div></td>
+        		<td><div class="rightPanel"></div></td>
+        		</tr>
+        		</table>
+        	</div>
+        	
+        	<div id="action_view_template">
+      				<div class="smaller" style="float: right;">
+					<span class="label">Realm:</span>
+					<span class="realm_select"></span>
 					</div>
-					<div class="state">
-						<a class=" button Next on" title="Next" href="javascript:;">next</a>
-						<a class=" button WaitingFor off" title="Waiting For" href="javascript:;">waiting for</a>
-						<a class=" button Future off" title="Future" href="javascript:;">future</a>
-					</div>
-       			</form>
+					<div>
+       				<span class="tick"><input type="checkbox" name="action_done"/></span>
+       				<span class="title"></span>
+       				<span><a class="button Starred off" title="Starred" href="javascript:;">★</a></span>
+       				<span class="subtitle"></span>
+				</div>
+				<div class="state">
+					<a class=" button Next on" title="Next" href="javascript:;">next</a>
+					<a class=" button WaitingFor off" title="Waiting For" href="javascript:;">waiting for</a>
+					<a class=" button Future off" title="Future" href="javascript:;">future</a>
+				</div>
         	</div>
         	
         	<div id="realm_select_template">

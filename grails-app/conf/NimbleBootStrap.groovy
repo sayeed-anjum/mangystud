@@ -20,8 +20,11 @@ import grails.plugins.nimble.InstanceGenerator
 
 import grails.plugins.nimble.core.Role
 import grails.plugins.nimble.core.AdminsService
+
+import org.mangystud.Action;
 import org.mangystud.Context 
 import org.mangystud.Realm 
+import org.mangystud.State;
 
 /*
  * Allows applications using Nimble to undertake process at BootStrap that are related to Nimbe provided objects
@@ -41,6 +44,16 @@ class NimbleBootStrap {
   def createRealm = {name, user, contextNames ->
 	  def contexts = contextNames.collect {new Context(name: it)}
 	  new Realm(name: name, user: user, contexts: contexts).save(failOnError: true)
+  }
+  
+  def addAction = {realmName, user, title, state, contextNames ->
+	  def realm = Realm.findByName(realmName)
+	  def contexts = contextNames.collect {
+		  Context.findByNameAndRealm(it, realm)
+	  }
+	  println "adding new action: " + title
+	  println "contexts " + contexts.toString()
+	  new Action(realm: realm, owner: user, title: title, state:state, contexts: contexts).save(failOnError: true)  
   }
 
   def init = {servletContext ->
@@ -96,6 +109,10 @@ class NimbleBootStrap {
 	if (!Realm.count()) {
 		createRealm "Work", admin, ["Phone", "Email", "Meeting", "Offline"]
 		createRealm "Office", admin, ["Call", "Play", "Chore"]
+		
+		addAction "Work", admin, 'my first action', State.NEXT, ["Phone"]  
+		addAction "Work", admin, 'my second action', State.WAITING, ["Email"]  
+		addAction "Work", admin, 'my third action', State.FUTURE, ["Meeting"]  
 	}
 
   }
