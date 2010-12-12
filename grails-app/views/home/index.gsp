@@ -24,7 +24,7 @@
 			          update="[success:'message',failure:'error']" name="newTiddlerForm"
 			          onSuccess="tiddlerSaveSuccessHandler(data, textStatus)">
 	        	<input type="hidden" id="tiddlerType" name="type" value=""/>
-	        	<input type="text" id="tiddler_title" name="title" value="" size="50"/>
+	        	<input type="text" id="tiddler_title" name="title" value="" size="40"/>
 			</g:formRemote >
         </div>
         

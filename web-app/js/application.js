@@ -167,6 +167,7 @@ function getTiddlerView(id, viewName) {
 function tiddlerSaveSuccessHandler(data, textStatus) {
 	$('#tiddler_dialog').dialog("close");
 	loadActionView(data.action);
+	raiseEvent('actionUpdate', {event: 'new', id: data.action.id});
 }
 
 function loadActionView(action) {
