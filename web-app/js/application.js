@@ -1,3 +1,38 @@
+function updateStaticActionTiddlers() {
+	staticTiddlers = {"actionDashboard": tl_actionDashboard}
+	for (var key in staticTiddlers) {
+		var tiddler = $('#' + key);
+		if (tiddler.length >= 0) {
+			var fn = staticTiddlers[key];
+			if (typeof fn === 'function') {
+				fn();
+			}
+		}
+	}
+}
+
+function actionUpdateListener(event) {
+	updateStaticActionTiddlers();
+	
+	var tiddler = $('#td_action_' + event.id);
+	if (tiddler.length > 0) {
+		tl_viewAction(tiddler[0]);
+	}
+}
+
+var eventListeners = {
+	actionUpdate : [actionUpdateListener]
+};
+
+function raiseEvent(name, event) {
+	var listeners = eventListeners[name]
+	for (var j = 0; j < listeners.length; j++) {
+		if (typeof listeners[j] =='function') {
+			listeners[j](event);
+		}
+	}
+}
+
 function determineActionId(obj) {
 	var controlDiv = $(obj).closest('.controls');
 	var actionId = null;
@@ -22,6 +57,7 @@ function completeAction() {
 			type: "POST",
 			dataType: "json",
 			success: function(data) {
+				raiseEvent('actionUpdate', {event: 'complete', id: actionId});
 			}
 		});
 	}
@@ -35,6 +71,7 @@ function deleteAction(actionId) {
 			type: "POST",
 			dataType: "json",
 			success: function(data) {
+				raiseEvent('actionUpdate', {event: 'delete', id: actionId});
 			}
 		});
 	}
