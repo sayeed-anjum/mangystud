@@ -258,6 +258,7 @@ jQuery(document).ready(function() {
 		var actionId = $(this).closest('.tiddler')[0].id;
 		if (actionId.substr(0, 10) === 'td_action_') {
 			deleteAction(actionId.substr(10));
+			$(this).closest('.tiddler').remove();
 		}
 	});
 	$('.tiddler .deleteTiddlerButton').live('click', function() {
