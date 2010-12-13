@@ -100,35 +100,58 @@ class ActionController {
 	
 	
 	def dashboard = {
-		def realms = Realm.findAllByActive(true)
 		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def realms = Realm.findAllByActiveAndUser(true, user)
 		
-		if (user == null) {
-			render {error: "No current user!"} as JSON
-			return;
-		}
-		if (realms.size() == 0) {
-			render {error: "No active realm found!"} as JSON
-			return;
-		}
-		
-		def c = Action.createCriteria()
-		def result = c.list {
-			eq('done', false)
-			eq('owner', user)
-			'in'('realm', realms)
-		}
-		def result2 = groupActionsByStateAndContext(result)
-		
-		c = Action.createCriteria()
-		def doneActions = c.list {
-			eq('done', true)
-			eq('owner', user)
-			'in'('realm', realms)
-		}
+		def result2 = getActionsByStateAndRealms(user, [State.Next, State.Future, State.WaitingFor], realms)
+		def doneActions = getDoneActions(user, realms)
 		
 		def model = [state: result2, done: doneActions]
 		
 		render model as JSON
 	}
+
+	def next_waiting = {
+		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def realms = Realm.findAllByActiveAndUser(true, user)
+		
+		def result2 = getActionsByStateAndRealms(user, [State.Next, State.WaitingFor], realms)
+		
+		def model = [state: result2]
+		
+		render model as JSON
+	}
+
+	def nextActions = {
+		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def realms = Realm.findAllByActiveAndUser(true, user)
+		
+		def result2 = getActionsByStateAndRealms(user, [State.Next], realms)
+		
+		def model = [state: result2]
+		
+		render model as JSON
+	}
+
+	def getActionsByStateAndRealms = {user, states, realms ->
+		def c = Action.createCriteria()
+		def result = c.list {
+			eq('done', false)
+			eq('owner', user)
+			'in'('state', states)
+			'in'('realm', realms)
+		}
+		return groupActionsByStateAndContext(result)
+	}
+	
+	def getDoneActions = {user, realms ->
+		def c = Action.createCriteria()
+		c = Action.createCriteria()
+		return c.list {
+			eq('done', true)
+			eq('owner', user)
+			'in'('realm', realms)
+		}
+	}
+
 }

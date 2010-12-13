@@ -1,8 +1,13 @@
 function updateStaticActionTiddlers() {
-	staticTiddlers = {"actionDashboard": tl_actionDashboard}
+	staticTiddlers = {
+			"nextActions": tl_nextActions, 
+			"actionDashboard": tl_actionDashboard, 
+			"nextAndWaiting" : tl_nextAndWaiting
+	};
+	
 	for (var key in staticTiddlers) {
 		var tiddler = $('#' + key);
-		if (tiddler.length >= 0) {
+		if (tiddler.length > 0) {
 			var fn = staticTiddlers[key];
 			if (typeof fn === 'function') {
 				fn();
@@ -64,22 +69,20 @@ function completeAction() {
 }
 
 function nextAction() {
-	if ($(this).hasClass('on')) return;
 	updateStatusAction(this, 'Next')
 }
 
 function waitingForAction() {
-	if ($(this).hasClass('on')) return;
 	updateStatusAction(this, 'WaitingFor')
 }
 
 function futureAction() {
-	if ($(this).hasClass('on')) return;
 	updateStatusAction(this, 'Future')
 }
 
 
 function updateStatusAction(obj, status) {
+	if ($(obj).hasClass('on')) return;
 	var actionId = determineActionId(obj);
 	if (actionId != null) {
 		$.ajax({
@@ -106,6 +109,12 @@ function deleteAction(actionId) {
 			}
 		});
 	}
+}
+
+function tiddlerSaveSuccessHandler(data, textStatus) {
+	$('#tiddler_dialog').dialog("close");
+	loadActionView(data.action);
+	raiseEvent('actionUpdate', {event: 'new', id: data.action.id});
 }
 
 function getContextActionsHtml(stateMap, title, state) {
@@ -164,12 +173,6 @@ function getTiddlerView(id, viewName) {
 	return view;
 }
 
-function tiddlerSaveSuccessHandler(data, textStatus) {
-	$('#tiddler_dialog').dialog("close");
-	loadActionView(data.action);
-	raiseEvent('actionUpdate', {event: 'new', id: data.action.id});
-}
-
 function loadActionView(action) {
 	var tiddler = $('#td_action_' + action.id);
 	var view;
@@ -208,41 +211,73 @@ function tl_viewAction(obj) {
 	});
 }
 
-function tl_actionDashboard() {
+function showDashboardView(name, title, url, callback) {
 	$.ajax({
-		url: serverUrl + "action/dashboard",
+		url: serverUrl + url,
 		type: "GET",
 		dataType: "json",
 		success: function(result) {
-			var tiddler = $('#actionDashboard');
-			var state = result.state;
+			var tiddler = $('#' + name);
 			var view;
 			if (tiddler.length > 0) {
 				view = $('.viewer div', tiddler[0]);
 			} else {
-				view = getTiddlerView("actionDashboard", 'action_dashboard_template')
-				tiddler = $('#actionDashboard');
+				view = getTiddlerView(name, 'action_dashboard_template')
+				tiddler = $('#' + name);
 			}
 			
-			$('.title', tiddler).html('Action Dashboard By Context');
-			
+			$('.title', tiddler).html(title);
+
 			var leftPanel = $('.leftPanel', view)[0]
 			$(leftPanel).empty();
 
 			var rightPanel = $('.rightPanel', view)[0]
 			$(rightPanel).empty();
-
-			var html = getContextActionsHtml(state.Next, 'Next Actions', ["on", "off", "off"]);
-			html += getContextActionsHtml(state.WaitingFor, 'Waiting Actions', ["off", "on", "off"]);
-			$(leftPanel).append(html);
-
-			html = getContextActionsHtml(state.Future, 'Future Actions', ["off", "off", "on"]);
-			html += getDoneActionsHtml(result.done, 'Done Actions')
-			$(rightPanel).append(html);
 			
+			var viewer = {view: view, left: leftPanel, right: rightPanel, tiddler: tiddler, state:result.state, result:result};
+			callback(viewer);
+
 			$(view).show();
 		}
 	});
+}
+
+function tl_nextActions() {
+	showDashboardView('nextActions', 
+		'Next Actions By Context', 'action/nextActions',
+		function(v) {
+			var html = getContextActionsHtml(v.state.Next, 'Next Actions', ["on", "off", "off"]);
+			$(v.left).append(html);
+		}
+	);
+}
+
+function tl_nextAndWaiting() {
+	showDashboardView('nextAndWaiting', 
+			'Next And Waiting Actions By Context', 'action/next_waiting',
+			function(v) {
+				var html = getContextActionsHtml(v.state.Next, 'Next Actions', ["on", "off", "off"]);
+				$(v.left).append(html);
+		
+				html = getContextActionsHtml(v.state.WaitingFor, 'Waiting Actions', ["off", "on", "off"]);
+				$(v.right).append(html);
+			}
+		);
+}
+
+function tl_actionDashboard() {
+	showDashboardView('actionDashboard', 
+			'Action Dashboard By Context', 'action/dashboard',
+			function(v) {
+				var html = getContextActionsHtml(v.state.Next, 'Next Actions', ["on", "off", "off"]);
+				html += getContextActionsHtml(v.state.WaitingFor, 'Waiting Actions', ["off", "on", "off"]);
+				$(v.left).append(html);
+		
+				html = getContextActionsHtml(v.state.Future, 'Future Actions', ["off", "off", "on"]);
+				html += getDoneActionsHtml(v.result.done, 'Done Actions')
+				$(v.right).append(html);
+			}
+		);
 }
 
 jQuery(document).ready(function() {
