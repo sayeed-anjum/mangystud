@@ -77,8 +77,7 @@
         	</div>
         	
         	<div id="realm_select_template">
-        		<select name="realm">
-       				<option value="">-</option>
+        		<select class="realm">
         			<option value="__new__">New Realm...</option>
         			<g:each in="${realms}" var="realm">
 						<option value="${realm.id}">${realm.name}</span>

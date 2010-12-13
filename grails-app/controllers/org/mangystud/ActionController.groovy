@@ -86,7 +86,28 @@ class ActionController {
 		def model = [success: true]
 		render model as JSON
 	}
-	
+
+	def realmChange = {
+		def actionId = params.actionId
+		def realmId = params.realm
+		
+		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def realm = Realm.findById(realmId);
+		
+		if (realm == null || realm.user != user) {
+			String message = "Not a valid realm id: " + realmId;
+			return message as JSON
+		}
+		
+		def action = Action.findByOwnerAndId(user, actionId)
+		
+		action.realm = realm
+		action.save(failOnError: true)
+		
+		def model = [success: true]
+		render model as JSON
+	}
+
 	def remove = {
 		def actionId = params.actionId
 		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())

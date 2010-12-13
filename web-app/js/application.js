@@ -97,6 +97,26 @@ function updateStatusAction(obj, status) {
 	}
 }
 
+function updateRealm() {
+	var realmId = $(this).val();
+	var actionId = determineActionId(this);
+	if (realmId === "__new__") {
+		alert('creating new realm');
+		return;
+	}
+	if (actionId != null) {
+		$.ajax({
+			url: serverUrl + "action/realmChange",
+			data: {actionId: actionId, realm: realmId}, 
+			type: "POST",
+			dataType: "json",
+			success: function(data) {
+				raiseEvent('actionUpdate', {event: 'realmChange', id: actionId, realm: realmId});
+			}
+		});
+	}
+}
+
 function deleteAction(actionId) {
 	if (actionId != null) {
 		$.ajax({
@@ -306,6 +326,7 @@ jQuery(document).ready(function() {
 	$('.Next').live('click', nextAction);
 	$('.WaitingFor').live('click', waitingForAction);
 	$('.Future').live('click', futureAction);
+	$('.realm').live('change', updateRealm);
 
 	$('.tiddlyLink').live('click', function() {
 		var name = $(this).attr('tiddlylink');
