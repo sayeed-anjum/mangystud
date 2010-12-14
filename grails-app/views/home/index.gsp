@@ -30,6 +30,7 @@
 			          update="[success:'message',failure:'error']" name="newContextForm"
 			          onSuccess="contextSaveSuccessHandler(data, textStatus)">
 	        	<input type="hidden" id="context_realm" name="realm" value=""/>
+	        	<input type="hidden" id="context_actionId" name="actionId" value=""/>
 	        	<input type="text" id="context_name" name="name" value="" size="40" maxLength="25"/>
 			</g:formRemote >
         </div>

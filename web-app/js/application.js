@@ -31,6 +31,21 @@ function updateRealmCache(event) {
 	var contexts = realmCache.contexts[event.data.realm.name];
 	contexts.push(event.data.context);
 	buildContextHtml();
+	
+	var actionIds = getOpenActionIdsForRealm(event.data.realm.id);
+	$.each(actionIds, function(index, value) {
+		refreshActionView(value);
+	});
+}
+
+function getOpenActionIdsForRealm(id) {
+	var actionIds = [];
+	$.each($('.controls .realm'), function(index, value) {
+		if ($(this).val() == id) {
+			actionIds.push(determineActionId(this))
+		}
+	});
+	return actionIds;
 }
 
 function updateStaticActionTiddlers() {
@@ -53,8 +68,11 @@ function updateStaticActionTiddlers() {
 
 function actionUpdateListener(event) {
 	updateStaticActionTiddlers();
-	
-	var tiddler = $('#td_action_' + event.id);
+	refreshActionView(event.id);
+}
+
+function refreshActionView(actionId) {
+	var tiddler = $('#td_action_' + actionId);
 	if (tiddler.length > 0) {
 		tl_viewAction(tiddler[0]);
 	}
@@ -168,24 +186,48 @@ function deleteAction(actionId) {
 }
 
 function updateContextDivs(data) {
-//	var contextDivs = $('.controls .context', $('#stage'));
-//	var html = getContextSpanHtml(data.context.name);
-//	$.each(contextDivs, function(index, contextDiv) {
-//		var realmName = $(contextDiv).parent().find('.realm_select select').val();
-//		if (realmName == data.realm.id) {
-//			$(html).insertBefore('.contextAdd', contextDiv);
-//		}
-//	});
 	var event = {event: 'newContext', data: data};
 	raiseEvent('newContext', event);
-	raiseEvent('actionUpdate', event);
+}
+
+function toggleRealm() {
+	$(this).toggleClass('realm-active');
+	var active = $(this).hasClass('realm-active');
+	var realm = $(this).text();
+	$.ajax({
+		url: serverUrl + "realm/toggle",
+		data: {name: realm, active: active}, 
+		type: "POST",
+		dataType: "json",
+		success: function(data) {
+			raiseEvent('actionUpdate', {event: 'realmToggle', realm: realm, active: true});
+		}
+	});
+}
+
+function addRealm() {
+	$('#realm_title').val('');
+	$('#realm_dialog').dialog("option", "title", 'New Realm');
+	$('#realm_dialog').dialog("open");
+}
+		
+function realmSaveSuccessHandler(data, textStatus) {
+	$('#realm_dialog').dialog("close");
+
+	var span = $('<span/>', {
+		class: "realm-tab realm-active",
+		text: data.realm.name
+	});
+	$('.realm-add').before(span);
 }
 
 function showNewContextDialog() {
 	var controlDiv = $(this).closest('.controls');
+	var actionId = determineActionId(this);
 	var realm = $('.realm_select select', controlDiv).val();
 
 	$('#context_realm').val(realm);
+	$('#context_actionId').val(actionId);
 	$('#context_name').val('');
 	$('#context_dialog').dialog("option", "title", 'New Context');
 	$('#context_dialog').dialog("open");
@@ -288,6 +330,7 @@ function loadActionView(action) {
 	
 	var ctxDiv = $('<div/>');
 	var activeRealms = $('.realm-active')
+	$('.context', view).empty();
 	if (activeRealms.length > 0) {
 		var html = contextHtml[$(activeRealms[0]).text()]
 		$('.context', view).append(html);
@@ -406,6 +449,8 @@ jQuery(document).ready(function() {
 	$('.WaitingFor').live('click', waitingForAction);
 	$('.Future').live('click', futureAction);
 	$('.realm').live('change', updateRealm);
+	$('.realm-tab').live('click', toggleRealm);
+	$('.realm-add').live('click', addRealm);
 
 	$('.tiddlyLink').live('click', function() {
 		var name = $(this).attr('tiddlylink');
@@ -450,6 +495,22 @@ jQuery(document).ready(function() {
 		modal: true
 	});
 	
+	$('#realm_dialog').dialog({
+	    autoOpen: false,
+		buttons: {
+			"OK" : function() {
+			  var name = $('#realm_name').val();
+			  if (name.trim() === "") {
+			  	alert('Please enter a name');
+			  	return;
+			  }
+			  $('#newRealmForm').submit();
+			},
+			"Cancel" : function() {$(this).dialog("close"); }
+		},
+		resizable: false,
+		modal: true
+	});
 	
 	$(".action_link").click(showNewActionDialog);
 	$('.contextAdd').live('click', showNewContextDialog);
