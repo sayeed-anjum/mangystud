@@ -9,6 +9,8 @@
 		<g:javascript src="jquery/jquery-ui-1.8.7.custom.min.js"/>
 		<g:javascript>
 			serverUrl = "${resource(dir:'/')}";
+			realmCache = {};
+			contextHtml = {};
 		</g:javascript>
 		<g:javascript src="application.js"/>
     </head>

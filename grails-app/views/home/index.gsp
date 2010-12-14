@@ -28,6 +28,14 @@
 	        	<input type="text" id="tiddler_title" name="title" value="" size="40"/>
 			</g:formRemote >
         </div>
+        <div id="context_dialog" style="display:none">
+			<g:formRemote url="[controller:'action',action:'addContext']" 
+			          update="[success:'message',failure:'error']" name="newContextForm"
+			          onSuccess="contextSaveSuccessHandler(data, textStatus)">
+	        	<input type="hidden" id="context_realm" name="realm" value=""/>
+	        	<input type="text" id="context_name" name="name" value="" size="40" maxLength="25"/>
+			</g:formRemote >
+        </div>
         
         <div id="template" style="display:none">
         	<div id="tiddler_template" class="tiddler">
@@ -72,6 +80,8 @@
 						<a class=" button Next off" title="Next" href="javascript:;">next</a>
 						<a class=" button WaitingFor off" title="Waiting For" href="javascript:;">waiting for</a>
 						<a class=" button Future off" title="Future" href="javascript:;">future</a>
+					</div>
+					<div class='context'>
 					</div>
 				</div>
         	</div>

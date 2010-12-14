@@ -275,3 +275,17 @@ a:hover {
 	margin: 0.5em 0;
 }
 
+.viewer .chkContext {
+	vertical-align: text-bottom;
+}	
+
+.viewer .contextLabel {
+	margin: 0 10px 0 2px;
+	vertical-align: middle;
+}
+
+.viewer .contextAdd {
+	cursor: pointer;
+	color: black;
+	vertical-align: text-top;
+}
