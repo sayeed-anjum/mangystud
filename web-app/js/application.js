@@ -168,17 +168,17 @@ function deleteAction(actionId) {
 }
 
 function updateContextDivs(data) {
-	// locate context divs and insert context (where realm is current realm)
-	var contextDivs = $('.controls .context', $('#stage'));
-	var html = getContextSpanHtml(data.context.name);
-	$.each(contextDivs, function(index, contextDiv) {
-		var realmName = $(contextDiv).parent().find('.realm_select select').val();
-		if (realmName == data.realm.id) {
-			var target = $('.contextAdd', contextDiv);
-			$(html).insertBefore(target);
-		}
-	});
-	raiseEvent('newContext', {event: 'newContext', data: data});
+//	var contextDivs = $('.controls .context', $('#stage'));
+//	var html = getContextSpanHtml(data.context.name);
+//	$.each(contextDivs, function(index, contextDiv) {
+//		var realmName = $(contextDiv).parent().find('.realm_select select').val();
+//		if (realmName == data.realm.id) {
+//			$(html).insertBefore('.contextAdd', contextDiv);
+//		}
+//	});
+	var event = {event: 'newContext', data: data};
+	raiseEvent('newContext', event);
+	raiseEvent('actionUpdate', event);
 }
 
 function showNewContextDialog() {
