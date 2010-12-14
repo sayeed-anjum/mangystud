@@ -52,6 +52,40 @@ class ActionController {
 		}
 	}
 	
+	def addContext = {
+		def realmId = params.int('realm')
+		def name = params.name;
+		
+		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def realm = Realm.findByIdAndUser(realmId, user)
+		
+		if (realm != null) {
+			
+			def context = new Context(name: name);
+			realm.contexts << context;
+	
+			realm.save(failOnError: true)
+	
+			def model = [context: context, realm: realm];
+			render model as JSON
+		}
+	}
+
+	def contexts = {
+		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def realms = Realm.findByUser(user)
+		
+		def contexts = new TreeMap();
+		realms.each {
+			contexts[it.name] = it.contexts;
+		}
+		
+		def model = [realms: realms, contexts: contexts]
+		
+		render model as JSON
+	}
+	
+
 	def view = {
 		def actionId = params.actionId
 		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
@@ -86,7 +120,28 @@ class ActionController {
 		def model = [success: true]
 		render model as JSON
 	}
-	
+
+	def realmChange = {
+		def actionId = params.actionId
+		def realmId = params.realm
+		
+		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def realm = Realm.findById(realmId);
+		
+		if (realm == null || realm.user != user) {
+			String message = "Not a valid realm id: " + realmId;
+			return message as JSON
+		}
+		
+		def action = Action.findByOwnerAndId(user, actionId)
+		
+		action.realm = realm
+		action.save(failOnError: true)
+		
+		def model = [success: true]
+		render model as JSON
+	}
+
 	def remove = {
 		def actionId = params.actionId
 		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
@@ -100,35 +155,58 @@ class ActionController {
 	
 	
 	def dashboard = {
-		def realms = Realm.findAllByActive(true)
 		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def realms = Realm.findAllByActiveAndUser(true, user)
 		
-		if (user == null) {
-			render {error: "No current user!"} as JSON
-			return;
-		}
-		if (realms.size() == 0) {
-			render {error: "No active realm found!"} as JSON
-			return;
-		}
-		
-		def c = Action.createCriteria()
-		def result = c.list {
-			eq('done', false)
-			eq('owner', user)
-			'in'('realm', realms)
-		}
-		def result2 = groupActionsByStateAndContext(result)
-		
-		c = Action.createCriteria()
-		def doneActions = c.list {
-			eq('done', true)
-			eq('owner', user)
-			'in'('realm', realms)
-		}
+		def result2 = getActionsByStateAndRealms(user, [State.Next, State.Future, State.WaitingFor], realms)
+		def doneActions = getDoneActions(user, realms)
 		
 		def model = [state: result2, done: doneActions]
 		
 		render model as JSON
 	}
+
+	def next_waiting = {
+		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def realms = Realm.findAllByActiveAndUser(true, user)
+		
+		def result2 = getActionsByStateAndRealms(user, [State.Next, State.WaitingFor], realms)
+		
+		def model = [state: result2]
+		
+		render model as JSON
+	}
+
+	def nextActions = {
+		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def realms = Realm.findAllByActiveAndUser(true, user)
+		
+		def result2 = getActionsByStateAndRealms(user, [State.Next], realms)
+		
+		def model = [state: result2]
+		
+		render model as JSON
+	}
+
+	def getActionsByStateAndRealms = {user, states, realms ->
+		def c = Action.createCriteria()
+		def result = c.list {
+			eq('done', false)
+			eq('owner', user)
+			'in'('state', states)
+			'in'('realm', realms)
+		}
+		return groupActionsByStateAndContext(result)
+	}
+	
+	def getDoneActions = {user, realms ->
+		def c = Action.createCriteria()
+		c = Action.createCriteria()
+		return c.list {
+			eq('done', true)
+			eq('owner', user)
+			'in'('realm', realms)
+		}
+	}
+	
 }

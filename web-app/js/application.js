@@ -1,8 +1,48 @@
+function cacheContexts() {
+	$.ajax({
+		url: serverUrl + "action/contexts",
+		type: "GET",
+		dataType: "json",
+		success: function(data) {
+			realmCache = data;
+			buildContextHtml();
+		}
+	});
+}
+
+function getContextSpanHtml(name) {
+	return "<input class='chkContext' type='checkbox'><span class='contextLabel'>" + name + "</span>";	
+}
+
+function buildContextHtml() {
+	contextHtml = {};
+	for (var realm in realmCache.contexts) {
+		var contexts = realmCache.contexts[realm];
+		var html = "";
+		$.each(contexts, function(index, value) {
+			html += getContextSpanHtml(value.name);
+		});
+		html += "<span class='button off contextAdd'>+</span>";
+		contextHtml[realm] = html;
+	}
+}
+
+function updateRealmCache(event) {
+	var contexts = realmCache.contexts[event.data.realm.name];
+	contexts.push(event.data.context);
+	buildContextHtml();
+}
+
 function updateStaticActionTiddlers() {
-	staticTiddlers = {"actionDashboard": tl_actionDashboard}
+	staticTiddlers = {
+			"nextActions": tl_nextActions, 
+			"actionDashboard": tl_actionDashboard, 
+			"nextAndWaiting" : tl_nextAndWaiting
+	};
+	
 	for (var key in staticTiddlers) {
 		var tiddler = $('#' + key);
-		if (tiddler.length >= 0) {
+		if (tiddler.length > 0) {
 			var fn = staticTiddlers[key];
 			if (typeof fn === 'function') {
 				fn();
@@ -21,7 +61,8 @@ function actionUpdateListener(event) {
 }
 
 var eventListeners = {
-	actionUpdate : [actionUpdateListener]
+	actionUpdate : [actionUpdateListener],
+	newContext : [updateRealmCache]
 };
 
 function raiseEvent(name, event) {
@@ -64,22 +105,20 @@ function completeAction() {
 }
 
 function nextAction() {
-	if ($(this).hasClass('on')) return;
 	updateStatusAction(this, 'Next')
 }
 
 function waitingForAction() {
-	if ($(this).hasClass('on')) return;
 	updateStatusAction(this, 'WaitingFor')
 }
 
 function futureAction() {
-	if ($(this).hasClass('on')) return;
 	updateStatusAction(this, 'Future')
 }
 
 
 function updateStatusAction(obj, status) {
+	if ($(obj).hasClass('on')) return;
 	var actionId = determineActionId(obj);
 	if (actionId != null) {
 		$.ajax({
@@ -89,6 +128,26 @@ function updateStatusAction(obj, status) {
 			dataType: "json",
 			success: function(data) {
 				raiseEvent('actionUpdate', {event: 'status', id: actionId, status: status});
+			}
+		});
+	}
+}
+
+function updateRealm() {
+	var realmId = $(this).val();
+	var actionId = determineActionId(this);
+	if (realmId === "__new__") {
+		alert('creating new realm');
+		return;
+	}
+	if (actionId != null) {
+		$.ajax({
+			url: serverUrl + "action/realmChange",
+			data: {actionId: actionId, realm: realmId}, 
+			type: "POST",
+			dataType: "json",
+			success: function(data) {
+				raiseEvent('actionUpdate', {event: 'realmChange', id: actionId, realm: realmId});
 			}
 		});
 	}
@@ -106,6 +165,48 @@ function deleteAction(actionId) {
 			}
 		});
 	}
+}
+
+function updateContextDivs(data) {
+	// locate context divs and insert context (where realm is current realm)
+	var contextDivs = $('.controls .context', $('#stage'));
+	var html = getContextSpanHtml(data.context.name);
+	$.each(contextDivs, function(index, contextDiv) {
+		var realmName = $(contextDiv).parent().find('.realm_select select').val();
+		if (realmName == data.realm.id) {
+			var target = $('.contextAdd', contextDiv);
+			$(html).insertBefore(target);
+		}
+	});
+	raiseEvent('newContext', {event: 'newContext', data: data});
+}
+
+function showNewContextDialog() {
+	var controlDiv = $(this).closest('.controls');
+	var realm = $('.realm_select select', controlDiv).val();
+
+	$('#context_realm').val(realm);
+	$('#context_name').val('');
+	$('#context_dialog').dialog("option", "title", 'New Context');
+	$('#context_dialog').dialog("open");
+}
+
+function contextSaveSuccessHandler(data, textStatus) {
+	$('#context_dialog').dialog("close");
+	updateContextDivs(data);
+}
+
+function showNewActionDialog() {
+	$('#tiddlerType').val(this.id);
+	$('#tiddler_title').val('');
+	$('#tiddler_dialog').dialog("option", "title", 'New ' + this.id);
+	$('#tiddler_dialog').dialog("open");
+}
+
+function tiddlerSaveSuccessHandler(data, textStatus) {
+	$('#tiddler_dialog').dialog("close");
+	loadActionView(data.action);
+	raiseEvent('actionUpdate', {event: 'new', id: data.action.id});
 }
 
 function getContextActionsHtml(stateMap, title, state) {
@@ -164,12 +265,6 @@ function getTiddlerView(id, viewName) {
 	return view;
 }
 
-function tiddlerSaveSuccessHandler(data, textStatus) {
-	$('#tiddler_dialog').dialog("close");
-	loadActionView(data.action);
-	raiseEvent('actionUpdate', {event: 'new', id: data.action.id});
-}
-
 function loadActionView(action) {
 	var tiddler = $('#td_action_' + action.id);
 	var view;
@@ -191,6 +286,13 @@ function loadActionView(action) {
 	$('.chkOptionInput', view).attr('checked', action.done);
 	$('.title', view).html(action.title);
 	
+	var ctxDiv = $('<div/>');
+	var activeRealms = $('.realm-active')
+	if (activeRealms.length > 0) {
+		var html = contextHtml[$(activeRealms[0]).text()]
+		$('.context', view).append(html);
+	}
+	
 	// $('.subtitle', view).html(updatedOn);
 	$(view).show();
 }
@@ -208,41 +310,73 @@ function tl_viewAction(obj) {
 	});
 }
 
-function tl_actionDashboard() {
+function showDashboardView(name, title, url, callback) {
 	$.ajax({
-		url: serverUrl + "action/dashboard",
+		url: serverUrl + url,
 		type: "GET",
 		dataType: "json",
 		success: function(result) {
-			var tiddler = $('#actionDashboard');
-			var state = result.state;
+			var tiddler = $('#' + name);
 			var view;
 			if (tiddler.length > 0) {
 				view = $('.viewer div', tiddler[0]);
 			} else {
-				view = getTiddlerView("actionDashboard", 'action_dashboard_template')
-				tiddler = $('#actionDashboard');
+				view = getTiddlerView(name, 'action_dashboard_template')
+				tiddler = $('#' + name);
 			}
 			
-			$('.title', tiddler).html('Action Dashboard By Context');
-			
+			$('.title', tiddler).html(title);
+
 			var leftPanel = $('.leftPanel', view)[0]
 			$(leftPanel).empty();
 
 			var rightPanel = $('.rightPanel', view)[0]
 			$(rightPanel).empty();
-
-			var html = getContextActionsHtml(state.Next, 'Next Actions', ["on", "off", "off"]);
-			html += getContextActionsHtml(state.WaitingFor, 'Waiting Actions', ["off", "on", "off"]);
-			$(leftPanel).append(html);
-
-			html = getContextActionsHtml(state.Future, 'Future Actions', ["off", "off", "on"]);
-			html += getDoneActionsHtml(result.done, 'Done Actions')
-			$(rightPanel).append(html);
 			
+			var viewer = {view: view, left: leftPanel, right: rightPanel, tiddler: tiddler, state:result.state, result:result};
+			callback(viewer);
+
 			$(view).show();
 		}
 	});
+}
+
+function tl_nextActions() {
+	showDashboardView('nextActions', 
+		'Next Actions By Context', 'action/nextActions',
+		function(v) {
+			var html = getContextActionsHtml(v.state.Next, 'Next Actions', ["on", "off", "off"]);
+			$(v.left).append(html);
+		}
+	);
+}
+
+function tl_nextAndWaiting() {
+	showDashboardView('nextAndWaiting', 
+			'Next And Waiting Actions By Context', 'action/next_waiting',
+			function(v) {
+				var html = getContextActionsHtml(v.state.Next, 'Next Actions', ["on", "off", "off"]);
+				$(v.left).append(html);
+		
+				html = getContextActionsHtml(v.state.WaitingFor, 'Waiting Actions', ["off", "on", "off"]);
+				$(v.right).append(html);
+			}
+		);
+}
+
+function tl_actionDashboard() {
+	showDashboardView('actionDashboard', 
+			'Action Dashboard By Context', 'action/dashboard',
+			function(v) {
+				var html = getContextActionsHtml(v.state.Next, 'Next Actions', ["on", "off", "off"]);
+				html += getContextActionsHtml(v.state.WaitingFor, 'Waiting Actions', ["off", "on", "off"]);
+				$(v.left).append(html);
+		
+				html = getContextActionsHtml(v.state.Future, 'Future Actions', ["off", "off", "on"]);
+				html += getDoneActionsHtml(v.result.done, 'Done Actions')
+				$(v.right).append(html);
+			}
+		);
 }
 
 jQuery(document).ready(function() {
@@ -271,6 +405,7 @@ jQuery(document).ready(function() {
 	$('.Next').live('click', nextAction);
 	$('.WaitingFor').live('click', waitingForAction);
 	$('.Future').live('click', futureAction);
+	$('.realm').live('change', updateRealm);
 
 	$('.tiddlyLink').live('click', function() {
 		var name = $(this).attr('tiddlylink');
@@ -298,13 +433,28 @@ jQuery(document).ready(function() {
 		resizable: false,
 		modal: true
 	});
-	$(".action_link").click(function() {
-		$('#tiddlerType').val(this.id);
-		$('#tiddler_title').val('');
-		$('#tiddler_dialog').dialog("option", "title", 'New ' + this.id);
-		$('#tiddler_dialog').dialog("open");
+	$('#context_dialog').dialog({
+	    autoOpen: false,
+		buttons: {
+			"OK" : function() {
+			  var name = $('#context_name').val();                                                 
+			  if (name.trim() === "") {
+			  	alert('Please enter a name');
+			  	return;
+			  }
+			  $('#newContextForm').submit();
+			},
+			"Cancel" : function() {$(this).dialog("close"); }
+		},
+		resizable: false,
+		modal: true
 	});
 	
+	
+	$(".action_link").click(showNewActionDialog);
+	$('.contextAdd').live('click', showNewContextDialog);
+	
 	tl_actionDashboard();
+	cacheContexts();
 });
 

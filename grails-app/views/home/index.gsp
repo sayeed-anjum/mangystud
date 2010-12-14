@@ -7,7 +7,8 @@
    		<div id="sidebar">
    			<div id="sidebarTabs">
 	   			<div class="tabContents">
-		   			<a class="tiddlyLink tiddlyLinkExisting" href="javascript:;" tiddlylink="tl_nextActionsByContext">Next Actions</a>
+		   			<a class="tiddlyLink tiddlyLinkExisting" href="javascript:;" tiddlylink="tl_nextActions">Next Actions</a>
+		   			<a class="tiddlyLink tiddlyLinkExisting" href="javascript:;" tiddlylink="tl_nextAndWaiting">Next &amp; Waiting Actions</a>
 		   			<a class="tiddlyLink tiddlyLinkExisting" href="javascript:;" tiddlylink="tl_actionDashboard">Action Dashboard</a>
 	   			</div>
    			</div>
@@ -22,6 +23,14 @@
 			          onSuccess="tiddlerSaveSuccessHandler(data, textStatus)">
 	        	<input type="hidden" id="tiddlerType" name="type" value=""/>
 	        	<input type="text" id="tiddler_title" name="title" value="" size="40"/>
+			</g:formRemote >
+        </div>
+        <div id="context_dialog" style="display:none">
+			<g:formRemote url="[controller:'action',action:'addContext']" 
+			          update="[success:'message',failure:'error']" name="newContextForm"
+			          onSuccess="contextSaveSuccessHandler(data, textStatus)">
+	        	<input type="hidden" id="context_realm" name="realm" value=""/>
+	        	<input type="text" id="context_name" name="name" value="" size="40" maxLength="25"/>
 			</g:formRemote >
         </div>
         
@@ -69,12 +78,13 @@
 						<a class=" button WaitingFor off" title="Waiting For" href="javascript:;">waiting for</a>
 						<a class=" button Future off" title="Future" href="javascript:;">future</a>
 					</div>
+					<div class='context'>
+					</div>
 				</div>
         	</div>
         	
         	<div id="realm_select_template">
-        		<select name="realm">
-       				<option value="">-</option>
+        		<select class="realm">
         			<option value="__new__">New Realm...</option>
         			<g:each in="${realms}" var="realm">
 						<option value="${realm.id}">${realm.name}</span>
