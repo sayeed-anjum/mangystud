@@ -54,6 +54,7 @@ class ActionController {
 	
 	def addContext = {
 		def realmId = params.int('realm')
+		def actionId = params.int('actionId')
 		def name = params.name;
 		
 		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
@@ -66,7 +67,7 @@ class ActionController {
 	
 			realm.save(failOnError: true)
 	
-			def model = [context: context, realm: realm];
+			def model = [context: context, realm: realm, actionId:actionId];
 			render model as JSON
 		}
 	}
@@ -158,8 +159,12 @@ class ActionController {
 		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
 		def realms = Realm.findAllByActiveAndUser(true, user)
 		
-		def result2 = getActionsByStateAndRealms(user, [State.Next, State.Future, State.WaitingFor], realms)
-		def doneActions = getDoneActions(user, realms)
+		def result2 = []
+		def doneActions = []
+		if (realms.size() > 0) {
+			result2 = getActionsByStateAndRealms(user, [State.Next, State.Future, State.WaitingFor], realms)
+			doneActions = getDoneActions(user, realms)
+		}
 		
 		def model = [state: result2, done: doneActions]
 		
@@ -170,7 +175,10 @@ class ActionController {
 		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
 		def realms = Realm.findAllByActiveAndUser(true, user)
 		
-		def result2 = getActionsByStateAndRealms(user, [State.Next, State.WaitingFor], realms)
+		def result2 = []
+		if (realms.size() > 0) {
+			result2 = getActionsByStateAndRealms(user, [State.Next, State.WaitingFor], realms)
+		}
 		
 		def model = [state: result2]
 		
@@ -180,11 +188,13 @@ class ActionController {
 	def nextActions = {
 		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
 		def realms = Realm.findAllByActiveAndUser(true, user)
+
+		def result2 = []
+		if (realms.size() > 0) {
+			result2 = getActionsByStateAndRealms(user, [State.Next], realms)
+		}
 		
-		def result2 = getActionsByStateAndRealms(user, [State.Next], realms)
-		
-		def model = [state: result2]
-		
+		model = [state: result2]
 		render model as JSON
 	}
 
