@@ -26,7 +26,7 @@
 			</g:formRemote >
         </div>
         <div id="context_dialog" style="display:none">
-			<g:formRemote url="[controller:'action',action:'addContext']" 
+			<g:formRemote url="[controller:'realm',action:'addContext']" 
 			          update="[success:'message',failure:'error']" name="newContextForm"
 			          onSuccess="contextSaveSuccessHandler(data, textStatus)">
 	        	<input type="hidden" id="context_realm" name="realm" value=""/>

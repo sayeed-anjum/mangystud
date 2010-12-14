@@ -1,6 +1,6 @@
 function cacheContexts() {
 	$.ajax({
-		url: serverUrl + "action/contexts",
+		url: serverUrl + "realm/contexts",
 		type: "GET",
 		dataType: "json",
 		success: function(data) {

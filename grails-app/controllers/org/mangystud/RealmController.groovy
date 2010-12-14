@@ -34,4 +34,39 @@ class RealmController {
 		}
 	}
 
+	def addContext = {
+		def realmId = params.int('realm')
+		def actionId = params.int('actionId')
+		def name = params.name;
+		
+		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def realm = Realm.findByIdAndUser(realmId, user)
+		
+		if (realm != null) {
+			
+			def context = new Context(name: name);
+			realm.contexts << context;
+	
+			realm.save(failOnError: true)
+	
+			def model = [context: context, realm: realm, actionId:actionId];
+			render model as JSON
+		}
+	}
+
+	def contexts = {
+		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def realms = Realm.findByUser(user)
+		
+		def contexts = new TreeMap();
+		realms.each {
+			contexts[it.name] = it.contexts;
+		}
+		
+		def model = [realms: realms, contexts: contexts]
+		
+		render model as JSON
+	}
+	
+
 }
