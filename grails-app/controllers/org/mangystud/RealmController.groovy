@@ -42,25 +42,25 @@ class RealmController {
 		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
 		def realm = Realm.findByIdAndUser(realmId, user)
 		
+		def model = [error:"realm not found!"]
 		if (realm != null) {
-			
 			def context = new Context(name: name);
 			realm.contexts << context;
 	
 			realm.save(failOnError: true)
 	
-			def model = [context: context, realm: realm, actionId:actionId];
-			render model as JSON
+			model = [context: context, realm: realm, actionId:actionId];
 		}
+		render model as JSON
 	}
 
 	def contexts = {
 		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
-		def realms = Realm.findByUser(user)
+		def realms = Realm.findAllByUser(user)
 		
 		def contexts = new TreeMap();
 		realms.each {
-			contexts[it.name] = it.contexts;
+			contexts[it.id] = it.contexts;
 		}
 		
 		def model = [realms: realms, contexts: contexts]

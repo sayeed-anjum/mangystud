@@ -1,4 +1,4 @@
-function cacheContexts() {
+function cacheContexts(callback) {
 	$.ajax({
 		url: serverUrl + "realm/contexts",
 		type: "GET",
@@ -6,6 +6,7 @@ function cacheContexts() {
 		success: function(data) {
 			realmCache = data;
 			buildContextHtml();
+			callback();
 		}
 	});
 }
@@ -309,35 +310,11 @@ function getTiddlerView(id, viewName) {
 
 function loadActionView(action) {
 	var tiddler = $('#td_action_' + action.id);
-	var view;
-	if (tiddler.length > 0) {
-		view = $('.viewer div', tiddler[0]);
-	} else {
-		view = getTiddlerView('td_action_' + action.id, 'action_view_template')
-		var realmSelect = $('#realm_select_template select').clone();
-		$('.realm_select', view).append(realmSelect);
+	if (tiddler.length) {
+		$(tiddler).remove();
 	}
-	$('.controls', view).attr('id', 'action_' + action.id);
-	if (action.realm != null) {
-		$('.realm_select select', view).val(action.realm.id);
-	}
-	
-	$('.state a').removeClass('on').addClass('off');
-	$('.' + action.state.name, view).removeClass('off').addClass('on');
-	
-	$('.chkOptionInput', view).attr('checked', action.done);
-	$('.title', view).html(action.title);
-	
-	var ctxDiv = $('<div/>');
-	var activeRealms = $('.realm-active')
-	$('.context', view).empty();
-	if (activeRealms.length > 0) {
-		var html = contextHtml[$(activeRealms[0]).text()]
-		$('.context', view).append(html);
-	}
-	
-	// $('.subtitle', view).html(updatedOn);
-	$(view).show();
+	var contexts = realmCache.contexts[action.realm.id]
+	$.tmpl(actionViewTemplate, {action: action, contexts:contexts, realms: realmCache.realms}).appendTo('#stage');
 }
 
 function tl_viewAction(obj) {
@@ -423,6 +400,10 @@ function tl_actionDashboard() {
 }
 
 jQuery(document).ready(function() {
+	cacheContexts(function() {
+		actionViewTemplate = $.template(null, $("#actionViewTemplate2"));
+	});
+	
 	$('.tiddler').live('mouseenter', function() {
 		$(this).addClass("selected");
 	});
@@ -516,6 +497,5 @@ jQuery(document).ready(function() {
 	$('.contextAdd').live('click', showNewContextDialog);
 	
 	tl_actionDashboard();
-	cacheContexts();
 });
 
