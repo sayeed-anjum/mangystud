@@ -108,7 +108,7 @@ class NimbleBootStrap {
 	
 	if (!Realm.count()) {
 		createRealm "Work", admin, ["Phone", "Email", "Meeting", "Offline"]
-		createRealm "Office", admin, ["Call", "Play", "Chore"]
+		createRealm "Home", admin, ["Call", "Play", "Chore"]
 		
 		addAction "Work", admin, 'my first action', State.Next, ["Phone"]  
 		addAction "Work", admin, 'my second action', State.WaitingFor, ["Email"]  
