@@ -115,15 +115,6 @@
 					</div>
 				</div>
         	</script>
-        	
-        	<div id="realm_select_template">
-        		<select class="realm">
-        			<option value="__new__">New Realm...</option>
-        			<g:each in="${realms}" var="realm">
-						<option value="${realm.id}">${realm.name}</span>
-	   				</g:each>
-       			</select>
-        	</div>
         </div>
 
    </body>
