@@ -55,7 +55,7 @@
 			</script>
         	
 			<script id="dashboardTemplate" type="text/x-jquery-tmpl"> 
-        	<div id="td_{{= name}}" class="tiddler">
+        	<div id="{{= name}}" class="tiddler">
         		{{tmpl '#toolbarTemplate'}}
         		<div class="title">{{= title}}</div>
         		<div class="viewer">

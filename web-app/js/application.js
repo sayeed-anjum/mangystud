@@ -5,33 +5,14 @@ function cacheContexts(callback) {
 		dataType: "json",
 		success: function(data) {
 			realmCache = data;
-			buildContextHtml();
 			callback();
 		}
 	});
 }
 
-function getContextSpanHtml(name) {
-	return "<input class='chkContext' type='checkbox'><span class='contextLabel'>" + name + "</span>";	
-}
-
-function buildContextHtml() {
-	contextHtml = {};
-	for (var realm in realmCache.contexts) {
-		var contexts = realmCache.contexts[realm];
-		var html = "";
-		$.each(contexts, function(index, value) {
-			html += getContextSpanHtml(value.name);
-		});
-		html += "<span class='button off contextAdd'>+</span>";
-		contextHtml[realm] = html;
-	}
-}
-
 function updateRealmCache(event) {
-	var contexts = realmCache.contexts[event.data.realm.name];
+	var contexts = realmCache.contexts[event.data.realm.id];
 	contexts.push(event.data.context);
-	buildContextHtml();
 	
 	var actionIds = getOpenActionIdsForRealm(event.data.realm.id);
 	$.each(actionIds, function(index, value) {
@@ -58,7 +39,7 @@ function updateStaticActionTiddlers() {
 	
 	for (var key in staticTiddlers) {
 		var tiddler = $('#' + key);
-		if (tiddler.length > 0) {
+		if (tiddler.length) {
 			var fn = staticTiddlers[key];
 			if (typeof fn === 'function') {
 				fn();
@@ -300,12 +281,16 @@ function getDoneActionsHtml(doneActions, title) {
 function tl_viewAction(actionId) {
 	viewLoader("action/view", {actionId: actionId}, function(data) {
 		var action = data.action; 
+
+		var contexts = realmCache.contexts[action.realm.id]
+		var template = $.tmpl(actionViewTemplate, {action: action, contexts:contexts, realms: realmCache.realms});
+
 		var tiddler = $('#td_action_' + action.id);
 		if (tiddler.length) {
-			$(tiddler).remove();
-		}
-		var contexts = realmCache.contexts[action.realm.id]
-		$.tmpl(actionViewTemplate, {action: action, contexts:contexts, realms: realmCache.realms}).appendTo('#stage');
+			tiddler.replaceWith(template);
+		} else {
+			template.prependTo('#stage');
+		} 
 	});
 }
 
@@ -322,7 +307,6 @@ function viewLoader(url, data, callback) {
 }
 
 function tl_actionDashboard() {
-	
 	loadDashboard('actionDashboard', 'Action Dashboard By Context', 'action/dashboard', function (result) {
 		var leftHtml = getContextActionsHtml(result.state.Next, 'Next Actions', ["on", "off", "off"]);
 		leftHtml += getContextActionsHtml(result.state.WaitingFor, 'Waiting Actions', ["off", "on", "off"]);
@@ -353,11 +337,6 @@ function tl_nextAndWaiting() {
 
 function loadDashboard(name, title, url, callback) {
 	viewLoader(url, {}, function(result) {
-		var tiddler = $('#' + name);
-		if (tiddler.length) {
-			$(tiddler).remove();
-		}
-
 		var html = callback(result);
 		
 		var data = {name: name,
@@ -366,7 +345,14 @@ function loadDashboard(name, title, url, callback) {
 			right: html.right
 		};
 
-		$.tmpl(dashboardTemplate, data).appendTo('#stage');
+		var template = $.tmpl(dashboardTemplate, data);
+
+		var tiddler = $('#' + name);
+		if (tiddler.length) {
+			tiddler.replaceWith(template);
+		} else {
+			template.prependTo('#stage');
+		} 
 	});
 }
 
