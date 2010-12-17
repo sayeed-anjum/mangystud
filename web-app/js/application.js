@@ -75,7 +75,7 @@ function actionUpdateListener(event) {
 function refreshActionView(actionId) {
 	var tiddler = $('#td_action_' + actionId);
 	if (tiddler.length > 0) {
-		tl_viewAction(tiddler[0]);
+		tl_viewAction(actionId);
 	}
 }
 
@@ -248,7 +248,7 @@ function showNewActionDialog() {
 
 function tiddlerSaveSuccessHandler(data, textStatus) {
 	$('#tiddler_dialog').dialog("close");
-	loadActionView(data.action);
+	tl_viewAction(data.action.id);
 	raiseEvent('actionUpdate', {event: 'new', id: data.action.id});
 }
 
@@ -297,113 +297,80 @@ function getDoneActionsHtml(doneActions, title) {
 	return html;
 }
 
-function getTiddlerView(id, viewName) {
-	var tiddler = $('#tiddler_template').clone();
-	$(tiddler).attr('id', id);
-	$('#stage').append(tiddler);
-
-	var view = $('#' + viewName).clone();
-	view.attr('id', null);
-	$('.viewer', tiddler).append(view);
-	return view;
+function tl_viewAction(actionId) {
+	viewLoader("action/view", {actionId: actionId}, function(data) {
+		var action = data.action; 
+		var tiddler = $('#td_action_' + action.id);
+		if (tiddler.length) {
+			$(tiddler).remove();
+		}
+		var contexts = realmCache.contexts[action.realm.id]
+		$.tmpl(actionViewTemplate, {action: action, contexts:contexts, realms: realmCache.realms}).appendTo('#stage');
+	});
 }
 
-function loadActionView(action) {
-	var tiddler = $('#td_action_' + action.id);
-	if (tiddler.length) {
-		$(tiddler).remove();
-	}
-	var contexts = realmCache.contexts[action.realm.id]
-	$.tmpl(actionViewTemplate, {action: action, contexts:contexts, realms: realmCache.realms}).appendTo('#stage');
-}
-
-function tl_viewAction(obj) {
-	var actionId = obj.id.substr(10);
+function viewLoader(url, data, callback) {
 	$.ajax({
-		url: serverUrl + "action/view",
-		data: {actionId: actionId}, 
+		url: serverUrl + url,
+		data: data, 
 		type: "GET",
 		dataType: "json",
 		success: function(data) {
-			loadActionView(data.action);
+			callback(data);
 		}
 	});
-}
-
-function showDashboardView(name, title, url, callback) {
-	$.ajax({
-		url: serverUrl + url,
-		type: "GET",
-		dataType: "json",
-		success: function(result) {
-			var tiddler = $('#' + name);
-			var view;
-			if (tiddler.length > 0) {
-				view = $('.viewer div', tiddler[0]);
-			} else {
-				view = getTiddlerView(name, 'action_dashboard_template')
-				tiddler = $('#' + name);
-			}
-			
-			$('.title', tiddler).html(title);
-
-			var leftPanel = $('.leftPanel', view)[0]
-			$(leftPanel).empty();
-
-			var rightPanel = $('.rightPanel', view)[0]
-			$(rightPanel).empty();
-			
-			var viewer = {view: view, left: leftPanel, right: rightPanel, tiddler: tiddler, state:result.state, result:result};
-			callback(viewer);
-
-			$(view).show();
-		}
-	});
-}
-
-function tl_nextActions() {
-	showDashboardView('nextActions', 
-		'Next Actions By Context', 'action/nextActions',
-		function(v) {
-			var html = getContextActionsHtml(v.state.Next, 'Next Actions', ["on", "off", "off"]);
-			$(v.left).append(html);
-		}
-	);
-}
-
-function tl_nextAndWaiting() {
-	showDashboardView('nextAndWaiting', 
-			'Next And Waiting Actions By Context', 'action/next_waiting',
-			function(v) {
-				var html = getContextActionsHtml(v.state.Next, 'Next Actions', ["on", "off", "off"]);
-				$(v.left).append(html);
-		
-				html = getContextActionsHtml(v.state.WaitingFor, 'Waiting Actions', ["off", "on", "off"]);
-				$(v.right).append(html);
-			}
-		);
 }
 
 function tl_actionDashboard() {
-	showDashboardView('actionDashboard', 
-			'Action Dashboard By Context', 'action/dashboard',
-			function(v) {
-				var html = getContextActionsHtml(v.state.Next, 'Next Actions', ["on", "off", "off"]);
-				html += getContextActionsHtml(v.state.WaitingFor, 'Waiting Actions', ["off", "on", "off"]);
-				$(v.left).append(html);
+	
+	loadDashboard('actionDashboard', 'Action Dashboard By Context', 'action/dashboard', function (result) {
+		var leftHtml = getContextActionsHtml(result.state.Next, 'Next Actions', ["on", "off", "off"]);
+		leftHtml += getContextActionsHtml(result.state.WaitingFor, 'Waiting Actions', ["off", "on", "off"]);
+
+		var rightHtml = getContextActionsHtml(result.state.Future, 'Future Actions', ["off", "off", "on"]);
+		rightHtml += getDoneActionsHtml(result.done, 'Done Actions')
 		
-				html = getContextActionsHtml(v.state.Future, 'Future Actions', ["off", "off", "on"]);
-				html += getDoneActionsHtml(v.result.done, 'Done Actions')
-				$(v.right).append(html);
-			}
-		);
+		return {left: leftHtml, right: rightHtml}
+	});
+
 }
 
-jQuery(document).ready(function() {
-	cacheContexts(function() {
-		actionViewTemplate = $.template(null, $("#actionViewTemplate2"));
+function tl_nextActions() {
+	loadDashboard('nextActions', 'Next Actions By Context', 'action/nextActions', function (result) {
+		var leftHtml = getContextActionsHtml(result.state.Next, 'Next Actions', ["on", "off", "off"]);
+		return {left: leftHtml, right: ""}
 	});
-	
+}
+
+function tl_nextAndWaiting() {
+	loadDashboard('nextAndWaiting', 'Next And Waiting Actions By Context', 'action/next_waiting', function (result) {
+		var leftHtml = getContextActionsHtml(result.state.Next, 'Next Actions', ["on", "off", "off"]);
+		var rightHtml = getContextActionsHtml(result.state.WaitingFor, 'Waiting Actions', ["off", "on", "off"]);
+		return {left: leftHtml, right: rightHtml}
+	});
+}
+
+
+function loadDashboard(name, title, url, callback) {
+	viewLoader(url, {}, function(result) {
+		var tiddler = $('#' + name);
+		if (tiddler.length) {
+			$(tiddler).remove();
+		}
+
+		var html = callback(result);
+		
+		var data = {name: name,
+			title: title,
+			left: html.left, 
+			right: html.right
+		};
+
+		$.tmpl(dashboardTemplate, data).appendTo('#stage');
+	});
+}
+
+function addTiddlerActionHandlers() {
 	$('.tiddler').live('mouseenter', function() {
 		$(this).addClass("selected");
 	});
@@ -424,25 +391,32 @@ jQuery(document).ready(function() {
 		var actionId = determineActionId(this);
 		deleteAction(actionId);
 	});
+
 	$('.tiddler .chkOptionInput').live('click', completeAction);
-	
 	$('.Next').live('click', nextAction);
 	$('.WaitingFor').live('click', waitingForAction);
 	$('.Future').live('click', futureAction);
-	$('.realm').live('change', updateRealm);
-	$('.realm-tab').live('click', toggleRealm);
-	$('.realm-add').live('click', addRealm);
-
 	$('.tiddlyLink').live('click', function() {
 		var name = $(this).attr('tiddlylink');
 		var fn = window[name];
 		if (typeof fn === 'function') {
-			fn(this);
+			var actionId = this.id.substr(10);
+			fn(actionId);
 		} else {
 			alert('Missing tiddly method: ' + name);
 		}
 	});
-	
+	$(".action_link").click(showNewActionDialog);
+	$('.contextAdd').live('click', showNewContextDialog);
+}
+
+function addRealmActionHandlers() {
+	$('.realm').live('change', updateRealm);
+	$('.realm-tab').live('click', toggleRealm);
+	$('.realm-add').live('click', addRealm);
+}
+
+function setupDialogs() {
 	$('#tiddler_dialog').dialog({
 	    autoOpen: false,
 		buttons: {
@@ -492,10 +466,17 @@ jQuery(document).ready(function() {
 		resizable: false,
 		modal: true
 	});
+}
+
+jQuery(document).ready(function() {
+	cacheContexts(function() {
+		actionViewTemplate = $.template(null, $("#actionViewTemplate"));
+		dashboardTemplate = $.template(null, $("#dashboardTemplate"));
+	});
 	
-	$(".action_link").click(showNewActionDialog);
-	$('.contextAdd').live('click', showNewContextDialog);
-	
+	addTiddlerActionHandlers();
+	addRealmActionHandlers();
+	setupDialogs();
 	tl_actionDashboard();
 });
 

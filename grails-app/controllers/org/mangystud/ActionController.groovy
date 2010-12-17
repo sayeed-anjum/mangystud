@@ -159,7 +159,7 @@ class ActionController {
 			result2 = getActionsByStateAndRealms(user, [State.Next], realms)
 		}
 		
-		model = [state: result2]
+		def model = [state: result2]
 		render model as JSON
 	}
 
