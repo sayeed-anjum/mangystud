@@ -11,8 +11,6 @@
 		<g:javascript src="jquery/jquery.tmpl.min.js"/>
 		<g:javascript>
 			serverUrl = "${resource(dir:'/')}";
-			realmCache = {};
-			contextHtml = {};
 		</g:javascript>
 		<g:javascript src="application.js"/>
 		<g:javascript src="more.js"/>

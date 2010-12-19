@@ -3,8 +3,6 @@
         <title>Welcome to mangystud!</title>
         <meta name="layout" content="main" />
 		<g:javascript>
-			actionViewTemplate = {};
-			dashboardTemplate = {};
 		</g:javascript>
 	</head>
    <body>
@@ -55,7 +53,7 @@
 			</script>
         	
 			<script id="dashboardTemplate" type="text/x-jquery-tmpl"> 
-        	<div id="{{= name}}" class="tiddler">
+        	<div id="{{= name}}" class="tiddler" tabIndex="{{= tabIndex}}">
         		{{tmpl '#toolbarTemplate'}}
         		<div class="title">{{= title}}</div>
         		<div class="viewer">
@@ -70,7 +68,7 @@
 			</script>
         	
 			<script id="actionViewTemplate" type="text/x-jquery-tmpl"> 
-	        	<div id="td_action_{{= action.id}}" class="tiddler">
+	        	<div id="td_action_{{= action.id}}" class="tiddler" tabIndex="{{= tabIndex}}">
 	        		{{tmpl '#toolbarTemplate'}}
 	        		<div class="title"></div>
 	        		<div class="viewer controls" id="action_{{= action.id}}">
