@@ -2,8 +2,6 @@
     <head>
         <title>Welcome to mangystud!</title>
         <meta name="layout" content="main" />
-		<g:javascript>
-		</g:javascript>
 	</head>
    <body>
    		<div id="sidebar">
