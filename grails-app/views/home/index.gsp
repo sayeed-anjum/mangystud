@@ -91,12 +91,21 @@
 							<a class=" button WaitingFor {{if (action.state.name == 'WaitingFor')}}on{{else}}off{{/if}}" title="Waiting For" href="javascript:;">waiting for</a>
 							<a class=" button Future {{if (action.state.name == 'Future')}}on{{else}}off{{/if}}" title="Future" href="javascript:;">future</a>
 						</div>
-						<div class='context' id='{{= action.realm.id}}_{{= action.id}}'>
+						<div class='context' id='ctx_{{= action.realm.id}}_{{= action.id}}'>
 							{{each(i,ctx) contexts}}
 							<input class='chkContext' type='checkbox' value='{{= ctx.id}}' {{if isContextPresent(action, ctx)}}checked="checked"{{/if}}>
 							<span class='contextLabel'>{{= ctx.name}}</span>
 							{{/each}}
 							<span class="contextAdd button off">+</span>
+						</div>
+	      				<div class='combos'>
+							<span class="label">Area:</span>
+							<select class='area' id='area_{{= action.id}}'>
+								<option value="__new__">New Area...</span>
+								{{each(i,area) areas}}
+									<option value="{{= area.id}}" {{if action.area != null && action.area.id == area.id}}selected="selected"{{/if}}>{{= area.name}}</span>
+								{{/each}}
+							</select>
 						</div>
 					</div>
 				</div>

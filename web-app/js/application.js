@@ -1,7 +1,6 @@
 manager = {
 	templates : {},
 	realmCache : {},
-	contextHtml : {},
 	eventListeners : {},
 	staticTiddlers : {},
 	
@@ -30,6 +29,10 @@ manager = {
 	
 	getContexts : function (realmId) {
 		return this.realmCache.contexts[realmId];		
+	},
+	
+	getAreas : function (realmId) {
+		return this.realmCache.areas[realmId];		
 	},
 	
 	getRealms : function() {
@@ -193,6 +196,26 @@ function updateRealm() {
 	}
 }
 
+function updateArea() {
+	var areaId = $(this).val();
+	var actionId = manager.determineActionId(this);
+	if (areaId === "__new__") {
+		alert('creating new area');
+		return;
+	}
+	if (actionId != null) {
+		$.ajax({
+			url: serverUrl + "action/areaUpdate",
+			data: {actionId: actionId, area: areaId}, 
+			type: "POST",
+			dataType: "json",
+			success: function(data) {
+				manager.raiseEvent('actionUpdate', {event: 'areaUpdate', id: actionId, area: areaId});
+			}
+		});
+	}
+}
+
 function updateContextState(event) {
 	var checked = $(this).is(':checked');
 	var context = $(this).val();
@@ -248,11 +271,10 @@ function tl_viewAction(actionId, inFocus) {
 	viewLoader("action/view", {actionId: actionId}, function(data) {
 		var action = data.action; 
 
-		var contexts = manager.getContexts(action.realm.id)
-
 		var data = {
 			action: action, 
-			contexts:contexts, 
+			contexts: manager.getContexts(action.realm.id),
+			areas: manager.getAreas(action.realm.id),
 			realms: manager.getRealms(), 
 			tabIndex: 1
 		};
@@ -322,6 +344,8 @@ function addTiddlerActionHandlers() {
 	$(".action_link").click(showNewActionDialog);
 	$('.contextAdd').live('click', showNewContextDialog);
 	$('.controls .chkContext').live('click', updateContextState);
+	$('.controls .area').live('change', updateArea);
+	updateArea
 }
 
 function addRealmActionHandlers() {

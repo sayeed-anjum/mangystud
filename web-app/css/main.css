@@ -289,3 +289,8 @@ a:hover {
 	color: black;
 	vertical-align: text-top;
 }
+
+.viewer .combos {
+	margin: 10px 0;
+}
+

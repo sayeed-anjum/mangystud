@@ -59,11 +59,13 @@ class RealmController {
 		def realms = Realm.findAllByUser(user)
 		
 		def contexts = new TreeMap();
+		def areas = new TreeMap();
 		realms.each {
 			contexts[it.id] = it.contexts;
+			areas[it.id] = it.areas;
 		}
 		
-		def model = [realms: realms, contexts: contexts]
+		def model = [realms: realms, contexts: contexts, areas: areas]
 		
 		render model as JSON
 	}

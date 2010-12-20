@@ -10,7 +10,8 @@ class Realm {
 	String name;
 	boolean active = true;
 	List contexts;
+	List areas;
 	User user;
 	
-	static hasMany = [contexts: Context] 
+	static hasMany = [contexts: Context, areas : Area] 
 }

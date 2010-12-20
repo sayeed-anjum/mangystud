@@ -127,6 +127,27 @@ class ActionController {
 		render model as JSON
 	}
 
+	def areaUpdate = {
+		def actionId = params.int("actionId")
+		def areaId = params.int("area")
+		
+		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def area = Area.findById(areaId);
+		
+		if (area == null) {
+			String message = "Not a valid area id: " + areaId;
+			return message as JSON
+		}
+		
+		def action = Action.findByOwnerAndId(user, actionId)
+		
+		action.area = area
+		action.save(failOnError: true)
+		
+		def model = [success: true]
+		render model as JSON
+	}
+
 	def remove = {
 		def actionId = params.int("actionId")
 		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
