@@ -1,5 +1,7 @@
 package org.mangystud
 
+import org.apache.catalina.deploy.ContextService;
+
 
 class Tiddler {
 
@@ -19,4 +21,12 @@ class Tiddler {
 
 	Date lastUpdated
 	Date dateCreated
+	
+	def addContext = {context ->
+		if (!contexts.contains(context)) contexts << context
+	}
+
+	def removeContext = {context ->
+		contexts.remove(context)
+	}
 }

@@ -100,6 +100,17 @@ manager = {
 	}
 };
 
+function isContextPresent(action, context) {
+	var result = false;
+	$.each(action.contexts, function(index, value){
+		if (value.id == context.id) { 
+			result = true;
+			return false;
+		}
+	});
+	return result;
+}
+
 function refreshActionView(actionId) {
 	var tiddler = $('#td_action_' + actionId);
 	if (tiddler.length > 0) {
@@ -182,6 +193,23 @@ function updateRealm() {
 	}
 }
 
+function updateContextState(event) {
+	var checked = $(this).is(':checked');
+	var context = $(this).val();
+	var actionId = manager.determineActionId(this);
+	if (actionId != null) {
+		$.ajax({
+			url: serverUrl + "action/updateContext",
+			data: {actionId: actionId, context: context, checked: checked}, 
+			type: "POST",
+			dataType: "json",
+			success: function(data) {
+				manager.raiseEvent('actionUpdate', {event: 'updateContext', id: actionId, context: context, checked: checked});
+			}
+		});
+	}
+}
+
 function deleteAction(actionId) {
 	if (actionId != null) {
 		$.ajax({
@@ -221,7 +249,13 @@ function tl_viewAction(actionId, inFocus) {
 		var action = data.action; 
 
 		var contexts = manager.getContexts(action.realm.id)
-		var data = {action: action, contexts:contexts, realms: manager.getRealms(), tabIndex: 1}
+
+		var data = {
+			action: action, 
+			contexts:contexts, 
+			realms: manager.getRealms(), 
+			tabIndex: 1
+		};
 		
 		var template = manager.tmpl("actionViewTemplate", data);
 
@@ -287,6 +321,7 @@ function addTiddlerActionHandlers() {
 	});
 	$(".action_link").click(showNewActionDialog);
 	$('.contextAdd').live('click', showNewContextDialog);
+	$('.controls .chkContext').live('click', updateContextState);
 }
 
 function addRealmActionHandlers() {

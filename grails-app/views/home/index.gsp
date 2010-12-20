@@ -93,7 +93,7 @@
 						</div>
 						<div class='context' id='{{= action.realm.id}}_{{= action.id}}'>
 							{{each(i,ctx) contexts}}
-							<input class='chkContext' type='checkbox'>
+							<input class='chkContext' type='checkbox' value='{{= ctx.id}}' {{if isContextPresent(action, ctx)}}checked="checked"{{/if}}>
 							<span class='contextLabel'>{{= ctx.name}}</span>
 							{{/each}}
 							<span class="contextAdd button off">+</span>

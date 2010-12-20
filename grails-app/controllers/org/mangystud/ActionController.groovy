@@ -53,7 +53,7 @@ class ActionController {
 	}
 	
 	def view = {
-		def actionId = params.actionId
+		def actionId = params.int("actionId")
 		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
 		def action = Action.findByOwnerAndId(user, actionId)
 		
@@ -62,8 +62,8 @@ class ActionController {
 	}
 	
 	def complete = {
-		def actionId = params.actionId
-		def done = (params.done == "true")
+		def actionId = params.int("actionId")
+		def done = params.boolean("done")
 		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
 		def action = Action.findByOwnerAndId(user, actionId)
 		
@@ -75,7 +75,7 @@ class ActionController {
 	}
 	
 	def status = {
-		def actionId = params.actionId
+		def actionId = params.int("actionId")
 		def status = params.status
 		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
 		def action = Action.findByOwnerAndId(user, actionId)
@@ -87,9 +87,28 @@ class ActionController {
 		render model as JSON
 	}
 
+	def updateContext = {
+		def actionId = params.int("actionId")
+		def contextId = params.int("context")
+		def checked = params.boolean("checked")
+		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def action = Action.findByOwnerAndId(user, actionId)
+
+		def context = Context.get(contextId)
+		if (context != null) {
+			if (checked) action.addContext(context)
+			else action.removeContext(context)
+		}	
+	
+		action.save(failOnError: true)
+		
+		def model = [success: true]
+		render model as JSON
+	}
+
 	def realmChange = {
-		def actionId = params.actionId
-		def realmId = params.realm
+		def actionId = params.int("actionId")
+		def realmId = params.int("realm")
 		
 		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
 		def realm = Realm.findById(realmId);
@@ -109,7 +128,7 @@ class ActionController {
 	}
 
 	def remove = {
-		def actionId = params.actionId
+		def actionId = params.int("actionId")
 		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
 		def action = Action.findByOwnerAndId(user, actionId)
 		
