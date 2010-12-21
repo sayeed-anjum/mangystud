@@ -17,22 +17,40 @@
    		<div id="stage">
    		</div>
 
-        <div id="tiddler_dialog" style="display:none">
+		<div id="realm_dialog" style="display:none">
+			<g:formRemote url="[controller:'realm',action:'add']" 
+		          update="[success:'message',failure:'error']" name="newRealmForm"
+		          onSuccess="manager.dialogSuccess('realmDialog', data, textStatus)">
+		      	<input type="text" name="name" value="" size="40" maxSize="25"/>
+			</g:formRemote >
+		</div>
+		
+        <div id="action_dialog" style="display:none">
 			<g:formRemote url="[controller:'action',action:'add']" 
 			          update="[success:'message',failure:'error']" name="newTiddlerForm"
-			          onSuccess="tiddlerSaveSuccessHandler(data, textStatus)">
-	        	<input type="hidden" id="tiddlerType" name="type" value=""/>
-	        	<input type="text" id="tiddler_title" name="title" value="" size="40"/>
+			          onSuccess="manager.dialogSuccess('actionDialog', data, textStatus)">
+	        	<input type="hidden" name="type" value=""/>
+	        	<input type="text" name="title" value="" size="40"/>
 			</g:formRemote >
         </div>
         
         <div id="context_dialog" style="display:none">
 			<g:formRemote url="[controller:'realm',action:'addContext']" 
 			          update="[success:'message',failure:'error']" name="newContextForm"
+			          onSuccess="manager.dialogSuccess('contextDialog', data, textStatus)">
+	        	<input type="hidden" name="realm" value=""/>
+	        	<input type="hidden" name="actionId" value=""/>
+	        	<input type="text" name="name" value="" size="40" maxLength="25"/>
+			</g:formRemote >
+        </div>
+
+        <div id="area_dialog" style="display:none">
+			<g:formRemote url="[controller:'realm',action:'addArea']" 
+			          update="[success:'message',failure:'error']" name="newContextForm"
 			          onSuccess="contextSaveSuccessHandler(data, textStatus)">
-	        	<input type="hidden" id="context_realm" name="realm" value=""/>
-	        	<input type="hidden" id="context_actionId" name="actionId" value=""/>
-	        	<input type="text" id="context_name" name="name" value="" size="40" maxLength="25"/>
+	        	<input type="hidden" id="realm" name="realm" value=""/>
+	        	<input type="hidden" id="actionId" name="actionId" value=""/>
+	        	<input type="text" id="name" name="name" value="" size="40" maxLength="25"/>
 			</g:formRemote >
         </div>
         

@@ -3,6 +3,7 @@ manager = {
 	realmCache : {},
 	eventListeners : {},
 	staticTiddlers : {},
+	dialogs : {},
 	
 	updateCache : function(callback) {
 		var manager = this;
@@ -71,6 +72,8 @@ manager = {
 	
 	init : function(data) {
 		var manager = this;
+		
+		this.dialogs = data.dialogs;
 
 		$.extend(this.staticTiddlers, {			
 			"nextActions": tl_nextActions, 
@@ -100,6 +103,42 @@ manager = {
 			}
 		} 
 		return actionId;
+	},
+	
+	showDialog : function(dialogName, event) {
+		var dialog = this.dialogs[dialogName];
+		if (dialog) {
+			dialog.show(event);
+		}
+	},
+	
+	addRealm : function(event) {
+		event.data.manager.showDialog('realmDialog', event);
+	},
+	
+	addContext : function(event) {
+		event.data.manager.showDialog('contextDialog', event);
+	},
+	
+	addAction : function(event) {
+		event.data.manager.showDialog('actionDialog', event);
+	},
+	
+	dialogSuccess : function(dialogName, data, textStatus) {
+		var dialog = this.dialogs[dialogName];
+		if (dialog) {
+			dialog.onSuccess(data, textStatus);
+		}
+	}, 
+	
+	getCurrentActionId : function() {
+		if (this.currentTiddler) {
+			var id = $(this.currentTiddler).attr('id');
+			if (id.match('td_action_')) {
+				return id.substr(10);
+			}
+		}
+		return null;
 	}
 };
 
@@ -117,7 +156,7 @@ function isContextPresent(action, context) {
 function refreshActionView(actionId) {
 	var tiddler = $('#td_action_' + actionId);
 	if (tiddler.length > 0) {
-		tl_viewAction(tiddler[0]);
+		tl_viewAction(actionId);
 	}
 }
 
@@ -133,7 +172,7 @@ function getOpenActionIdsForRealm(id) {
 
 function completeAction() {
 	var done = $(this).is(':checked');
-	var actionId = manager.determineActionId(this);
+	var actionId =  manager.determineActionId(this);
 	if (actionId != null) {
 		$.ajax({
 			url: serverUrl + "action/complete",
@@ -308,6 +347,7 @@ function viewLoader(url, data, callback) {
 function addTiddlerActionHandlers() {
 	$('.tiddler').live('mouseenter', function() {
 		$(this).addClass("selected");
+		manager.currentTiddler = this;
 	});
 	$('.tiddler').live('mouseleave', function() {
 		$(this).removeClass("selected");
@@ -341,8 +381,8 @@ function addTiddlerActionHandlers() {
 			alert('Missing tiddly method: ' + name);
 		}
 	});
-	$(".action_link").click(showNewActionDialog);
-	$('.contextAdd').live('click', showNewContextDialog);
+	$(".action_link").click({manager:manager}, manager.addAction);
+	$('.contextAdd').live('click', {manager:manager}, manager.addContext);
 	$('.controls .chkContext').live('click', updateContextState);
 	$('.controls .area').live('change', updateArea);
 	updateArea
@@ -351,18 +391,23 @@ function addTiddlerActionHandlers() {
 function addRealmActionHandlers() {
 	$('.realm').live('change', updateRealm);
 	$('.realm-tab').live('click', toggleRealm);
-	$('.realm-add').live('click', addRealm);
+	$('.realm-add').live('click', {manager:manager}, manager.addRealm);
 }
 
 jQuery(document).ready(function() {
 	manager.init({
-		templates: ["actionViewTemplate", "dashboardTemplate"]
+		templates: ["actionViewTemplate", "dashboardTemplate"],
+		dialogs: {
+			"realmDialog" : new RealmDialog().init(), 
+			"contextDialog" : new ContextDialog().init(),
+			"actionDialog" : new ActionDialog().init()
+		}
 	});
 	
 	addTiddlerActionHandlers();
 	addRealmActionHandlers();
-	setupDialogs();
 	
 	tl_actionDashboard();
+	
 });
 

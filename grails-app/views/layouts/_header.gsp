@@ -13,11 +13,3 @@
 	   	<span id="Reference" class="action_link">+reference</span> 
 	 </div>
 </div>
-
-<div id="realm_dialog" style="display:none">
-	<g:formRemote url="[controller:'realm',action:'add']" 
-          update="[success:'message',failure:'error']" name="newRealmForm"
-          onSuccess="realmSaveSuccessHandler(data, textStatus)">
-      	<input type="text" id="realm_name" name="name" value="" size="40" maxSize="25"/>
-	</g:formRemote >
-</div>

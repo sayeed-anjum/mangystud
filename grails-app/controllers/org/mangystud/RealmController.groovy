@@ -36,7 +36,6 @@ class RealmController {
 
 	def addContext = {
 		def realmId = params.int('realm')
-		def actionId = params.int('actionId')
 		def name = params.name;
 		
 		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
@@ -49,7 +48,7 @@ class RealmController {
 	
 			realm.save(failOnError: true)
 	
-			model = [context: context, realm: realm, actionId:actionId];
+			model = [context: context, realm: realm];
 		}
 		render model as JSON
 	}
