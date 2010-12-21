@@ -54,6 +54,8 @@
 			</g:formRemote >
         </div>
         
+   </div>
+
 			<script id="toolbarTemplate" type="text/x-jquery-tmpl"> 
 	        	<div class="toolbar">
 					<span style="padding: 1em;"></span>
@@ -128,8 +130,6 @@
 					</div>
 				</div>
         	</script>
-        </div>
-
    </body>
 
 

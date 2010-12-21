@@ -85,6 +85,7 @@ manager = {
 			$.each(data.templates, function(index, name) {
 				manager.templates[name] = $.template(null, $("#" + name));
 			});
+			tl_actionDashboard();
 		});
 
 		this.eventListeners.actionUpdate = [this.actionUpdateListener];
@@ -406,8 +407,5 @@ jQuery(document).ready(function() {
 	
 	addTiddlerActionHandlers();
 	addRealmActionHandlers();
-	
-	tl_actionDashboard();
-	
 });
 
