@@ -47,10 +47,10 @@
         <div id="area_dialog" style="display:none">
 			<g:formRemote url="[controller:'realm',action:'addArea']" 
 			          update="[success:'message',failure:'error']" name="newContextForm"
-			          onSuccess="contextSaveSuccessHandler(data, textStatus)">
-	        	<input type="hidden" id="realm" name="realm" value=""/>
-	        	<input type="hidden" id="actionId" name="actionId" value=""/>
-	        	<input type="text" id="name" name="name" value="" size="40" maxLength="25"/>
+			          onSuccess="manager.dialogSuccess('areaDialog', data, textStatus)">
+	        	<input type="hidden" name="realm" value=""/>
+	        	<input type="hidden" name="actionId" value=""/>
+	        	<input type="text" name="name" value="" size="40" maxLength="25"/>
 			</g:formRemote >
         </div>
         

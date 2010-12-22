@@ -69,5 +69,23 @@ class RealmController {
 		render model as JSON
 	}
 	
+	def addArea = {
+		def realmId = params.int('realm')
+		def name = params.name;
+		
+		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def realm = Realm.findByIdAndUser(realmId, user)
+		
+		def model = [error:"realm not found!"]
+		if (realm != null) {
+			def area = new Area(name: name);
+			realm.areas << area;
+	
+			realm.save(failOnError: true)
+	
+			model = [area: area, realm: realm];
+		}
+		render model as JSON
+	}
 
 }

@@ -76,6 +76,7 @@ RealmDialog.prototype = $.extend({}, Dialog.prototype, {
 
 ContextDialog = function() {
 	this.name = 'context_dialog';
+	this.title = 'New Context';
 	return this;
 };
 
@@ -98,7 +99,7 @@ ContextDialog.prototype = $.extend({}, Dialog.prototype, {
 			$('[name=realm]', this.el).val(realm);
 			$('[name=actionId]', this.el).val(actionId);
 			$('[name=name]', this.el).val('');
-			this.el.dialog("option", "title", 'New Context');
+			this.el.dialog("option", "title", this.title);
 		} else {
 			alert('Unable to get action id!');
 		}
@@ -106,7 +107,8 @@ ContextDialog.prototype = $.extend({}, Dialog.prototype, {
 	
 	onSuccess : function(data, textStatus) {
 		this.close();
-		updateContextDivs(data);
+		var event = {event: 'newContext', data: data};
+		manager.raiseEvent('newContext', event);
 	}
 });
 
@@ -136,6 +138,30 @@ ActionDialog.prototype = $.extend({}, Dialog.prototype, {
 		this.close();
 		tl_viewAction(data.action.id);
 		manager.raiseEvent('actionUpdate', {event: 'new', id: data.action.id});
+	}
+});
+
+
+AreaDialog = function() {
+	this.name = 'area_dialog';
+	this.title = 'New Area';
+	return this;
+};
+
+AreaDialog.prototype = $.extend({}, ContextDialog.prototype, {
+	isValid : function() {
+		var name = $('[name=name]', this.el).val();
+		if (name.trim() === "") {
+			alert('Please enter a name');
+			return false;
+	  }
+	  return true;
+	},
+
+	onSuccess : function(data, textStatus) {
+		this.close();
+		var event = {event: 'newArea', data: data};
+		manager.raiseEvent('newArea', event);
 	}
 });
 

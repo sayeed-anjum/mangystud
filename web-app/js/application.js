@@ -19,8 +19,14 @@ manager = {
 	},
 
 	updateRealmCache : function (manager, event) {
-		var contexts = manager.realmCache.contexts[event.data.realm.id];
-		contexts.push(event.data.context);
+		if (event.event == 'newContext') {
+			var contexts = manager.realmCache.contexts[event.data.realm.id];
+			contexts.push(event.data.context);
+		}
+		if (event.event == 'newArea') {
+			var areas = manager.realmCache.areas[event.data.realm.id];
+			areas.push(event.data.area);
+		}
 		
 		var actionIds = getOpenActionIdsForRealm(event.data.realm.id);
 		$.each(actionIds, function(index, value) {
@@ -90,6 +96,7 @@ manager = {
 
 		this.eventListeners.actionUpdate = [this.actionUpdateListener];
 		this.eventListeners.newContext = [this.updateRealmCache];
+		this.eventListeners.newArea = [this.updateRealmCache];
 	}, 
 	
 	determineActionId : function (obj) {
@@ -232,7 +239,7 @@ function updateArea() {
 	var areaId = $(this).val();
 	var actionId = manager.determineActionId(this);
 	if (areaId === "__new__") {
-		alert('creating new area');
+		manager.showDialogByName('areaDialog', {});
 		return;
 	}
 	if (actionId != null) {
@@ -277,11 +284,6 @@ function deleteAction(actionId) {
 			}
 		});
 	}
-}
-
-function updateContextDivs(data) {
-	var event = {event: 'newContext', data: data};
-	manager.raiseEvent('newContext', event);
 }
 
 function toggleRealm() {
@@ -393,6 +395,7 @@ jQuery(document).ready(function() {
 		dialogs: {
 			"realmDialog" : new RealmDialog().init(), 
 			"contextDialog" : new ContextDialog().init(),
+			"areaDialog" : new AreaDialog().init(),
 			"actionDialog" : new ActionDialog().init()
 		}
 	});
