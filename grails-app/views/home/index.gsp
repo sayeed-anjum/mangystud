@@ -147,6 +147,11 @@
 								{{/each}}
 							</select>
 						</div>
+						<div class='combos'>
+							<span class='label'>Depends On</span>
+							<input name='dependsOn' value='{{if dependsOn}}{{= dependsOn.title}}{{/if}}' size='100'/>
+							{{if dependsOn}}<a class='deleteDependency' href='javascript:;' title='Remove dependency'>×</a>{{/if}}
+						</div>
 					</div>
 				</div>
         	</script>

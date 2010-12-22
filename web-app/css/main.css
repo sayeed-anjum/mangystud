@@ -208,7 +208,7 @@ a:hover {
     margin: 0 1px 0;
 }
 
-.deleteTiddlerButton {
+.deleteTiddlerButton, .deleteDependency {
 	color: #AF7878;
 	vertical-align: bottom;
 	font-size: 85%;

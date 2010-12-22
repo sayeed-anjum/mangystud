@@ -286,7 +286,6 @@ function updateContact() {
 	}
 }
 
-
 function updateContextState(event) {
 	var checked = $(this).is(':checked');
 	var context = $(this).val();
@@ -303,6 +302,49 @@ function updateContextState(event) {
 		});
 	}
 }
+
+function  dependsOnSource ( request, response ) {
+	var actionId = manager.getCurrentActionId();
+	if (actionId != null) {
+		$.ajax({
+			url: serverUrl + "action/search",
+			dataType: "json",
+			data: {actionId: actionId, term: request.term},
+			success: response
+		});
+	}
+}
+
+function saveDependsOnAction(event, ui) {
+	var actionId = manager.determineActionId(event.currentTarget.activeElement);
+	if (actionId != null) {
+		$.ajax({
+			url: serverUrl + "action/dependsOnUpdate",
+			data: {actionId: actionId, dependsOn: ui.item.value}, 
+			type: "POST",
+			dataType: "json",
+			success: function(data) {
+				manager.raiseEvent('actionUpdate', {event: 'dependOnUpdate', id: actionId});
+			}
+		});
+	}
+}
+
+function deleteDependency() {
+	var actionId = manager.determineActionId(this);
+	if (actionId != null) {
+		$.ajax({
+			url: serverUrl + "action/deleteDependency",
+			data: {actionId: actionId}, 
+			type: "POST",
+			dataType: "json",
+			success: function(data) {
+				manager.raiseEvent('actionUpdate', {event: 'deleteDependency', id: actionId});
+			}
+		});
+	}
+}
+
 
 function deleteAction(actionId) {
 	if (actionId != null) {
@@ -339,6 +381,7 @@ function tl_viewAction(actionId, inFocus) {
 
 		var data = {
 			action: action, 
+			dependsOn : data.dependsOn,
 			contexts: manager.getContexts(action.realm.id),
 			areas: manager.getAreas(action.realm.id),
 			contacts: manager.getContacts(action.realm.id),
@@ -357,7 +400,13 @@ function tl_viewAction(actionId, inFocus) {
 		if (inFocus) {
 			$(template).focus();
 		}
+		$('[name=dependsOn]', template).autocomplete({
+			source: dependsOnSource,
+			minLength: 2,
+			select: saveDependsOnAction
+		});
 	});
+	
 }
 
 function viewLoader(url, data, callback) {
@@ -414,6 +463,7 @@ function addTiddlerActionHandlers() {
 	$('.controls .chkContext').live('click', updateContextState);
 	$('.controls .area').live('change', updateArea);
 	$('.controls .contact').live('change', updateContact);
+	$('.controls .deleteDependency').live('click', deleteDependency); 
 }
 
 function addRealmActionHandlers() {

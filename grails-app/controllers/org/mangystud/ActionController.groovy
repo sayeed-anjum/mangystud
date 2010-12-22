@@ -57,7 +57,13 @@ class ActionController {
 		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
 		def action = Action.findByOwnerAndId(user, actionId)
 		
-		def model = [action: action]
+		def dependsOn = null
+		if (action.dependsOn) { 
+			dependsOn = Action.findByOwnerAndId(user, action.dependsOn.id)
+		}
+		
+		def model = [action: action, dependsOn: dependsOn]
+		
 		render model as JSON
 	}
 	
@@ -66,6 +72,12 @@ class ActionController {
 		def done = params.boolean("done")
 		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
 		def action = Action.findByOwnerAndId(user, actionId)
+		
+		def dependents = Action.findByOwnerAndDependsOn(user, action);
+		dependents.each {
+			it.state = done? State.Next : State.Future
+			it.save(failOnError: true)
+		}
 		
 		action.done = done;
 		action.save(failOnError: true)
@@ -159,6 +171,38 @@ class ActionController {
 		render model as JSON
 	}
 
+	def dependsOnUpdate = {
+		def actionId = params.int("actionId")
+		def dependsOnId = params.int("dependsOn")
+
+		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def action = Action.findByOwnerAndId(user, actionId)
+
+		def dependsOn = Action.findByOwnerAndId(user, dependsOnId)
+		
+		if (dependsOnId != null) {
+			action.dependsOn = dependsOn
+			action.state = State.Future
+			action.save(failOnError: true)
+		}	
+	
+		
+		def model = [success: true]
+		render model as JSON
+	}
+	
+	def deleteDependency = {
+		def actionId = params.int("actionId")
+
+		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def action = Action.findByOwnerAndId(user, actionId)
+		action.dependsOn = null
+		action.save(failOnError: true)
+
+		def model = [success: true]
+		render model as JSON
+	}
+
 	def remove = {
 		def actionId = params.int("actionId")
 		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
@@ -214,6 +258,25 @@ class ActionController {
 		render model as JSON
 	}
 
+	def search = {
+		def actionId = params.int("actionId")
+		def term = params.term;
+		
+		def action = Action.findById(actionId);
+		def actions = Action.findAllByTitleLike("%${term}%");
+		actions.remove(action)
+		
+		def result = actions.collect {
+			if (!hasTransitiveDependency(it, action)) {
+				return [value: it.id, label: it.title]
+			} 
+			return 
+		}
+		result.removeAll{ it ==  null}
+		
+		render result as JSON
+	}
+	
 	def getActionsByStateAndRealms = {user, states, realms ->
 		def c = Action.createCriteria()
 		def result = c.list {
@@ -233,6 +296,17 @@ class ActionController {
 			eq('owner', user)
 			'in'('realm', realms)
 		}
+	}
+	
+	def hasTransitiveDependency = {action1, action2->
+		def result = false;
+		println "Checking transitive dependency for ${action1.title} and ${action2.title}"
+		if (action1.dependsOn != null) {
+			if (action1.dependsOn.id == action2.id) result = true; 
+			else if (hasTransitiveDependency(action1.dependsOn, action2)) result = true;
+		}
+		println "result is ${result}"
+		return result; 
 	}
 	
 }
