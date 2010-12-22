@@ -106,23 +106,15 @@ manager = {
 		return actionId;
 	},
 	
-	showDialog : function(dialogName, event) {
+	showDialogByName : function(dialogName, event) {
 		var dialog = this.dialogs[dialogName];
 		if (dialog) {
 			dialog.show(event);
 		}
 	},
 	
-	addRealm : function(event) {
-		event.data.manager.showDialog('realmDialog', event);
-	},
-	
-	addContext : function(event) {
-		event.data.manager.showDialog('contextDialog', event);
-	},
-	
-	addAction : function(event) {
-		event.data.manager.showDialog('actionDialog', event);
+	showDialog : function(event) {
+		event.data.manager.showDialogByName(event.data.dialog, event);
 	},
 	
 	dialogSuccess : function(dialogName, data, textStatus) {
@@ -382,8 +374,8 @@ function addTiddlerActionHandlers() {
 			alert('Missing tiddly method: ' + name);
 		}
 	});
-	$(".action_link").click({manager:manager}, manager.addAction);
-	$('.contextAdd').live('click', {manager:manager}, manager.addContext);
+	$(".action_link").click({manager:manager, dialog:'actionDialog'}, manager.showDialog);
+	$('.contextAdd').live('click', {manager:manager, dialog:'contextDialog'}, manager.showDialog);
 	$('.controls .chkContext').live('click', updateContextState);
 	$('.controls .area').live('change', updateArea);
 	updateArea
@@ -392,7 +384,7 @@ function addTiddlerActionHandlers() {
 function addRealmActionHandlers() {
 	$('.realm').live('change', updateRealm);
 	$('.realm-tab').live('click', toggleRealm);
-	$('.realm-add').live('click', {manager:manager}, manager.addRealm);
+	$('.realm-add').live('click', {manager:manager, dialog:'realmDialog'}, manager.showDialog);
 }
 
 jQuery(document).ready(function() {
