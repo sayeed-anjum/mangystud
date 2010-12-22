@@ -458,12 +458,16 @@ function addTiddlerActionHandlers() {
 			alert('Missing tiddly method: ' + name);
 		}
 	});
-	$(".action_link").click({manager:manager, dialog:'actionDialog'}, manager.showDialog);
+	$(".new_action").click({manager:manager, dialog:'actionDialog'}, manager.showDialog);
+	$('.new_tickler').click({manager:manager, dialog:'ticklerDialog'}, manager.showDialog);
 	$('.contextAdd').live('click', {manager:manager, dialog:'contextDialog'}, manager.showDialog);
 	$('.controls .chkContext').live('click', updateContextState);
 	$('.controls .area').live('change', updateArea);
 	$('.controls .contact').live('change', updateContact);
 	$('.controls .deleteDependency').live('click', deleteDependency); 
+	$('.dateControl').datepicker({
+		dateFormat: 'dd/mm/yy'
+	});
 }
 
 function addRealmActionHandlers() {
@@ -480,6 +484,7 @@ jQuery(document).ready(function() {
 			"contextDialog" : new ContextDialog().init(),
 			"areaDialog" : new AreaDialog().init(),
 			"contactDialog" : new ContactDialog().init(),
+			"ticklerDialog" : new TicklerDialog().init(),
 			"actionDialog" : new ActionDialog().init()
 		}
 	});

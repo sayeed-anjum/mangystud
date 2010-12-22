@@ -65,6 +65,14 @@
 			</g:formRemote >
         </div>
         
+        <div id="tickler_dialog" style="display:none">
+			<g:formRemote url="[controller:'tickler',action:'add']" 
+			          update="[success:'message',failure:'error']" name="newContextForm"
+			          onSuccess="manager.dialogSuccess('ticklerDialog', data, textStatus)">
+	        	<label>Title:</label><input type="text" name="title" value="" size="40" maxLength="100"/>
+	        	<label>Date:</label><br/><input class='dateControl' readonly="readonly" type="text" name="date" value="" size="20" maxLength="100"/>
+			</g:formRemote >
+        </div>
    </div>
 
 			<script id="toolbarTemplate" type="text/x-jquery-tmpl"> 

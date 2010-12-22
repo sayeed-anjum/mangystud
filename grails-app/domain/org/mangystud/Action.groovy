@@ -8,6 +8,8 @@ class Action extends Tiddler {
 		contact(nullable:true)
 	}
 
+	static hasMany = [ contexts : Context ]
+	
 	State state = State.Next
 	boolean done 
 	boolean star 
@@ -15,4 +17,12 @@ class Action extends Tiddler {
 	Action dependsOn
 	Project project
 	Contact contact
+
+	def addContext = {context ->
+		if (!contexts.contains(context)) contexts << context
+	}
+
+	def removeContext = {context ->
+		contexts.remove(context)
+	}
 }
