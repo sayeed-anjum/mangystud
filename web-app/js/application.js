@@ -27,6 +27,10 @@ manager = {
 			var areas = manager.realmCache.areas[event.data.realm.id];
 			areas.push(event.data.area);
 		}
+		if (event.event == 'newContact') {
+			var contacts = manager.realmCache.contacts[event.data.realm.id];
+			contacts.push(event.data.contact);
+		}
 		
 		var actionIds = getOpenActionIdsForRealm(event.data.realm.id);
 		$.each(actionIds, function(index, value) {
@@ -42,15 +46,21 @@ manager = {
 		return this.realmCache.areas[realmId];		
 	},
 	
+	getContacts : function (realmId) {
+		return this.realmCache.contacts[realmId];		
+	},
+	
 	getRealms : function() {
 		return this.realmCache.realms;
 	},
 
 	raiseEvent : function(name, event) {
 		var listeners = this.eventListeners[name]
-		for (var j = 0; j < listeners.length; j++) {
-			if ($.isFunction(listeners[j])) {
-				listeners[j](this, event);
+		if (listeners) {
+			for (var j = 0; j < listeners.length; j++) {
+				if ($.isFunction(listeners[j])) {
+					listeners[j](this, event);
+				}
 			}
 		}
 	},
@@ -97,6 +107,7 @@ manager = {
 		this.eventListeners.actionUpdate = [this.actionUpdateListener];
 		this.eventListeners.newContext = [this.updateRealmCache];
 		this.eventListeners.newArea = [this.updateRealmCache];
+		this.eventListeners.newContact = [this.updateRealmCache];
 	}, 
 	
 	determineActionId : function (obj) {
@@ -255,6 +266,27 @@ function updateArea() {
 	}
 }
 
+function updateContact() {
+	var contactId = $(this).val();
+	var actionId = manager.determineActionId(this);
+	if (contactId === "__new__") {
+		manager.showDialogByName('contactDialog', {});
+		return;
+	}
+	if (actionId != null) {
+		$.ajax({
+			url: serverUrl + "action/contactUpdate",
+			data: {actionId: actionId, contact: contactId}, 
+			type: "POST",
+			dataType: "json",
+			success: function(data) {
+				manager.raiseEvent('actionUpdate', {event: 'contactUpdate', id: actionId, contact: contactId});
+			}
+		});
+	}
+}
+
+
 function updateContextState(event) {
 	var checked = $(this).is(':checked');
 	var context = $(this).val();
@@ -309,6 +341,7 @@ function tl_viewAction(actionId, inFocus) {
 			action: action, 
 			contexts: manager.getContexts(action.realm.id),
 			areas: manager.getAreas(action.realm.id),
+			contacts: manager.getContacts(action.realm.id),
 			realms: manager.getRealms(), 
 			tabIndex: 1
 		};
@@ -380,7 +413,7 @@ function addTiddlerActionHandlers() {
 	$('.contextAdd').live('click', {manager:manager, dialog:'contextDialog'}, manager.showDialog);
 	$('.controls .chkContext').live('click', updateContextState);
 	$('.controls .area').live('change', updateArea);
-	updateArea
+	$('.controls .contact').live('change', updateContact);
 }
 
 function addRealmActionHandlers() {
@@ -396,6 +429,7 @@ jQuery(document).ready(function() {
 			"realmDialog" : new RealmDialog().init(), 
 			"contextDialog" : new ContextDialog().init(),
 			"areaDialog" : new AreaDialog().init(),
+			"contactDialog" : new ContactDialog().init(),
 			"actionDialog" : new ActionDialog().init()
 		}
 	});

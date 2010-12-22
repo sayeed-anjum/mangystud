@@ -11,7 +11,8 @@ class Realm {
 	boolean active = true;
 	List contexts;
 	List areas;
+	List contacts;
 	User user;
 	
-	static hasMany = [contexts: Context, areas : Area] 
+	static hasMany = [contexts: Context, areas : Area, contacts : Contact] 
 }

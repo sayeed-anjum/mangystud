@@ -14,5 +14,5 @@ class Action extends Tiddler {
 	Area area
 	Action dependsOn
 	Project project
-	User contact
+	Contact contact
 }

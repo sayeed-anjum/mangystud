@@ -132,16 +132,27 @@ class ActionController {
 		def areaId = params.int("area")
 		
 		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
-		def area = Area.findById(areaId);
-		
-		if (area == null) {
-			String message = "Not a valid area id: " + areaId;
-			return message as JSON
-		}
+		def area = areaId == 0? null : Area.findById(areaId);
 		
 		def action = Action.findByOwnerAndId(user, actionId)
 		
 		action.area = area
+		action.save(failOnError: true)
+		
+		def model = [success: true]
+		render model as JSON
+	}
+
+	def contactUpdate = {
+		def actionId = params.int("actionId")
+		def contactId = params.int("contact")
+		
+		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def contact = contactId == 0? null : Contact.findById(contactId);
+		
+		def action = Action.findByOwnerAndId(user, actionId)
+		
+		action.contact = contact
 		action.save(failOnError: true)
 		
 		def model = [success: true]

@@ -165,3 +165,41 @@ AreaDialog.prototype = $.extend({}, ContextDialog.prototype, {
 	}
 });
 
+ContactDialog = function() {
+	this.name = 'contact_dialog';
+	this.title = 'New Contact';
+	return this;
+};
+
+ContactDialog.prototype = $.extend({}, Dialog.prototype, {
+	isValid : function() {
+		var name = $('[name=name]', this.el).val();
+		if (name.trim() === "") {
+			alert('Please enter a name');
+			return false;
+	  }
+	  return true;
+	},
+
+	beforeShow : function(event) {
+		var actionId = manager.getCurrentActionId();
+		if (actionId) {
+			var tiddler = manager.currentTiddler;
+			var realm = $('.realm_select select', tiddler).val();
+	
+			$('[name=realm]', this.el).val(realm);
+			$('[name=actionId]', this.el).val(actionId);
+			$('[name=name]', this.el).val('');
+			$('[name=email]', this.el).val('');
+			this.el.dialog("option", "title", this.title);
+		} else {
+			alert('Unable to get action id!');
+		}
+	}, 
+	
+	onSuccess : function(data, textStatus) {
+		this.close();
+		var event = {event: 'newContact', data: data};
+		manager.raiseEvent('newContact', event);
+	}
+});

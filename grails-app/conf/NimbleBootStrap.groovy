@@ -23,6 +23,7 @@ import grails.plugins.nimble.core.AdminsService
 
 import org.mangystud.Action;
 import org.mangystud.Area 
+import org.mangystud.Contact 
 import org.mangystud.Context 
 import org.mangystud.Realm 
 import org.mangystud.State;
@@ -42,10 +43,11 @@ class NimbleBootStrap {
   def userService
   def adminsService
   
-  def createRealm = {name, user, contextNames, areaNames ->
+  def createRealm = {name, user, contextNames, areaNames, contactNames ->
 	  def contexts = contextNames.collect {new Context(name: it)}
 	  def areas = areaNames.collect {new Area(name: it)}
-	  new Realm(name: name, user: user, contexts: contexts, areas : areas).save(failOnError: true)
+	  def contacts = contactNames.collect {new Contact(name: it)}
+	  new Realm(name: name, user: user, contexts: contexts, areas : areas, contacts: contacts).save(failOnError: true)
   }
   
   def addAction = {realmName, user, title, state, contextNames ->
@@ -109,8 +111,8 @@ class NimbleBootStrap {
     adminsService.add(admin)
 	
 	if (!Realm.count()) {
-		createRealm "Work", admin, ["Phone", "Email", "Meeting", "Offline"], ["Management", "Finance", "Sales", "HR"]
-		createRealm "Home", admin, ["Call", "Play", "Chore"], ["Kids", "Home Finance"]
+		createRealm "Work", admin, ["Phone", "Email", "Meeting", "Offline"], ["Management", "Finance", "Sales", "HR"], ["Bob", "Girish"]
+		createRealm "Home", admin, ["Call", "Play", "Chore"], ["Kids", "Home Finance"], ["Ann", "Mark"]
 		
 		addAction "Work", admin, 'my first action', State.Next, ["Phone"]  
 		addAction "Work", admin, 'my second action', State.WaitingFor, ["Email"]  

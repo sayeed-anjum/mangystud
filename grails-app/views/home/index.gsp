@@ -53,6 +53,17 @@
 	        	<input type="text" name="name" value="" size="40" maxLength="25"/>
 			</g:formRemote >
         </div>
+
+        <div id="contact_dialog" style="display:none">
+			<g:formRemote url="[controller:'realm',action:'addContact']" 
+			          update="[success:'message',failure:'error']" name="newContextForm"
+			          onSuccess="manager.dialogSuccess('contactDialog', data, textStatus)">
+	        	<input type="hidden" name="realm" value=""/>
+	        	<input type="hidden" name="actionId" value=""/>
+	        	<label>Name:</label><input type="text" name="name" value="" size="40" maxLength="100"/>
+	        	<label>Email:</label><input type="text" name="email" value="" size="40" maxLength="100"/>
+			</g:formRemote >
+        </div>
         
    </div>
 
@@ -121,9 +132,18 @@
 	      				<div class='combos'>
 							<span class="label">Area:</span>
 							<select class='area' id='area_{{= action.id}}'>
+								<option value="0">-</span>
 								<option value="__new__">New Area...</span>
 								{{each(i,area) areas}}
 									<option value="{{= area.id}}" {{if action.area != null && action.area.id == area.id}}selected="selected"{{/if}}>{{= area.name}}</span>
+								{{/each}}
+							</select>
+							<span class="label">Contact:</span>
+							<select class='contact' id='contact_{{= action.id}}'>
+								<option value="0">-</span>
+								<option value="__new__">New Contact...</span>
+								{{each(i,contact) contacts}}
+									<option value="{{= contact.id}}" {{if action.contact != null && action.contact.id == contact.id}}selected="selected"{{/if}}>{{= contact.name}}</span>
 								{{/each}}
 							</select>
 						</div>

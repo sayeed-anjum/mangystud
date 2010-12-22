@@ -59,12 +59,14 @@ class RealmController {
 		
 		def contexts = new TreeMap();
 		def areas = new TreeMap();
+		def contacts = new TreeMap();
 		realms.each {
 			contexts[it.id] = it.contexts;
 			areas[it.id] = it.areas;
+			contacts[it.id] = it.contacts;
 		}
 		
-		def model = [realms: realms, contexts: contexts, areas: areas]
+		def model = [realms: realms, contexts: contexts, areas: areas, contacts : contacts]
 		
 		render model as JSON
 	}
@@ -88,4 +90,23 @@ class RealmController {
 		render model as JSON
 	}
 
+	def addContact = {
+		def realmId = params.int('realm')
+		def name = params.name;
+		def email = params.email;
+		
+		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def realm = Realm.findByIdAndUser(realmId, user)
+		
+		def model = [error:"realm not found!"]
+		if (realm != null) {
+			def contact = new Contact(name: name, email: email);
+			realm.contacts << contact;
+	
+			realm.save(failOnError: true)
+	
+			model = [contact: contact, realm: realm];
+		}
+		render model as JSON
+	}
 }
