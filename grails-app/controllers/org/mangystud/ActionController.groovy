@@ -119,7 +119,7 @@ class ActionController {
 	}
 
 	def realmChange = {
-		def actionId = params.int("actionId")
+		def actionId = params.int("id")
 		def realmId = params.int("realm")
 		
 		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
@@ -140,13 +140,13 @@ class ActionController {
 	}
 
 	def areaUpdate = {
-		def actionId = params.int("actionId")
+		def oid = params.int("id")
 		def areaId = params.int("area")
 		
 		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
 		def area = areaId == 0? null : Area.findById(areaId);
 		
-		def action = Action.findByOwnerAndId(user, actionId)
+		Action action = Action.findByOwnerAndId(user, oid)
 		
 		action.area = area
 		action.save(failOnError: true)
@@ -156,13 +156,13 @@ class ActionController {
 	}
 
 	def contactUpdate = {
-		def actionId = params.int("actionId")
+		def oid = params.int("id")
 		def contactId = params.int("contact")
 		
 		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
 		def contact = contactId == 0? null : Contact.findById(contactId);
 		
-		def action = Action.findByOwnerAndId(user, actionId)
+		Action action = Action.findByOwnerAndId(user, oid)
 		
 		action.contact = contact
 		action.save(failOnError: true)

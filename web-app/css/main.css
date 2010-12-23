@@ -303,3 +303,30 @@ a:hover {
     width: 8em;
 }
 	
+.viewer .buttonsLikeLinks .button {
+	border: none;
+	font-size: 100%;
+	color: blue;
+}
+
+.viewer .buttonsLikeLinks a.button:hover {
+	text-decoration: underline;
+}
+
+.floatleft {
+	float: left;
+}
+
+.clearboth {
+	clear: both;
+}
+
+.tickler .button.on {
+    background: none repeat scroll 0 0 #CCFFAA;
+    border-color: #5555CC;
+    color: #44AA44;
+}
+
+.tickler .button, .tickler .date {
+	font-size: 110%;
+}

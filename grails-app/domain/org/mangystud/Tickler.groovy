@@ -13,7 +13,7 @@ class Tickler extends Tiddler {
 	boolean overdue = false 
 
 	Date date
-	Period period = Period.OneTime
+	Period period = Period.Once
 	Area area
 	Project project
 	Contact contact
