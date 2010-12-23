@@ -234,7 +234,6 @@ TicklerDialog.prototype = $.extend({}, Dialog.prototype, {
 	
 	onSuccess : function(data, textStatus) {
 		this.close();
-		var event = {event: 'newTickler', data: data};
-		manager.raiseEvent('newTickler', event);
+		manager.raiseEvent('ticklerUpdate', {event: 'newTickler', data: data, id: data.tickler.id});
 	}
 });

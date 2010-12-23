@@ -9,7 +9,8 @@ class Tickler extends Tiddler {
 	}
 
 	boolean done 
-	boolean star 
+	boolean star
+	boolean overdue = false 
 
 	Date date
 	Period period = Period.OneTime

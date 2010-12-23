@@ -40,6 +40,11 @@ $.extend(DashboardView.prototype, {
 		} else {
 			template.prependTo('#stage');
 		} 
+		
+		$('.dateBox').datepicker({
+			dateFormat: 'D, d-M-y',
+			onSelect: updateTicklerDate
+		});
 	}
 });
 
@@ -130,5 +135,63 @@ function getDoneActionsHtml(doneActions, title) {
 	}
 	html += "</div>";
 	html += "</div></div>";
+	return html;
+}
+
+function tl_ticklerDashboard() {
+	var dashboard = new DashboardView();
+	dashboard.init({
+		name: 'ticklerDashboard', 
+		title: 'Tickler Dashboard', 
+		url: 'tickler/dashboard',
+		onLoad: function(result) {
+			var leftHtml = getTicklerHtml(result.overdue, 'Ticklers Requiring Action');
+			leftHtml += getTicklerHtml(result.upcoming, 'Upcoming Ticklers');
+
+			var rightHtml = getDoneTicklerHtml(result.done, 'Old Ticklers')
+			return {left: leftHtml, right: rightHtml}
+		}
+	}).load();
+}
+
+function getTicklerHtml(ticklers, title) {
+	if (ticklers == undefined) return "";
+	
+	var html = "<div class='mgtdList'><h1>" + title + "</h1>";
+	html += "<div class='innerList'>";
+	for (var j = 0; j < ticklers.length; j++) {
+		var tickler = ticklers[j];
+		html += "<span class='tickler'>" +
+				"<input type='checkbox' class='chkOptionInput'" + (tickler.done? " checked='checked'>" : ">") +  
+				"<a class='button Starred off' href='javascript:;' title='Starred'>★</a>" +
+				"<input class='dateBox' value='" + $.datepicker.formatDate('D, d-M-y', new Date(tickler.date)) + "'>" +
+				"<span>&nbsp;</span>" +
+				"<a href='javascript:;' title='' class='tiddlyLink tiddlyLinkExisting' refresh='link' tiddlylink='tl_viewTickler' id='tl_tickler_" + tickler.id + "'>" + tickler.title + "</a>" + 
+				"<a class='deleteTicklerButton' href='javascript:;' title='Delete tickler'>×</a>" + 
+				"</span><br>";
+	}
+	html += "</div>"
+	html += "</div>";
+	return html;
+}
+
+function getDoneTicklerHtml(ticklers, title) {
+	if (ticklers == undefined) return "";
+	
+	var html = "<div class='mgtdList'><h1>" + title + "</h1>";
+	html += "<br><div class='doneList'>";
+	for (var j = 0; j < ticklers.length; j++) {
+		var tickler = ticklers[j];
+		html += "<span class='tickler'>" +
+				"<input type='checkbox' class='chkOptionInput'" + (tickler.done? " checked='checked'>" : ">") +  
+				"<a class='button Starred off' href='javascript:;' title='Starred'>★</a>" +
+				"<input class='dateBox'><span>&nbsp;</span>"
+				"<span>&nbsp;</span>" +
+				"<a href='javascript:;' title='' class='tiddlyLink tiddlyLinkExisting' refresh='link' tiddlylink='tl_viewTickler' id='tl_tickler_'" + tickler.id + "'>" + tickler.title + "</a>" + 
+				"<a class='deleteTicklerButton' href='javascript:;' title='Delete tickler'>×</a>" + 
+				"</span><br>"
+	}
+	html += "</div>";
+	html += "</div>";
 	return html;
 }

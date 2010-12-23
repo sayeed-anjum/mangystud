@@ -3,6 +3,7 @@ manager = {
 	realmCache : {},
 	eventListeners : {},
 	staticTiddlers : {},
+	ticklerDashboards : {},
 	dialogs : {},
 	
 	updateCache : function(callback) {
@@ -77,11 +78,28 @@ manager = {
 		}
 	},
 
+	updateTicklerDashboards : function() {
+		for (var key in this.ticklerDashboards) {
+			var tiddler = $('#' + key);
+			if (tiddler.length) {
+				var fn = this.ticklerDashboards[key];
+				if ($.isFunction(fn)) {
+					fn();
+				}
+			}
+		}
+	},
+
 	actionUpdateListener : function(manager, event) {
 		manager.updateStaticActionTiddlers();
 		refreshActionView(event.id);
 	}, 
 	
+	ticklerUpdateListener : function(manager, event) {
+		manager.updateTicklerDashboards();
+		// refreshTicklerView(event.id);
+	}, 
+
 	tmpl : function(name, data) {
 		 return $.tmpl(this.templates[name], data);		
 	}, 
@@ -97,6 +115,10 @@ manager = {
 			"nextAndWaiting" : tl_nextAndWaiting
 		});
 		
+		$.extend(this.ticklerDashboards, {			
+			"ticklerDashboard": tl_ticklerDashboard 
+		});
+
 		this.updateCache(function() {
 			$.each(data.templates, function(index, name) {
 				manager.templates[name] = $.template(null, $("#" + name));
@@ -105,6 +127,7 @@ manager = {
 		});
 
 		this.eventListeners.actionUpdate = [this.actionUpdateListener];
+		this.eventListeners.ticklerUpdate = [this.ticklerUpdateListener];
 		this.eventListeners.newContext = [this.updateRealmCache];
 		this.eventListeners.newArea = [this.updateRealmCache];
 		this.eventListeners.newContact = [this.updateRealmCache];
@@ -119,6 +142,20 @@ manager = {
 			var link = $(obj).siblings('.tiddlyLink');
 			if (link.length > 0) {
 				actionId = link[0].id.substr(10);
+			}
+		} 
+		return actionId;
+	},
+
+	determineTicklerId : function (obj) {
+		var controlDiv = $(obj).closest('.controls');
+		var actionId = null;
+		if (controlDiv.length > 0) {
+			actionId = controlDiv[0].id.substr(8);
+		} else {
+			var link = $(obj).siblings('.tiddlyLink');
+			if (link.length > 0) {
+				actionId = link[0].id.substr(11);
 			}
 		} 
 		return actionId;
@@ -221,6 +258,23 @@ function updateStatusAction(obj, status) {
 			dataType: "json",
 			success: function(data) {
 				manager.raiseEvent('actionUpdate', {event: 'status', id: actionId, status: status});
+			}
+		});
+	}
+}
+
+
+function updateTicklerDate(dateText, inst) {
+	var ticklerId = manager.determineTicklerId(this);
+	var date = inst.selectedYear + "-" + (inst.selectedMonth+1) + "-" + inst.selectedDay;
+	if (ticklerId != null) {
+		$.ajax({
+			url: serverUrl + "tickler/updateDate",
+			data: {ticklerId: ticklerId, date: date}, 
+			type: "POST",
+			dataType: "json",
+			success: function(data) {
+				manager.raiseEvent('ticklerUpdate', {event: 'date', id: ticklerId, date: date});
 			}
 		});
 	}
