@@ -97,7 +97,7 @@ manager = {
 	
 	ticklerUpdateListener : function(manager, event) {
 		manager.updateTicklerDashboards();
-		// refreshTicklerView(event.id);
+		refreshTicklerView(event.id);
 	}, 
 
 	tmpl : function(name, data) {
@@ -225,6 +225,13 @@ function refreshActionView(actionId) {
 	}
 }
 
+function refreshTicklerView(id) {
+	var tiddler = $('#td_ticklr_' + id);
+	if (tiddler.length > 0) {
+		tl_viewTickler(id);
+	}
+}
+
 function getOpenActionIdsForRealm(id) {
 	var actionIds = [];
 	$.each($('.controls .realm'), function(index, value) {
@@ -308,6 +315,22 @@ function updateTicklerDate(dateText, inst) {
 			dataType: "json",
 			success: function(data) {
 				manager.raiseEvent('ticklerUpdate', {event: 'date', id: ticklerId, date: date});
+			}
+		});
+	}
+}
+
+function incrementPeriod() {
+	var period = $(this).text();
+	var id = manager.determineTiddlerId(this);
+	if (id != null) {
+		$.ajax({
+			url: serverUrl + "tickler/incrementPeriod",
+			data: {id: id, period: period}, 
+			type: "POST",
+			dataType: "json",
+			success: function(data) {
+				manager.raiseEvent('ticklerUpdate', {event: 'incrementPeriod', id: id, period: period});
 			}
 		});
 	}
@@ -542,7 +565,7 @@ function tl_viewTickler(ticklerId, inFocus) {
 		
 		var template = manager.tmpl("ticklerViewTemplate", data);
 
-		var tiddler = $('#td_tickler_' + tickler.id);
+		var tiddler = $('#td_ticklr_' + tickler.id);
 		if (tiddler.length) {
 			tiddler.replaceWith(template);
 		} else {
@@ -609,6 +632,7 @@ function addTiddlerActionHandlers() {
 	$('.controls .area').live('change', updateArea);
 	$('.controls .contact').live('change', updateContact);
 	$('.controls .deleteDependency').live('click', deleteDependency); 
+	$('.controls .date .button').live('click', incrementPeriod); 
 	$('.dateControl').datepicker({
 		dateFormat: 'dd/mm/yy'
 	});
