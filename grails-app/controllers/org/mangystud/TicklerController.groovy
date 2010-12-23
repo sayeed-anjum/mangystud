@@ -69,11 +69,11 @@ class TicklerController {
 		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
 		def tickler = Tickler.findByOwnerAndId(user, ticklerId)
 		
+		def model = [success: false]
 		if (tickler) {
 			tickler.delete()
+			model.success = true;
 		}
-		
-		def model = [success: true]
 		render model as JSON
 	}
 
@@ -84,12 +84,31 @@ class TicklerController {
 		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
 		def tickler = Tickler.findByOwnerAndId(user, ticklerId)
 		
-		tickler.date = date
-		def tomorrow = new Date()+1
-		tickler.overdue = tickler.date.before(tomorrow)
+		def model = [success: false]
+		if (tickler) {
+			tickler.date = date
+			def tomorrow = new Date()+1
+			tickler.overdue = tickler.date.before(tomorrow)
+			model.success = true;
+		}
 
-		def model = [success: true]
 		render model as JSON
 	}
 
+	def complete = {
+		def ticklerId = params.int("ticklerId")
+		def done = params.boolean("done")
+		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		Tickler tickler = Tickler.findByOwnerAndId(user, ticklerId)
+		
+		def model = [success: false]
+		if (tickler) {
+			tickler.done = done;
+			tickler.save(failOnError: true)
+			model.success = true;
+		}
+		
+		render model as JSON
+	}
+	
 }

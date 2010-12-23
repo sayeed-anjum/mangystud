@@ -109,7 +109,7 @@
 	        	<div id="td_action_{{= action.id}}" class="tiddler" tabIndex="{{= tabIndex}}">
 	        		{{tmpl '#toolbarTemplate'}}
 	        		<div class="title"></div>
-	        		<div class="viewer controls" id="action_{{= action.id}}">
+	        		<div class="viewer controls action" id="action_{{= action.id}}">
 	      				<div class="smaller" style="float: right;">
 							<span class="label">Realm:</span>
 							<span class="realm_select">

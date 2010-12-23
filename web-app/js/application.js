@@ -149,16 +149,16 @@ manager = {
 
 	determineTicklerId : function (obj) {
 		var controlDiv = $(obj).closest('.controls');
-		var actionId = null;
+		var ticklerId = null;
 		if (controlDiv.length > 0) {
-			actionId = controlDiv[0].id.substr(8);
+			ticklerId = controlDiv[0].id.substr(8);
 		} else {
 			var link = $(obj).siblings('.tiddlyLink');
 			if (link.length > 0) {
-				actionId = link[0].id.substr(11);
+				ticklerId = link[0].id.substr(11);
 			}
 		} 
-		return actionId;
+		return ticklerId;
 	},
 	
 	showDialogByName : function(dialogName, event) {
@@ -229,6 +229,22 @@ function completeAction() {
 			dataType: "json",
 			success: function(data) {
 				manager.raiseEvent('actionUpdate', {event: 'complete', id: actionId});
+			}
+		});
+	}
+}
+
+function completeTickler() {
+	var done = $(this).is(':checked');
+	var ticklerId =  manager.determineTicklerId(this);
+	if (ticklerId != null) {
+		$.ajax({
+			url: serverUrl + "tickler/complete",
+			data: {ticklerId: ticklerId, done: done}, 
+			type: "POST",
+			dataType: "json",
+			success: function(data) {
+				manager.raiseEvent('ticklerUpdate', {event: 'complete', id: ticklerId});
 			}
 		});
 	}
@@ -516,7 +532,8 @@ function addTiddlerActionHandlers() {
 		deleteTickler(ticklerId);
 	});
 
-	$('.tiddler .chkOptionInput').live('click', completeAction);
+	$('.action .chkOptionInput').live('click', completeAction);
+	$('.tickler .chkOptionInput').live('click', completeTickler);
 	$('.Next').live('click', nextAction);
 	$('.WaitingFor').live('click', waitingForAction);
 	$('.Future').live('click', futureAction);

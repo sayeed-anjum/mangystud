@@ -185,9 +185,9 @@ function getDoneTicklerHtml(ticklers, title) {
 		html += "<span class='tickler'>" +
 				"<input type='checkbox' class='chkOptionInput'" + (tickler.done? " checked='checked'>" : ">") +  
 				"<a class='button Starred off' href='javascript:;' title='Starred'>★</a>" +
-				"<input class='dateBox'><span>&nbsp;</span>"
+				"<input class='dateBox' value='" + $.datepicker.formatDate('D, d-M-y', new Date(tickler.date)) + "'>" +
 				"<span>&nbsp;</span>" +
-				"<a href='javascript:;' title='' class='tiddlyLink tiddlyLinkExisting' refresh='link' tiddlylink='tl_viewTickler' id='tl_tickler_'" + tickler.id + "'>" + tickler.title + "</a>" + 
+				"<a href='javascript:;' title='' class='tiddlyLink tiddlyLinkExisting' refresh='link' tiddlylink='tl_viewTickler' id='tl_tickler_" + tickler.id + "'>" + tickler.title + "</a>" + 
 				"<a class='deleteTicklerButton' href='javascript:;' title='Delete tickler'>×</a>" + 
 				"</span><br>"
 	}
