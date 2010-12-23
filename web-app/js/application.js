@@ -414,6 +414,20 @@ function deleteAction(actionId) {
 	}
 }
 
+function deleteTickler(ticklerId) {
+	if (ticklerId != null) {
+		$.ajax({
+			url: serverUrl + "tickler/remove",
+			data: {ticklerId: ticklerId}, 
+			type: "POST",
+			dataType: "json",
+			success: function(data) {
+				manager.raiseEvent('ticklerUpdate', {event: 'delete', id: ticklerId});
+			}
+		});
+	}
+}
+
 function toggleRealm() {
 	$(this).toggleClass('realm-active');
 	var active = $(this).hasClass('realm-active');
@@ -496,6 +510,10 @@ function addTiddlerActionHandlers() {
 	$('.tiddler .deleteTiddlerButton').live('click', function() {
 		var actionId = manager.determineActionId(this);
 		deleteAction(actionId);
+	});
+	$('.tiddler .deleteTicklerButton').live('click', function() {
+		var ticklerId = manager.determineTicklerId(this);
+		deleteTickler(ticklerId);
 	});
 
 	$('.tiddler .chkOptionInput').live('click', completeAction);

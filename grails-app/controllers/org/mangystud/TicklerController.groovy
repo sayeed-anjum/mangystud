@@ -69,7 +69,9 @@ class TicklerController {
 		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
 		def tickler = Tickler.findByOwnerAndId(user, ticklerId)
 		
-		tickler.delete()
+		if (tickler) {
+			tickler.delete()
+		}
 		
 		def model = [success: true]
 		render model as JSON
