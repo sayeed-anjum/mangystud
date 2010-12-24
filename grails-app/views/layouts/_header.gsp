@@ -1,5 +1,5 @@
 <div id="header">
-     <div id="appname">aajkaaj</div>
+     <div id="appname"><img src='${resource(dir:'images',file:'logo.png')}' alt='aajkaaj'/></div>
    	 <div id="realm">
    	 	<span class='rlabel'>REALM</span>
 	   	<g:each in="${realms}" var="realm">
