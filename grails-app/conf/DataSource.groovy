@@ -4,11 +4,13 @@ dataSource {
     username = "sa"
     password = ""
 }
+
 hibernate {
     cache.use_second_level_cache = true
     cache.use_query_cache = true
     cache.provider_class = 'net.sf.ehcache.hibernate.EhCacheProvider'
 }
+
 // environment specific settings
 environments {
     development {
@@ -20,7 +22,11 @@ environments {
     test {
         dataSource {
             dbCreate = "update"
-            url = "jdbc:hsqldb:mem:testDb"
+			driverClassName = "org.postgresql.Driver"
+			dialect = net.sf.hibernate.dialect.PostgreSQLDialect
+			url = "jdbc:postgresql://localhost:5432/aajkaaj"
+		    username = "aajkaaj"
+		    password = "master"
         }
     }
     production {

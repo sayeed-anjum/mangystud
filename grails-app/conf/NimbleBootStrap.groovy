@@ -20,8 +20,9 @@ import grails.plugins.nimble.InstanceGenerator
 
 import grails.plugins.nimble.core.Role
 import grails.plugins.nimble.core.AdminsService
+import grails.plugins.nimble.core.UserBase 
 
-import org.mangystud.Action;
+import org.mangystud.Action 
 import org.mangystud.Area 
 import org.mangystud.Contact 
 import org.mangystud.Context 
@@ -44,78 +45,87 @@ class NimbleBootStrap {
   def adminsService
   
   def createRealm = {name, user, contextNames, areaNames, contactNames ->
-	  def contexts = contextNames.collect {new Context(name: it)}
-	  def areas = areaNames.collect {new Area(name: it)}
-	  def contacts = contactNames.collect {new Contact(name: it)}
-	  new Realm(name: name, user: user, contexts: contexts, areas : areas, contacts: contacts).save(failOnError: true)
+	  def realm = Realm.findByName(name)
+	  if (!realm) {
+		  def contexts = contextNames.collect {new Context(name: it)}
+		  def areas = areaNames.collect {new Area(name: it)}
+		  def contacts = contactNames.collect {new Contact(name: it)}
+		  new Realm(name: name, user: user, contexts: contexts, areas : areas, contacts: contacts).save(failOnError: true, flush:true)
+	  }
   }
   
   def addAction = {realmName, user, title, state, contextNames ->
 	  def realm = Realm.findByName(realmName)
-	  def contexts = contextNames.collect {
-		  Context.findByNameAndRealm(it, realm)
-	  }
-	  println "adding new action: " + title
-	  println "contexts " + contexts.toString()
-	  new Action(realm: realm, owner: user, title: title, state:state, contexts: contexts).save(failOnError: true)  
+	  if (realm) {
+		  def contexts = contextNames.collect {
+			  Context.findByNameAndRealm(it, realm)
+		  }
+		  println "adding new action: " + title
+		  println "contexts " + contexts.toString()
+		  new Action(realm: realm, owner: user, title: title, state:state, contexts: contexts).save(failOnError: true, flush:true)
+	  }  
   }
 
   def init = {servletContext ->
 
     // The following must be executed
     internalBootStap(servletContext)
-
-    // Execute any custom Nimble related BootStrap for your application below
-
-    // Create example User account
-    def user = InstanceGenerator.user()
-    user.username = "user"
-    user.pass = 'useR123!'
-    user.passConfirm = 'useR123!'
-    user.enabled = true
-
-    def userProfile = InstanceGenerator.profile()
-    userProfile.fullName = "Test User"
-    userProfile.owner = user
-    user.profile = userProfile
-
-    def savedUser = userService.createUser(user)
-    if (savedUser.hasErrors()) {
-      savedUser.errors.each {
-        log.error(it)
-      }
-      throw new RuntimeException("Error creating example user")
-    }
+	
+	def user = UserBase.findByUsername("user");
+	if (!user) {
+	    // Create example User account
+	    user = InstanceGenerator.user()
+	    user.username = "user"
+	    user.pass = 'useR123!'
+	    user.passConfirm = 'useR123!'
+	    user.enabled = true
+	
+	    def userProfile = InstanceGenerator.profile()
+	    userProfile.fullName = "Test User"
+	    userProfile.owner = user
+	    user.profile = userProfile
+	
+	    def savedUser = userService.createUser(user)
+	    if (savedUser.hasErrors()) {
+	      savedUser.errors.each {
+	        log.error(it)
+	      }
+	      throw new RuntimeException("Error creating example user")
+	    }
+	}
 
     // Create example Administrative account
     def admins = Role.findByName(AdminsService.ADMIN_ROLE)
-    def admin = InstanceGenerator.user()
-    admin.username = "admin"
-    admin.pass = "admiN123!"
-    admin.passConfirm = "admiN123!"
-    admin.enabled = true
-
-    def adminProfile = InstanceGenerator.profile()
-    adminProfile.fullName = "Administrator"
-    adminProfile.owner = admin
-    admin.profile = adminProfile
-
-    def savedAdmin = userService.createUser(admin)
-    if (savedAdmin.hasErrors()) {
-      savedAdmin.errors.each {
-        log.error(it)
-      }
-      throw new RuntimeException("Error creating administrator")
-    }
-
-    adminsService.add(admin)
+	def admin = UserBase.findByUsername("admin");
+	if (!admin) {
+	    admin = InstanceGenerator.user()
+	    admin.username = "admin"
+	    admin.pass = "admiN123!"
+	    admin.passConfirm = "admiN123!"
+	    admin.enabled = true
 	
-	if (!Realm.count()) {
-		createRealm "Work", admin, ["Phone", "Email", "Meeting", "Offline"], ["Management", "Finance", "Sales", "HR"], ["Bob", "Girish"]
-		createRealm "Home", admin, ["Call", "Play", "Chore"], ["Kids", "Home Finance"], ["Ann", "Mark"]
-		
-		addAction "Work", admin, 'my first action', State.Next, ["Phone"]  
-		addAction "Work", admin, 'my second action', State.WaitingFor, ["Email"]  
+	    def adminProfile = InstanceGenerator.profile()
+	    adminProfile.fullName = "Administrator"
+	    adminProfile.owner = admin
+	    admin.profile = adminProfile
+	
+	    def savedAdmin = userService.createUser(admin)
+	    if (savedAdmin.hasErrors()) {
+	      savedAdmin.errors.each {
+	        log.error(it)
+	      }
+	      throw new RuntimeException("Error creating administrator")
+	    }
+	
+	    adminsService.add(admin)
+	}
+
+if (!Realm.count()) {
+	createRealm "Work", admin, ["Phone", "Email", "Meeting", "Offline"], ["Management", "Finance", "Sales", "HR"], ["Bob", "Girish"]
+	createRealm "Home", admin, ["Call", "Play", "Chore"], ["Kids", "Home Finance"], ["Ann", "Mark"]
+	
+	addAction "Work", admin, 'my first action', State.Next, ["Phone"]  
+	addAction "Work", admin, 'my second action', State.WaitingFor, ["Email"]  
 		addAction "Work", admin, 'my third action', State.Future, ["Meeting"]  
 	}
 

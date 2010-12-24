@@ -1,5 +1,8 @@
 <div id="header">
      <div id="appname"><img src='${resource(dir:'images',file:'logo.png')}' alt='aajkaaj'/></div>
+	 <div id="user"><g:message code="nimble.label.usergreeting" /> <n:principalName /> |
+	 <g:if test="${user}.hasRole('SYSTEM ADMINISTRATOR')"><a href='${resource(dir:'/')}administration/users/list'>User Admin</a> | </g:if>  
+	 <g:link controller="auth" action="logout" class="logout"><g:message code="nimble.link.logout.basic" /></g:link></div>
    	 <div id="realm">
    	 	<span class='rlabel'>REALM</span>
 	   	<g:each in="${realms}" var="realm">

@@ -1,8 +1,12 @@
-I love MGSD, the TiddlyWiki? based GTD system for getting things done. Sadly, it lacks a few things I want it to have:
+I love MGSD, the TiddlyWiki based GTD system for getting things done. Sadly, it lacks a few things I want it to have:
 
-data hosted on the cloud
-sync to phone (android)
-shared tasks
+* MGSD gets very slow when tasks increase
+* I need data hosted on the cloud
+* sync to phone (android)
+* shared tasks
+* inbox processing 
+* forward emails to inbox
+
 I don't know if any such project exists, so I thought let me get started and see where it goes.
 
-Also, a good project to learn grails/groovy.
+Besides, a good project to learn grails/groovy.

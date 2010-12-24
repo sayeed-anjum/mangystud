@@ -367,3 +367,16 @@ span.realm-active {
 	color: #7AB9DF;
 	font-size: 90%; 
 }
+
+div#user {
+	float: right;
+	margin-right: 20px;
+}
+
+#header a {
+	color: white;
+}
+
+#header a:hover {
+	text-decoration: underline;
+}

@@ -21,9 +21,9 @@ grails.views.javascript.library='jquery'
 
 nimble {
     organization {
-        name = "mangystud"
-        displayname = "mangystud"
-        description = "mangystud - MGSD evolved"
+        name = "aajkaaj"
+        displayname = "aajkaaj"
+        description = "aajkaaj - Today's work, today"
         logo = ""
         logosmall = ""
         url = ""

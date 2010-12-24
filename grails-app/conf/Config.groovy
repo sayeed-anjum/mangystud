@@ -56,7 +56,8 @@ environments {
     }
     development {
         grails.serverURL = "http://localhost:8080/${appName}"
-    }
+		uiperformance.enabled = false
+     }
     test {
         grails.serverURL = "http://localhost:8080/${appName}"
     }
@@ -80,11 +81,22 @@ log4j = {
            'org.codehaus.groovy.grails.commons', // core / classloading
            'org.codehaus.groovy.grails.plugins', // plugins
            'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
-           'org.springframework',
            'org.hibernate',
+           'org.springframework',
            'net.sf.ehcache.hibernate'
 
     warn   'org.mortbay.log'
 	
-	debug  'org.mangystud.TiddlerController'
+	debug  'org.mangystud',
+		   'NimbleBootStrap' //, 'org.hibernate.SQL'
 }
+
+
+uiperformance.bundles = [
+	[type: 'js',
+	 name: 'app.all',
+	 files: ['application','dashboard','dialogs']],
+	[type: 'css',
+	 name: 'bundled',
+	 files: ['ui-lightness/jquery-ui-1.8.7.custom','main']]
+ ]

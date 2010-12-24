@@ -67,8 +67,8 @@ RealmDialog.prototype = $.extend({}, Dialog.prototype, {
 		this.close();
 
 		var span = $('<span/>', {
-			class: "realm-tab realm-active",
-			text: data.realm.name
+			"class": "realm-tab realm-active",
+			"text": data.realm.name
 		});
 		$('.realm-add').before(span);
 	}
