@@ -15,7 +15,7 @@ class Tiddler {
 	Realm realm
 	String title
 	String notes
-	User owner
+	Person owner
 
 	Date lastUpdated
 	Date dateCreated

@@ -33,7 +33,7 @@ class ActionController {
 		def type = params.type
 		def title = params.title
 		def realm = Realm.findByActive(true)
-		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		
 		if (realm == null) {
 			render {error: "No active realm found!"} as JSON
@@ -54,7 +54,7 @@ class ActionController {
 	
 	def view = {
 		def actionId = params.int("actionId")
-		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def action = Action.findByOwnerAndId(user, actionId)
 		
 		def dependsOn = null
@@ -70,7 +70,7 @@ class ActionController {
 	def complete = {
 		def actionId = params.int("actionId")
 		def done = params.boolean("done")
-		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def action = Action.findByOwnerAndId(user, actionId)
 		
 		def dependents = Action.findByOwnerAndDependsOn(user, action);
@@ -89,7 +89,7 @@ class ActionController {
 	def status = {
 		def actionId = params.int("actionId")
 		def status = params.status
-		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def action = Action.findByOwnerAndId(user, actionId)
 		
 		action.state = State.find { it.id == status }	
@@ -103,7 +103,7 @@ class ActionController {
 		def actionId = params.int("actionId")
 		def contextId = params.int("context")
 		def checked = params.boolean("checked")
-		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def action = Action.findByOwnerAndId(user, actionId)
 
 		def context = Context.get(contextId)
@@ -122,7 +122,7 @@ class ActionController {
 		def actionId = params.int("id")
 		def realmId = params.int("realm")
 		
-		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def realm = Realm.findById(realmId);
 		
 		if (realm == null || realm.user != user) {
@@ -143,7 +143,7 @@ class ActionController {
 		def oid = params.int("id")
 		def areaId = params.int("area")
 		
-		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def area = areaId == 0? null : Area.findById(areaId);
 		
 		Action action = Action.findByOwnerAndId(user, oid)
@@ -159,7 +159,7 @@ class ActionController {
 		def oid = params.int("id")
 		def contactId = params.int("contact")
 		
-		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def contact = contactId == 0? null : Contact.findById(contactId);
 		
 		Action action = Action.findByOwnerAndId(user, oid)
@@ -175,7 +175,7 @@ class ActionController {
 		def actionId = params.int("actionId")
 		def dependsOnId = params.int("dependsOn")
 
-		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def action = Action.findByOwnerAndId(user, actionId)
 
 		def dependsOn = Action.findByOwnerAndId(user, dependsOnId)
@@ -194,7 +194,7 @@ class ActionController {
 	def deleteDependency = {
 		def actionId = params.int("actionId")
 
-		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def action = Action.findByOwnerAndId(user, actionId)
 		action.dependsOn = null
 		action.save(failOnError: true)
@@ -205,7 +205,7 @@ class ActionController {
 
 	def remove = {
 		def actionId = params.int("actionId")
-		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def action = Action.findByOwnerAndId(user, actionId)
 		
 		action.delete()
@@ -216,7 +216,7 @@ class ActionController {
 	
 	
 	def dashboard = {
-		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def realms = Realm.findAllByActiveAndUser(true, user)
 		
 		def result2 = []
@@ -232,7 +232,7 @@ class ActionController {
 	}
 
 	def next_waiting = {
-		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def realms = Realm.findAllByActiveAndUser(true, user)
 		
 		def result2 = []
@@ -246,7 +246,7 @@ class ActionController {
 	}
 
 	def nextActions = {
-		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def realms = Realm.findAllByActiveAndUser(true, user)
 
 		def result2 = []
@@ -311,7 +311,7 @@ class ActionController {
 	
 	def toggleStar = {
 		def actionId = params.int("id")
-		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def action = Action.findByOwnerAndId(user, actionId)
 		
 		def model = [success: false]

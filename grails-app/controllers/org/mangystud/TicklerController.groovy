@@ -11,7 +11,7 @@ class TicklerController {
 	def add = {
 		Tickler tickler = new Tickler(params)
 
-		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def realm = Realm.findByActive(true)
 
 		tickler.owner = user;		
@@ -34,7 +34,7 @@ class TicklerController {
 		def mode = params.int("mode");
 		mode = mode ?: 7;
 		
-		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def realms = Realm.findAllByActiveAndUser(true, user)
 		
 		def overdueTicklers = []
@@ -72,7 +72,7 @@ class TicklerController {
 
 	def remove = {
 		def ticklerId = params.int("ticklerId")
-		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def tickler = Tickler.findByOwnerAndId(user, ticklerId)
 		
 		def model = [success: false]
@@ -87,7 +87,7 @@ class TicklerController {
 		def ticklerId = params.int("ticklerId")
 		def date = new Date().parse("yyyy-MM-dd", params.date)
 
-		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def tickler = Tickler.findByOwnerAndId(user, ticklerId)
 		
 		def model = [success: false]
@@ -105,7 +105,7 @@ class TicklerController {
 		def ticklerId = params.int("id")
 		def period = params.period
 
-		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		Tickler tickler = Tickler.findByOwnerAndId(user, ticklerId)
 		
 		def model = [success: false]
@@ -123,7 +123,7 @@ class TicklerController {
 		def ticklerId = params.int("id")
 		def period = params.period
 
-		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		Tickler tickler = Tickler.findByOwnerAndId(user, ticklerId)
 		
 		def model = [success: false]
@@ -138,7 +138,7 @@ class TicklerController {
 	def complete = {
 		def ticklerId = params.int("ticklerId")
 		def done = params.boolean("done")
-		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		Tickler tickler = Tickler.findByOwnerAndId(user, ticklerId)
 		
 		def model = [success: false]
@@ -153,7 +153,7 @@ class TicklerController {
 	
 	def view = {
 		def ticklerId = params.int("ticklerId")
-		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		Tickler tickler = Tickler.findByOwnerAndId(user, ticklerId)
 		
 		def model = [tickler: tickler]
@@ -165,7 +165,7 @@ class TicklerController {
 		def ticklerId = params.int("id")
 		def realmId = params.int("realm")
 		
-		User user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		Person user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		Realm realm = Realm.findById(realmId);
 		
 		if (realm == null || realm.user != user) {
@@ -186,7 +186,7 @@ class TicklerController {
 		def oid = params.int("id")
 		def areaId = params.int("area")
 		
-		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def area = areaId == 0? null : Area.findById(areaId);
 		
 		Tickler tickler = Tickler.findByOwnerAndId(user, oid)
@@ -202,7 +202,7 @@ class TicklerController {
 		def oid = params.int("id")
 		def contactId = params.int("contact")
 		
-		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def contact = contactId == 0? null : Contact.findById(contactId);
 		
 		Tickler tickler = Tickler.findByOwnerAndId(user, oid)
@@ -215,7 +215,7 @@ class TicklerController {
 	}
 	
 	def activeCount = {
-		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		
 		def result = Tickler.executeQuery('select count(*) as tcount from Tickler where owner = ? and done = false and overdue = true', [user])
 		
@@ -225,7 +225,7 @@ class TicklerController {
 
 	def toggleStar = {
 		def ticklerId = params.int("id")
-		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def tickler = Tickler.findByOwnerAndId(user, ticklerId)
 		
 		def model = [success: false]

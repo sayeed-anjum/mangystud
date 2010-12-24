@@ -90,7 +90,7 @@ nimble {
     }
 
     implementation {
-    	user = "org.mangystud.User"
+    	user = "org.mangystud.Person"
     	profile = "org.mangystud.Profile"
     }
 }

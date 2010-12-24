@@ -9,7 +9,7 @@ class RealmController {
 		def name= params.name;
 		def active = params.boolean('active')
 		
-		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def realm = Realm.findByNameAndUser(name, user);
 		realm.active = active;
 		
@@ -21,7 +21,7 @@ class RealmController {
 
 	def add = {
 		def name = params.name
-		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		
 		def realm = new Realm(name:name, user:user)
 		try {
@@ -38,7 +38,7 @@ class RealmController {
 		def realmId = params.int('realm')
 		def name = params.name;
 		
-		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def realm = Realm.findByIdAndUser(realmId, user)
 		
 		def model = [error:"realm not found!"]
@@ -54,7 +54,7 @@ class RealmController {
 	}
 
 	def contexts = {
-		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def realms = Realm.findAllByUser(user)
 		
 		def contexts = new TreeMap();
@@ -75,7 +75,7 @@ class RealmController {
 		def realmId = params.int('realm')
 		def name = params.name;
 		
-		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def realm = Realm.findByIdAndUser(realmId, user)
 		
 		def model = [error:"realm not found!"]
@@ -95,7 +95,7 @@ class RealmController {
 		def name = params.name;
 		def email = params.email;
 		
-		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def realm = Realm.findByIdAndUser(realmId, user)
 		
 		def model = [error:"realm not found!"]
