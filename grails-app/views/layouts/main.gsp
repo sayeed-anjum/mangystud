@@ -1,20 +1,22 @@
 <html>
     <head>
         <title><g:layoutTitle default="Grails" /></title>
-        <link rel="stylesheet" href="${resource(dir:'css',file:'main.css')}" />
-        <link rel="stylesheet" href="${resource(dir:'css',file:'additional.css')}" />
-        <link rel="stylesheet" href="${resource(dir:'css/ui-lightness',file:'jquery-ui-1.8.7.custom.css')}" />
+        <p:css name='bundled'/>
         <link rel="shortcut icon" href="${resource(dir:'images',file:'favicon.ico')}" type="image/x-icon" />
-        <g:layoutHead />
-		<g:javascript src="jquery/jquery-1.4.4.min.js"/>
-		<g:javascript src="jquery/jquery-ui-1.8.7.custom.min.js"/>
-		<g:javascript src="jquery/jquery.tmpl.min.js"/>
-		<g:javascript src="dialogs.js"/>
-		<g:javascript src="dashboard.js"/>
-		<g:javascript src="application.js"/>
+		<p:javascript src="jquery/jquery-1.4.4.min"/>
+		<p:javascript src="jquery/jquery-ui-1.8.7.custom.min"/>
+		<p:javascript src="jquery/jquery.tmpl.min"/>
+<%-- 		
+        <link rel="stylesheet" href="${resource(dir:'css/ui-lightness',file:'jquery-ui-1.8.7.custom.css')}" />
+		<p:javascript src="dialogs.js"/>
+		<p:javascript src="dashboard.js"/>
+		<p:javascript src="application.js"/>
+--%>
+		<p:javascript src="app.all"/>
 		<g:javascript>
 			serverUrl = "${resource(dir:'/')}";
 		</g:javascript>
+        <g:layoutHead />
     </head>
     <body>
     	<g:render template="/layouts/header"/> 

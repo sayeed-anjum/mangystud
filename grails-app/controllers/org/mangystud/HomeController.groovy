@@ -1,12 +1,19 @@
 package org.mangystud
 
+import org.apache.shiro.SecurityUtils 
+
 class HomeController {
+	def realmService
 
     def index = { 
-		def realms = Realm.list();
-		def contexts = Context.list();
-		def actions = Action.list();
+		Person user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
+
+		def realms = realmService.getRealms(user)
+		if (realms.count() == 0) {
+			realmService.initialize(user)
+		}
+		def isAdmin = SecurityUtils.getSubject()?.hasRole('SYSTEM ADMINISTRATOR')
 		
-		return [realms : realms, contexts: contexts, actions: actions ];
+		return [user: user, realms : realms, isAdmin: isAdmin];
 	}
 }

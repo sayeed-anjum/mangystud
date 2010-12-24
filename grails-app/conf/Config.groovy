@@ -1,14 +1,12 @@
 // locations to search for config files that get merged into the main config
 // config files can either be Java properties files or ConfigSlurper scripts
 
-// grails.config.locations = [ "classpath:${appName}-config.properties",
-//                             "classpath:${appName}-config.groovy",
-//                             "file:${userHome}/.grails/${appName}-config.properties",
-//                             "file:${userHome}/.grails/${appName}-config.groovy"]
-
-// if(System.properties["${appName}.config.location"]) {
-//    grails.config.locations << "file:" + System.properties["${appName}.config.location"]
-// }
+ grails.config.locations = []
+ 
+ if(System.properties["${appName}.config.location"]) {
+	 println "reading config from file: " + System.properties["${appName}.config.location"]
+    grails.config.locations << "file:" + System.properties["${appName}.config.location"]
+ }
 
 grails.project.groupId = appName // change this to alter the default package name and Maven publishing destination
 grails.mime.file.extensions = true // enables the parsing of file extensions from URLs into the request format
@@ -56,7 +54,8 @@ environments {
     }
     development {
         grails.serverURL = "http://localhost:8080/${appName}"
-    }
+		uiperformance.enabled = false
+     }
     test {
         grails.serverURL = "http://localhost:8080/${appName}"
     }
@@ -80,11 +79,27 @@ log4j = {
            'org.codehaus.groovy.grails.commons', // core / classloading
            'org.codehaus.groovy.grails.plugins', // plugins
            'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
-           'org.springframework',
            'org.hibernate',
+           'org.springframework',
            'net.sf.ehcache.hibernate'
 
     warn   'org.mortbay.log'
 	
-	debug  'org.mangystud.TiddlerController'
+	debug  'org.mangystud',
+		   'NimbleBootStrap' //, 'org.hibernate.SQL'
 }
+
+
+uiperformance.bundles = [
+	[type: 'js',
+	 name: 'app.all',
+	 files: ['application','dashboard','dialogs']],
+	[type: 'css',
+	 name: 'bundled',
+	 files: ['ui-lightness/jquery-ui-1.8.7.custom','main']]
+ ]
+
+uiperformance.exclusions = [
+	"**/plugins/**",
+	"**/dojo/**"
+ ]

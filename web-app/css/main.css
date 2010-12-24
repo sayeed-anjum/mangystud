@@ -12,7 +12,7 @@ body {
 div#header {
 	background-color: #0C113B;
 	color: white;
-	padding: 5px;
+	padding: 5px 5px 2px 5px;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -82,7 +82,7 @@ div#appname {
 }
 
 div#realm {
-	margin-top: 15px;
+	margin-top: 10px;
 }
 
 div#realm span {
@@ -208,7 +208,7 @@ a:hover {
     margin: 0 1px 0;
 }
 
-.deleteTiddlerButton, .deleteDependency {
+.deleteTiddlerButton, .deleteDependency, .deleteTicklerButton {
 	color: #AF7878;
 	vertical-align: bottom;
 	font-size: 85%;
@@ -234,6 +234,12 @@ a:hover {
     background: none repeat scroll 0 0 #CFE9FF;
     border-color: #7FC6FF;
     color: #7FC6FF;
+}
+
+.viewer .Starred.button.on {
+    background: transparent;
+    border: none;
+    color: #FFB900;
 }
 
 .viewer .off:hover {
@@ -294,3 +300,83 @@ a:hover {
 	margin: 10px 0;
 }
 
+.viewer .dateBox {
+	font-size: 70%;
+    background-color: #FFFFFF;
+    border: 1px solid #CCCCCC;
+    margin: 0.1em;
+    text-align: center;
+    width: 8em;
+}
+	
+.viewer .buttonsLikeLinks .button {
+	border: none;
+	font-size: 100%;
+	color: blue;
+}
+
+.viewer .buttonsLikeLinks a.button:hover {
+	text-decoration: underline;
+}
+
+.floatleft {
+	float: left;
+}
+
+.clearboth {
+	clear: both;
+}
+
+.tickler .button.on {
+    background: none repeat scroll 0 0 #CCFFAA;
+    border-color: #5555CC;
+    color: #44AA44;
+}
+
+.tickler .button, .tickler .date {
+	font-size: 110%;
+}
+
+.tickler .rollPeriod.button {
+	font-size: 80%;
+	color: black;
+}
+
+.innerList .tick {
+	font-size: 95%;
+}
+
+.ticklers_pending {
+	font-weight: bold;
+}
+
+span.realm-tab, span.realm-add {
+	margin: 2px 5px;
+	padding: 2px 5px;
+	background-color: #999999;
+	color: black;
+	cursor: pointer;
+}
+
+span.realm-active {
+	background-color: #CCCCCC !important;
+	font-weight: bold;
+}
+
+.rlabel {
+	color: #7AB9DF;
+	font-size: 90%; 
+}
+
+div#user {
+	float: right;
+	margin-right: 20px;
+}
+
+#header a {
+	color: white;
+}
+
+#header a:hover {
+	text-decoration: underline;
+}

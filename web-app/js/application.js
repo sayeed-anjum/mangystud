@@ -3,6 +3,7 @@ manager = {
 	realmCache : {},
 	eventListeners : {},
 	staticTiddlers : {},
+	ticklerDashboards : {},
 	dialogs : {},
 	
 	updateCache : function(callback) {
@@ -77,11 +78,28 @@ manager = {
 		}
 	},
 
+	updateTicklerDashboards : function() {
+		for (var key in this.ticklerDashboards) {
+			var tiddler = $('#' + key);
+			if (tiddler.length) {
+				var fn = this.ticklerDashboards[key];
+				if ($.isFunction(fn)) {
+					fn();
+				}
+			}
+		}
+	},
+
 	actionUpdateListener : function(manager, event) {
 		manager.updateStaticActionTiddlers();
 		refreshActionView(event.id);
 	}, 
 	
+	ticklerUpdateListener : function(manager, event) {
+		manager.updateTicklerDashboards();
+		refreshTicklerView(event.id);
+	}, 
+
 	tmpl : function(name, data) {
 		 return $.tmpl(this.templates[name], data);		
 	}, 
@@ -97,6 +115,11 @@ manager = {
 			"nextAndWaiting" : tl_nextAndWaiting
 		});
 		
+		$.extend(this.ticklerDashboards, {			
+			"ticklerDashboard": tl_ticklerDashboard, 
+			"activeTicklerDashboard": tl_activeTicklerDashboard 
+		});
+
 		this.updateCache(function() {
 			$.each(data.templates, function(index, name) {
 				manager.templates[name] = $.template(null, $("#" + name));
@@ -105,10 +128,41 @@ manager = {
 		});
 
 		this.eventListeners.actionUpdate = [this.actionUpdateListener];
+		this.eventListeners.ticklerUpdate = [this.ticklerUpdateListener];
 		this.eventListeners.newContext = [this.updateRealmCache];
 		this.eventListeners.newArea = [this.updateRealmCache];
 		this.eventListeners.newContact = [this.updateRealmCache];
 	}, 
+	
+	determineTiddlerType : function(obj) {
+		var type = "";
+		var controlDiv = $(obj).closest('.controls');
+		if (!controlDiv.length) {
+			controlDiv = $(obj).closest('.link-container');
+		} 
+		if (controlDiv.length) {
+			if ($(controlDiv).hasClass("action")) {
+				type = "action";
+			} else if ($(controlDiv).hasClass("tickler")) {
+				type = "tickler";
+			}
+		}
+		return type;
+	},
+	
+	determineTiddlerId : function(obj) {
+		var id = null;
+		var controlDiv = $(obj).closest('.controls');
+		if (controlDiv.length > 0) {
+			id = controlDiv[0].id.substr(7);
+		} else {
+			var link = $(obj).siblings('.tiddlyLink');
+			if (link.length > 0) {
+				id = link[0].id.substr(10);
+			}
+		} 
+		return id;
+	},
 	
 	determineActionId : function (obj) {
 		var controlDiv = $(obj).closest('.controls');
@@ -122,6 +176,20 @@ manager = {
 			}
 		} 
 		return actionId;
+	},
+
+	determineTicklerId : function (obj) {
+		var controlDiv = $(obj).closest('.controls');
+		var ticklerId = null;
+		if (controlDiv.length > 0) {
+			ticklerId = controlDiv[0].id.substr(7);
+		} else {
+			var link = $(obj).siblings('.tiddlyLink');
+			if (link.length > 0) {
+				ticklerId = link[0].id.substr(10);
+			}
+		} 
+		return ticklerId;
 	},
 	
 	showDialogByName : function(dialogName, event) {
@@ -171,6 +239,13 @@ function refreshActionView(actionId) {
 	}
 }
 
+function refreshTicklerView(id) {
+	var tiddler = $('#td_ticklr_' + id);
+	if (tiddler.length > 0) {
+		tl_viewTickler(id);
+	}
+}
+
 function getOpenActionIdsForRealm(id) {
 	var actionIds = [];
 	$.each($('.controls .realm'), function(index, value) {
@@ -192,6 +267,22 @@ function completeAction() {
 			dataType: "json",
 			success: function(data) {
 				manager.raiseEvent('actionUpdate', {event: 'complete', id: actionId});
+			}
+		});
+	}
+}
+
+function completeTickler() {
+	var done = $(this).is(':checked');
+	var ticklerId =  manager.determineTicklerId(this);
+	if (ticklerId != null) {
+		$.ajax({
+			url: serverUrl + "tickler/complete",
+			data: {ticklerId: ticklerId, done: done}, 
+			type: "POST",
+			dataType: "json",
+			success: function(data) {
+				manager.raiseEvent('ticklerUpdate', {event: 'complete', id: ticklerId});
 			}
 		});
 	}
@@ -226,21 +317,72 @@ function updateStatusAction(obj, status) {
 	}
 }
 
+
+function updateTicklerDate(dateText, inst) {
+	var ticklerId = manager.determineTicklerId(this);
+	var date = inst.selectedYear + "-" + (inst.selectedMonth+1) + "-" + inst.selectedDay;
+	if (ticklerId != null) {
+		$.ajax({
+			url: serverUrl + "tickler/updateDate",
+			data: {ticklerId: ticklerId, date: date}, 
+			type: "POST",
+			dataType: "json",
+			success: function(data) {
+				manager.raiseEvent('ticklerUpdate', {event: 'date', id: ticklerId, date: date});
+			}
+		});
+	}
+}
+
+function incrementPeriod() {
+	var period = $(this).text();
+	var id = manager.determineTiddlerId(this);
+	if (id != null) {
+		$.ajax({
+			url: serverUrl + "tickler/incrementPeriod",
+			data: {id: id, period: period}, 
+			type: "POST",
+			dataType: "json",
+			success: function(data) {
+				manager.raiseEvent('ticklerUpdate', {event: 'incrementPeriod', id: id, period: period});
+			}
+		});
+	}
+}
+
+function updatePeriodicity() {
+	var period = $(this).attr('title');
+	var id = manager.determineTiddlerId(this);
+	if (id != null) {
+		$.ajax({
+			url: serverUrl + "tickler/updatePeriodicity",
+			data: {id: id, period: period}, 
+			type: "POST",
+			dataType: "json",
+			success: function(data) {
+				manager.raiseEvent('ticklerUpdate', {event: 'updatePeriodicity', id: id, period: period});
+			}
+		});
+	}
+}
+
 function updateRealm() {
 	var realmId = $(this).val();
-	var actionId = manager.determineActionId(this);
 	if (realmId === "__new__") {
 		alert('creating new realm');
 		return;
 	}
-	if (actionId != null) {
+
+	var type = manager.determineTiddlerType(this);
+	var id = manager.determineTiddlerId(this);
+	if (id != null && type != "") {
 		$.ajax({
-			url: serverUrl + "action/realmChange",
-			data: {actionId: actionId, realm: realmId}, 
+			url: serverUrl + type + "/realmChange",
+			data: {id: id, realm: realmId}, 
 			type: "POST",
 			dataType: "json",
 			success: function(data) {
-				manager.raiseEvent('actionUpdate', {event: 'realmChange', id: actionId, realm: realmId});
+				manager.raiseEvent(type + 'Update', {event: 'realmChange', id: id, realm: realmId});
 			}
 		});
 	}
@@ -248,19 +390,21 @@ function updateRealm() {
 
 function updateArea() {
 	var areaId = $(this).val();
-	var actionId = manager.determineActionId(this);
 	if (areaId === "__new__") {
 		manager.showDialogByName('areaDialog', {});
 		return;
 	}
-	if (actionId != null) {
+
+	var type = manager.determineTiddlerType(this);
+	var id = manager.determineTiddlerId(this);
+	if (id != null && type != "") {
 		$.ajax({
-			url: serverUrl + "action/areaUpdate",
-			data: {actionId: actionId, area: areaId}, 
+			url: serverUrl + type + "/areaUpdate",
+			data: {id: id, area: areaId}, 
 			type: "POST",
 			dataType: "json",
 			success: function(data) {
-				manager.raiseEvent('actionUpdate', {event: 'areaUpdate', id: actionId, area: areaId});
+				manager.raiseEvent(type + 'Update', {event: 'areaUpdate', id: id, area: areaId});
 			}
 		});
 	}
@@ -268,19 +412,21 @@ function updateArea() {
 
 function updateContact() {
 	var contactId = $(this).val();
-	var actionId = manager.determineActionId(this);
 	if (contactId === "__new__") {
 		manager.showDialogByName('contactDialog', {});
 		return;
 	}
-	if (actionId != null) {
+
+	var type = manager.determineTiddlerType(this);
+	var id = manager.determineTiddlerId(this);
+	if (id != null && type != "") {
 		$.ajax({
-			url: serverUrl + "action/contactUpdate",
-			data: {actionId: actionId, contact: contactId}, 
+			url: serverUrl + type + "/contactUpdate",
+			data: {id: id, contact: contactId}, 
 			type: "POST",
 			dataType: "json",
 			success: function(data) {
-				manager.raiseEvent('actionUpdate', {event: 'contactUpdate', id: actionId, contact: contactId});
+				manager.raiseEvent(type + 'Update', {event: 'contactUpdate', id: id, contact: contactId});
 			}
 		});
 	}
@@ -302,6 +448,23 @@ function updateContextState(event) {
 		});
 	}
 }
+
+function toggleStar() {
+	var type = manager.determineTiddlerType(this);
+	var id = manager.determineTiddlerId(this);
+	if (id != null && type != "") {
+		$.ajax({
+			url: serverUrl + type + "/toggleStar",
+			data: {id: id}, 
+			type: "POST",
+			dataType: "json",
+			success: function(data) {
+				manager.raiseEvent(type + 'Update', {event: 'toggleStar', id: id});
+			}
+		});
+	}
+}
+
 
 function  dependsOnSource ( request, response ) {
 	var actionId = manager.getCurrentActionId();
@@ -360,6 +523,20 @@ function deleteAction(actionId) {
 	}
 }
 
+function deleteTickler(ticklerId) {
+	if (ticklerId != null) {
+		$.ajax({
+			url: serverUrl + "tickler/remove",
+			data: {ticklerId: ticklerId}, 
+			type: "POST",
+			dataType: "json",
+			success: function(data) {
+				manager.raiseEvent('ticklerUpdate', {event: 'delete', id: ticklerId});
+			}
+		});
+	}
+}
+
 function toggleRealm() {
 	$(this).toggleClass('realm-active');
 	var active = $(this).hasClass('realm-active');
@@ -370,7 +547,8 @@ function toggleRealm() {
 		type: "POST",
 		dataType: "json",
 		success: function(data) {
-			manager.raiseEvent('actionUpdate', {event: 'realmToggle', realm: realm, active: true});
+			manager.raiseEvent('actionUpdate', {event: 'realmToggle', realm: realm, active: active});
+			manager.raiseEvent('ticklerUpdate', {event: 'realmToggle', realm: realm, active: active});
 		}
 	});
 }
@@ -421,6 +599,38 @@ function viewLoader(url, data, callback) {
 	});
 }
 
+function tl_viewTickler(ticklerId, inFocus) {
+	viewLoader("tickler/view", {ticklerId: ticklerId}, function(data) {
+		var tickler = data.tickler; 
+
+		var data = {
+			tickler: tickler, 
+			areas: manager.getAreas(tickler.realm.id),
+			contacts: manager.getContacts(tickler.realm.id),
+			realms: manager.getRealms(), 
+			tabIndex: 1
+		};
+		
+		var template = manager.tmpl("ticklerViewTemplate", data);
+
+		var tiddler = $('#td_ticklr_' + tickler.id);
+		if (tiddler.length) {
+			tiddler.replaceWith(template);
+		} else {
+			template.appendTo('#stage');
+		} 
+		if (inFocus) {
+			$(template).focus();
+		}
+		$('.dateBox').datepicker({
+			dateFormat: 'D, d-M-y',
+			onSelect: updateTicklerDate
+		});
+	});
+	
+}
+
+
 function addTiddlerActionHandlers() {
 	$('.tiddler').live('mouseenter', function() {
 		$(this).addClass("selected");
@@ -443,11 +653,17 @@ function addTiddlerActionHandlers() {
 		var actionId = manager.determineActionId(this);
 		deleteAction(actionId);
 	});
+	$('.tiddler .deleteTicklerButton').live('click', function() {
+		var ticklerId = manager.determineTicklerId(this);
+		deleteTickler(ticklerId);
+	});
 
-	$('.tiddler .chkOptionInput').live('click', completeAction);
+	$('.action .chkOptionInput').live('click', completeAction);
+	$('.tickler .chkOptionInput').live('click', completeTickler);
 	$('.Next').live('click', nextAction);
 	$('.WaitingFor').live('click', waitingForAction);
 	$('.Future').live('click', futureAction);
+	$('.Starred').live('click', toggleStar);
 	$('.tiddlyLink').live('click', function() {
 		var name = $(this).attr('tiddlylink');
 		var fn = window[name];
@@ -458,12 +674,22 @@ function addTiddlerActionHandlers() {
 			alert('Missing tiddly method: ' + name);
 		}
 	});
-	$(".action_link").click({manager:manager, dialog:'actionDialog'}, manager.showDialog);
+	$(".ticklers_pending").click(tl_activeTicklerDashboard);
+	$(".new_action").click({manager:manager, dialog:'actionDialog'}, manager.showDialog);
+	$('.new_tickler').click({manager:manager, dialog:'ticklerDialog'}, manager.showDialog);
 	$('.contextAdd').live('click', {manager:manager, dialog:'contextDialog'}, manager.showDialog);
 	$('.controls .chkContext').live('click', updateContextState);
 	$('.controls .area').live('change', updateArea);
 	$('.controls .contact').live('change', updateContact);
 	$('.controls .deleteDependency').live('click', deleteDependency); 
+	$('.controls .state .button').live('click', updatePeriodicity); 
+	$('.controls .date .button').live('click', incrementPeriod); 
+	$('.rollPeriod').live('click', incrementPeriod); 
+	$('.dateControl').datepicker({
+		dateFormat: 'dd/mm/yy'
+	});
+	$('.realm-tab').addClass("ui-corner-tl ui-corner-tr");
+	$('.realm-add').addClass("ui-corner-tl ui-corner-tr");
 }
 
 function addRealmActionHandlers() {
@@ -472,19 +698,37 @@ function addRealmActionHandlers() {
 	$('.realm-add').live('click', {manager:manager, dialog:'realmDialog'}, manager.showDialog);
 }
 
+function checkForActiveTicklers() {
+	$.ajax({
+		url: serverUrl + "tickler/activeCount",
+		type: "GET",
+		dataType: "json",
+		success: function(data) {
+			$('#ticklerAlert').toggle(data.count > 0);
+			setTimeout(checkForActiveTicklers, 30000);
+		}
+	});
+}
+
 jQuery(document).ready(function() {
 	manager.init({
-		templates: ["actionViewTemplate", "dashboardTemplate"],
+		templates: ["actionViewTemplate", "dashboardTemplate", "ticklerViewTemplate", "activeTicklerDashboard"],
 		dialogs: {
 			"realmDialog" : new RealmDialog().init(), 
 			"contextDialog" : new ContextDialog().init(),
 			"areaDialog" : new AreaDialog().init(),
 			"contactDialog" : new ContactDialog().init(),
+			"ticklerDialog" : new TicklerDialog().init(),
 			"actionDialog" : new ActionDialog().init()
 		}
 	});
 	
 	addTiddlerActionHandlers();
 	addRealmActionHandlers();
+	checkForActiveTicklers();
 });
 
+
+function formatTicklerDate(s) {
+	return $.datepicker.formatDate('D, d-M-y', new Date(s));
+}

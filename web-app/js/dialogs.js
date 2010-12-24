@@ -67,8 +67,8 @@ RealmDialog.prototype = $.extend({}, Dialog.prototype, {
 		this.close();
 
 		var span = $('<span/>', {
-			class: "realm-tab realm-active",
-			text: data.realm.name
+			"class": "realm-tab realm-active ui-corner-tl ui-corner-tr",
+			"text": data.realm.name
 		});
 		$('.realm-add').before(span);
 	}
@@ -201,5 +201,39 @@ ContactDialog.prototype = $.extend({}, Dialog.prototype, {
 		this.close();
 		var event = {event: 'newContact', data: data};
 		manager.raiseEvent('newContact', event);
+	}
+});
+
+TicklerDialog = function() {
+	this.name = 'tickler_dialog';
+	this.title = 'New Tickler';
+	return this;
+};
+
+TicklerDialog.prototype = $.extend({}, Dialog.prototype, {
+	isValid : function() {
+	   var name = $('[name=title]', this.el).val();
+	   if (name.trim() === "") {
+			alert('Please enter a title');
+			return false;
+	   }
+	   var date = $('[name=date]', this.el).val();
+	   if (date.trim() === "") {
+			alert('Please enter a date');
+			return false;
+	   }
+	  return true;
+	},
+
+	beforeShow : function(event) {
+		var tiddler = manager.currentTiddler;
+		$('[name=title]', this.el).val('');
+		$('[name=date]', this.el).val('');
+		this.el.dialog("option", "title", this.title);
+	}, 
+	
+	onSuccess : function(data, textStatus) {
+		this.close();
+		manager.raiseEvent('ticklerUpdate', {event: 'newTickler', data: data, id: data.tickler.id});
 	}
 });

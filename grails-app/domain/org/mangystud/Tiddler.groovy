@@ -12,21 +12,11 @@ class Tiddler {
 		owner(nullable:false)
     }
 	
-	static hasMany = [ contexts : Context ]
-	
 	Realm realm
 	String title
 	String notes
-	User owner
+	Person owner
 
 	Date lastUpdated
 	Date dateCreated
-	
-	def addContext = {context ->
-		if (!contexts.contains(context)) contexts << context
-	}
-
-	def removeContext = {context ->
-		contexts.remove(context)
-	}
 }

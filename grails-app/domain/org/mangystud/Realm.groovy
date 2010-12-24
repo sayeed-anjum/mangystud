@@ -12,7 +12,7 @@ class Realm {
 	List contexts;
 	List areas;
 	List contacts;
-	User user;
+	Person user;
 	
 	static hasMany = [contexts: Context, areas : Area, contacts : Contact] 
 }
