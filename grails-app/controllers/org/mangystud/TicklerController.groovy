@@ -31,6 +31,9 @@ class TicklerController {
 	}
 	
 	def dashboard = {
+		def mode = params.int("mode");
+		mode = mode ?: 7;
+		
 		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
 		def realms = Realm.findAllByActiveAndUser(true, user)
 		
@@ -38,9 +41,9 @@ class TicklerController {
 		def upcomingTicklers = []
 		def doneTicklers = []
 		if (realms.size() > 0) {
-			overdueTicklers = getTicklersByStateAndRealms(user, true, realms)
-			upcomingTicklers = getTicklersByStateAndRealms(user, false, realms)
-			doneTicklers = getDoneTicklers(user, realms)
+			overdueTicklers = mode & 4? getTicklersByStateAndRealms(user, true, realms) : []
+			upcomingTicklers = mode & 2? getTicklersByStateAndRealms(user, false, realms) : []
+			doneTicklers = mode & 1? getDoneTicklers(user, realms) : []
 		}
 		
 		def model = [overdue: overdueTicklers, upcoming: upcomingTicklers, done: doneTicklers]
@@ -211,4 +214,12 @@ class TicklerController {
 		render model as JSON
 	}
 	
+	def activeCount = {
+		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		
+		def result = Tickler.executeQuery('select count(*) as tcount from Tickler where owner = ? and done = false and overdue = true', [user])
+		
+		def model = ["count": result]
+		render model as JSON
+	}
 }

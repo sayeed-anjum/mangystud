@@ -116,7 +116,8 @@ manager = {
 		});
 		
 		$.extend(this.ticklerDashboards, {			
-			"ticklerDashboard": tl_ticklerDashboard 
+			"ticklerDashboard": tl_ticklerDashboard, 
+			"activeTicklerDashboard": tl_activeTicklerDashboard 
 		});
 
 		this.updateCache(function() {
@@ -647,6 +648,7 @@ function addTiddlerActionHandlers() {
 			alert('Missing tiddly method: ' + name);
 		}
 	});
+	$(".ticklers_pending").click(tl_activeTicklerDashboard);
 	$(".new_action").click({manager:manager, dialog:'actionDialog'}, manager.showDialog);
 	$('.new_tickler').click({manager:manager, dialog:'ticklerDialog'}, manager.showDialog);
 	$('.contextAdd').live('click', {manager:manager, dialog:'contextDialog'}, manager.showDialog);
@@ -660,6 +662,8 @@ function addTiddlerActionHandlers() {
 	$('.dateControl').datepicker({
 		dateFormat: 'dd/mm/yy'
 	});
+	$('.realm-tab').addClass("ui-corner-tl ui-corner-tr");
+	$('.realm-add').addClass("ui-corner-tl ui-corner-tr");
 }
 
 function addRealmActionHandlers() {
@@ -668,9 +672,21 @@ function addRealmActionHandlers() {
 	$('.realm-add').live('click', {manager:manager, dialog:'realmDialog'}, manager.showDialog);
 }
 
+function checkForActiveTicklers() {
+	$.ajax({
+		url: serverUrl + "tickler/activeCount",
+		type: "GET",
+		dataType: "json",
+		success: function(data) {
+			$('#ticklerAlert').toggle(data.count > 0);
+			setTimeout(checkForActiveTicklers, 30000);
+		}
+	});
+}
+
 jQuery(document).ready(function() {
 	manager.init({
-		templates: ["actionViewTemplate", "dashboardTemplate", "ticklerViewTemplate"],
+		templates: ["actionViewTemplate", "dashboardTemplate", "ticklerViewTemplate", "activeTicklerDashboard"],
 		dialogs: {
 			"realmDialog" : new RealmDialog().init(), 
 			"contextDialog" : new ContextDialog().init(),
@@ -683,6 +699,7 @@ jQuery(document).ready(function() {
 	
 	addTiddlerActionHandlers();
 	addRealmActionHandlers();
+	checkForActiveTicklers();
 });
 
 

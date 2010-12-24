@@ -1,11 +1,13 @@
 <div id="header">
-     <div id="appname">{mangystud}</div>
+     <div id="appname">aajkaaj</div>
    	 <div id="realm">
-   	 	<span>REALM</span>
+   	 	<span class='rlabel'>REALM</span>
 	   	<g:each in="${realms}" var="realm">
 			<span class='realm-tab <g:if test="${realm.active}">realm-active</g:if>'>${realm.name}</span>
 	   	</g:each>
 	   	<span class="realm-add"> + </span>
+	   	<span class="spacer"></span>
+	   	<span id="ticklerAlert" class="action_link ticklers_pending" style='display:none'><blink>*ticklers*</blink></span> 
 	   	<span class="spacer"></span>
 	   	<span id="Action" class="action_link new_action">+action</span> 
 	   	<span id="Project" class="action_link new_project">+project</span> 

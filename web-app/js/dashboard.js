@@ -154,6 +154,19 @@ function tl_ticklerDashboard() {
 	}).load();
 }
 
+function tl_activeTicklerDashboard() {
+	var dashboard = new DashboardView();
+	dashboard.init({
+		name: 'activeTicklerDashboard', 
+		title: 'Ticklers Requiring Action', 
+		url: 'tickler/dashboard',
+		onLoad: function(result) {
+			var leftHtml = getTicklerHtml(result.overdue, '');
+			return {left: leftHtml, right: ""}
+		}
+	}).load({mode: 4});
+}
+
 function getTicklerHtml(ticklers, title) {
 	if (ticklers == undefined) return "";
 	

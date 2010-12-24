@@ -12,7 +12,7 @@ body {
 div#header {
 	background-color: #0C113B;
 	color: white;
-	padding: 5px;
+	padding: 5px 5px 2px 5px;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -340,3 +340,24 @@ a:hover {
 	font-size: 95%;
 }
 
+.ticklers_pending {
+	font-weight: bold;
+}
+
+span.realm-tab, span.realm-add {
+	margin: 2px 5px;
+	padding: 2px 5px;
+	background-color: #999999;
+	color: black;
+	cursor: pointer;
+}
+
+span.realm-active {
+	background-color: #CCCCCC !important;
+	font-weight: bold;
+}
+
+.rlabel {
+	color: #7AB9DF;
+	font-size: 90%; 
+}
