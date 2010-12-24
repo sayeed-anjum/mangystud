@@ -148,7 +148,7 @@
 						<div>
 		       				<span class="tick"><input type="checkbox" class="chkOptionInput" {{if action.done}}checked="checked" {{/if}}/></span>
 		       				<span class="title">{{= action.title}}</span>
-		       				<span><a class="button Starred off" title="Starred" href="javascript:;">★</a></span>
+		       				<span><a class="button Starred {{if action.star}}on{{else}}off{{/if}}" title="Starred" href="javascript:;">★</a></span>
 		       				<span class="subtitle"></span>
 						</div>
 						<div class="state">
@@ -186,7 +186,7 @@
 		       				<span class="tick"><a href='javascript:;' title='' class='rollPeriod button off'>+{{= tickler.p}}</a></span>
 							{{/if}}
 		       				<span class="title">{{= tickler.title}}</span>
-		       				<span><a class="button Starred off" title="Starred" href="javascript:;">★</a></span>
+		       				<span><a class="button Starred {{if tickler.star}}on{{else}}off{{/if}}" title="Starred" href="javascript:;">★</a></span>
 		       				<span class="subtitle"></span>
 						</div>
 						<div class="state">

@@ -135,10 +135,18 @@ manager = {
 	}, 
 	
 	determineTiddlerType : function(obj) {
-		var controlDiv = $(obj).closest('.controls');
 		var type = "";
-		if (controlDiv.hasClass('action')) type = 'action';
-		else if (controlDiv.hasClass('tickler')) type = 'tickler';
+		var controlDiv = $(obj).closest('.controls');
+		if (!controlDiv.length) {
+			controlDiv = $(obj).closest('.link-container');
+		} 
+		if (controlDiv.length) {
+			if ($(controlDiv).hasClass("action")) {
+				type = "action";
+			} else if ($(controlDiv).hasClass("tickler")) {
+				type = "tickler";
+			}
+		}
 		return type;
 	},
 	
@@ -155,7 +163,7 @@ manager = {
 		} 
 		return id;
 	},
-
+	
 	determineActionId : function (obj) {
 		var controlDiv = $(obj).closest('.controls');
 		var actionId = null;
@@ -441,6 +449,23 @@ function updateContextState(event) {
 	}
 }
 
+function toggleStar() {
+	var type = manager.determineTiddlerType(this);
+	var id = manager.determineTiddlerId(this);
+	if (id != null && type != "") {
+		$.ajax({
+			url: serverUrl + type + "/toggleStar",
+			data: {id: id}, 
+			type: "POST",
+			dataType: "json",
+			success: function(data) {
+				manager.raiseEvent(type + 'Update', {event: 'toggleStar', id: id});
+			}
+		});
+	}
+}
+
+
 function  dependsOnSource ( request, response ) {
 	var actionId = manager.getCurrentActionId();
 	if (actionId != null) {
@@ -638,6 +663,7 @@ function addTiddlerActionHandlers() {
 	$('.Next').live('click', nextAction);
 	$('.WaitingFor').live('click', waitingForAction);
 	$('.Future').live('click', futureAction);
+	$('.Starred').live('click', toggleStar);
 	$('.tiddlyLink').live('click', function() {
 		var name = $(this).attr('tiddlylink');
 		var fn = window[name];

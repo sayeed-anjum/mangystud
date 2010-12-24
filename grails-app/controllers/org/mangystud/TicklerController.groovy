@@ -222,4 +222,17 @@ class TicklerController {
 		def model = ["count": result]
 		render model as JSON
 	}
+
+	def toggleStar = {
+		def ticklerId = params.int("id")
+		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def tickler = Tickler.findByOwnerAndId(user, ticklerId)
+		
+		def model = [success: false]
+		if (tickler) {
+			tickler.star = !tickler.star;
+			model.success = true;
+		}
+		render model as JSON
+	}
 }

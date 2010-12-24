@@ -309,4 +309,19 @@ class ActionController {
 		return result; 
 	}
 	
+	def toggleStar = {
+		def actionId = params.int("id")
+		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		def action = Action.findByOwnerAndId(user, actionId)
+		
+		def model = [success: false]
+		if (action) {
+			println action.star;
+			action.star = !(action.star);
+			println action.star;
+			action.save(failOnError: true)
+			model.success = true;
+		}
+		render model as JSON
+	}
 }

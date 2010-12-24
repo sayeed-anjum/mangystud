@@ -102,12 +102,12 @@ function getContextActionsHtml(stateMap, title, state) {
 		var ctxActions = stateMap[ctx];
 		for (var j = 0; j < ctxActions.length; j++) {
 			var action = ctxActions[j];
-			html += "<span class='action'>" +
+			html += "<span class='link-container action'>" +
 					"<input type='checkbox' class='chkOptionInput'" + (action.done? " checked='checked'>" : ">") +  
 					"<a class='button Next " + state[0] + "' href='javascript:;' title='Next'>n</a>" +
 					"<a class='button WaitingFor off " + state[1] + "' href='javascript:;' title='Waiting For'>w</a>" +
 					"<a class='button Future off " + state[2] + "' href='javascript:;' title='Future'>f</a>" +
-					"<a class='button Starred off' href='javascript:;' title='Starred'>★</a>" +
+					"<a class='button Starred " + (action.star? "on" : "off") + "' href='javascript:;' title='Starred'>★</a>" +
 					"<span>&nbsp;</span>" + 
 					"<a class='tiddlyLink tiddlyLinkExisting' href='javascript:;' tiddlyLink='tl_viewAction' id='tl_action_" + action.id + "'>" + action.title + "</a>" +
 					"<a class='deleteTiddlerButton' href='javascript:;' title='Delete tiddler'>×</a>" + 
@@ -126,7 +126,7 @@ function getDoneActionsHtml(doneActions, title) {
 	html += "<br><div class='doneList'>";
 	for (var j = 0; j < doneActions.length; j++) {
 		var action = doneActions[j];
-		html += "<span class='action'>" +
+		html += "<span class='link-container action'>" +
 				"<input type='checkbox' class='chkOptionInput'" + (action.done? " checked='checked'>" : ">") +  
 				"<span>&nbsp;</span>" + 
 				"<a class='tiddlyLink tiddlyLinkExisting' href='javascript:;' tiddlyLink='tl_viewAction' id='tl_action_" + action.id + "'>" + action.title + "</a>" +
@@ -180,8 +180,8 @@ function getTicklerHtml(ticklers, title) {
 		} else {
 			tick = "<a href='javascript:;' title='' class='rollPeriod button off'>+" + tickler.p + "</a>";  
 		}
-		html += "<span class='tickler'>" + tick + 
-				"<a class='button Starred off' href='javascript:;' title='Starred'>★</a>" +
+		html += "<span class='link-container tickler'>" + tick + 
+				"<a class='button Starred " + (tickler.star? "on" : "off") + "' href='javascript:;' title='Starred'>★</a>" +
 				"<input class='dateBox' value='" + formatTicklerDate(tickler.date) + "'>" +
 				"<span>&nbsp;</span>" +
 				"<a href='javascript:;' title='' class='tiddlyLink tiddlyLinkExisting' refresh='link' tiddlylink='tl_viewTickler' id='tl_ticklr_" + tickler.id + "'>" + tickler.title + "</a>" + 
@@ -200,9 +200,9 @@ function getDoneTicklerHtml(ticklers, title) {
 	html += "<br><div class='doneList'>";
 	for (var j = 0; j < ticklers.length; j++) {
 		var tickler = ticklers[j];
-		html += "<span class='tickler'>" +
+		html += "<span class='link-container tickler'>" +
 				"<input type='checkbox' class='chkOptionInput'" + (tickler.done? " checked='checked'>" : ">") +  
-				"<a class='button Starred off' href='javascript:;' title='Starred'>★</a>" +
+				"<a class='button Starred  " + (tickler.star? "on" : "off") + "' href='javascript:;' title='Starred'>★</a>" +
 				"<input class='dateBox' value='" + formatTicklerDate(tickler.date) + "'>" +
 				"<span>&nbsp;</span>" +
 				"<a href='javascript:;' title='' class='tiddlyLink tiddlyLinkExisting' refresh='link' tiddlylink='tl_viewTickler' id='tl_ticklr_" + tickler.id + "'>" + tickler.title + "</a>" + 

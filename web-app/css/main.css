@@ -236,6 +236,12 @@ a:hover {
     color: #7FC6FF;
 }
 
+.viewer .Starred.button.on {
+    background: transparent;
+    border: none;
+    color: #FFB900;
+}
+
 .viewer .off:hover {
     background: none repeat scroll 0 0 #FFE59F;
     border-color: #DFA60D;
