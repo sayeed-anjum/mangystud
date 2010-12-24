@@ -330,3 +330,13 @@ a:hover {
 .tickler .button, .tickler .date {
 	font-size: 110%;
 }
+
+.tickler .rollPeriod.button {
+	font-size: 80%;
+	color: black;
+}
+
+.innerList .tick {
+	font-size: 95%;
+}
+

@@ -146,7 +146,12 @@ manager = {
 		var controlDiv = $(obj).closest('.controls');
 		if (controlDiv.length > 0) {
 			id = controlDiv[0].id.substr(7);
-		}
+		} else {
+			var link = $(obj).siblings('.tiddlyLink');
+			if (link.length > 0) {
+				id = link[0].id.substr(10);
+			}
+		} 
 		return id;
 	},
 
@@ -336,6 +341,22 @@ function incrementPeriod() {
 	}
 }
 
+function updatePeriodicity() {
+	var period = $(this).attr('title');
+	var id = manager.determineTiddlerId(this);
+	if (id != null) {
+		$.ajax({
+			url: serverUrl + "tickler/updatePeriodicity",
+			data: {id: id, period: period}, 
+			type: "POST",
+			dataType: "json",
+			success: function(data) {
+				manager.raiseEvent('ticklerUpdate', {event: 'updatePeriodicity', id: id, period: period});
+			}
+		});
+	}
+}
+
 function updateRealm() {
 	var realmId = $(this).val();
 	if (realmId === "__new__") {
@@ -500,7 +521,8 @@ function toggleRealm() {
 		type: "POST",
 		dataType: "json",
 		success: function(data) {
-			manager.raiseEvent('actionUpdate', {event: 'realmToggle', realm: realm, active: true});
+			manager.raiseEvent('actionUpdate', {event: 'realmToggle', realm: realm, active: active});
+			manager.raiseEvent('ticklerUpdate', {event: 'realmToggle', realm: realm, active: active});
 		}
 	});
 }
@@ -632,7 +654,9 @@ function addTiddlerActionHandlers() {
 	$('.controls .area').live('change', updateArea);
 	$('.controls .contact').live('change', updateContact);
 	$('.controls .deleteDependency').live('click', deleteDependency); 
+	$('.controls .state .button').live('click', updatePeriodicity); 
 	$('.controls .date .button').live('click', incrementPeriod); 
+	$('.rollPeriod').live('click', incrementPeriod); 
 	$('.dateControl').datepicker({
 		dateFormat: 'dd/mm/yy'
 	});

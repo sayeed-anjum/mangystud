@@ -107,13 +107,25 @@ class TicklerController {
 		
 		def model = [success: false]
 		if (tickler) {
-			GregorianCalendar date = new GregorianCalendar()
-			date.setTime(tickler.date)
-			if (period == '+d') date.roll(Calendar.DATE, true)
-			if (period == '+w') date.roll(Calendar.WEEK_OF_YEAR, true)
-			if (period == '+m') date.roll(Calendar.MONTH, true)
-			if (period == '+y') date.roll(Calendar.YEAR, true)
-			tickler.date = date.getTime()
+			tickler.roll(period)
+			def tomorrow = new Date()+1
+			tickler.overdue = tomorrow.after(tickler.date)
+			model.success = true;
+		}
+
+		render model as JSON
+	}
+
+	def updatePeriodicity = {
+		def ticklerId = params.int("id")
+		def period = params.period
+
+		def user = User.get(SecurityUtils.getSubject()?.getPrincipal())
+		Tickler tickler = Tickler.findByOwnerAndId(user, ticklerId)
+		
+		def model = [success: false]
+		if (tickler) {
+			tickler.period = Period.valueOf(period);
 			model.success = true;
 		}
 

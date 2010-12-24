@@ -161,8 +161,13 @@ function getTicklerHtml(ticklers, title) {
 	html += "<div class='innerList'>";
 	for (var j = 0; j < ticklers.length; j++) {
 		var tickler = ticklers[j];
-		html += "<span class='tickler'>" +
-				"<input type='checkbox' class='chkOptionInput'" + (tickler.done? " checked='checked'>" : ">") +  
+		var tick = '';
+		if (tickler.period.name == 'Once') {
+			tick = "<input type='checkbox' class='chkOptionInput'" + (tickler.done? " checked='checked'>" : ">");  
+		} else {
+			tick = "<a href='javascript:;' title='' class='rollPeriod button off'>+" + tickler.p + "</a>";  
+		}
+		html += "<span class='tickler'>" + tick + 
 				"<a class='button Starred off' href='javascript:;' title='Starred'>★</a>" +
 				"<input class='dateBox' value='" + formatTicklerDate(tickler.date) + "'>" +
 				"<span>&nbsp;</span>" +

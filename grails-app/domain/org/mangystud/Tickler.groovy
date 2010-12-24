@@ -17,4 +17,25 @@ class Tickler extends Tiddler {
 	Area area
 	Project project
 	Contact contact
+	
+	public String getP() { 
+		switch (period) {
+			case Period.Once: return 'o'
+			case Period.Daily: return 'd'
+			case Period.Weekly: return 'w'
+			case Period.Monthly: return 'm'
+			case Period.Yearly: return 'y'
+		} 
+	}
+	public void setP(String x) {}
+	
+	def roll = {period ->
+		GregorianCalendar d = new GregorianCalendar()
+		d.setTime(date)
+		if (period == '+d') d.add(Calendar.DATE, 1)
+		if (period == '+w') d.add(Calendar.WEEK_OF_YEAR, 1)
+		if (period == '+m') d.add(Calendar.MONTH, 1)
+		if (period == '+y') d.add(Calendar.YEAR, 1)
+		date = d.getTime()
+	}
 }

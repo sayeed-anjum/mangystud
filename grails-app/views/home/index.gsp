@@ -180,7 +180,11 @@
 	        		<div class="viewer controls tickler" id="ticklr_{{= tickler.id}}">
 	        			{{tmpl({realms:realms, action:tickler}) '#realmTemplate'}}
 						<div>
+							{{if tickler.period.name == 'Once'}}
 		       				<span class="tick"><input type="checkbox" class="chkOptionInput" {{if tickler.done}}checked="checked" {{/if}}/></span>
+						    {{else}}
+		       				<span class="tick"><a href='javascript:;' title='' class='rollPeriod button off'>+{{= tickler.p}}</a></span>
+							{{/if}}
 		       				<span class="title">{{= tickler.title}}</span>
 		       				<span><a class="button Starred off" title="Starred" href="javascript:;">★</a></span>
 		       				<span class="subtitle"></span>
