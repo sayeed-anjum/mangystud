@@ -7,12 +7,14 @@ import com.ibm.icu.util.Calendar;
 import com.ibm.icu.util.GregorianCalendar;
 
 class TicklerController {
-
+	def realmService
+	def ticklerService
+	
 	def add = {
 		Tickler tickler = new Tickler(params)
 
 		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
-		def realm = Realm.findByActive(true)
+		def realm = realmService.getActiveRealm(user)
 
 		tickler.owner = user;		
 		tickler.realm = realm;
@@ -41,9 +43,9 @@ class TicklerController {
 		def upcomingTicklers = []
 		def doneTicklers = []
 		if (realms.size() > 0) {
-			overdueTicklers = mode & 4? getTicklersByStateAndRealms(user, true, realms) : []
-			upcomingTicklers = mode & 2? getTicklersByStateAndRealms(user, false, realms) : []
-			doneTicklers = mode & 1? getDoneTicklers(user, realms) : []
+			overdueTicklers = mode & 4? ticklerService.getTicklersByStateAndRealms(user, true, realms) : []
+			upcomingTicklers = mode & 2? ticklerService.getTicklersByStateAndRealms(user, false, realms) : []
+			doneTicklers = mode & 1? ticklerService.getDoneTicklers(user, realms) : []
 		}
 		
 		def model = [overdue: overdueTicklers, upcoming: upcomingTicklers, done: doneTicklers]
@@ -51,25 +53,6 @@ class TicklerController {
 		render model as JSON
 	}
 	
-	def getTicklersByStateAndRealms = {user, state, realms ->
-		def c = Tickler.createCriteria()
-		return c.list {
-			eq('done', false)
-			eq('owner', user)
-			eq('overdue', state)
-			'in'('realm', realms)
-		}
-	}
-
-	def getDoneTicklers = {user, realms ->
-		def c = Tickler.createCriteria()
-		return c.list {
-			eq('done', true)
-			eq('owner', user)
-			'in'('realm', realms)
-		}
-	}
-
 	def remove = {
 		def ticklerId = params.int("ticklerId")
 		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())

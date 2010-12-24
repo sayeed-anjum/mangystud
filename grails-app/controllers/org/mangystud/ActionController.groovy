@@ -4,36 +4,15 @@ import grails.converters.JSON
 import org.apache.shiro.SecurityUtils 
 
 class ActionController {
-	def NO_CONTEXT = "(No Context)"
-	
-	def groupActionsByStateAndContext = {actions ->
-		def resultByState = actions.groupBy { it.state }
-		
-		def resultByContext = new TreeMap();
-		resultByState.entrySet().each {
-			def stateContextMap = new TreeMap();
-			it.value.each {action ->
-				def actionContext = action.contexts
-				if (actionContext.size() == 0) {
-					stateContextMap.get(NO_CONTEXT, []) << action
-				} else {
-					actionContext.each {context ->
-						stateContextMap.get(context.name, []) << action
-					}
-				}
-			}
-			resultByContext[it.key] = stateContextMap
-		}
-		
-		return resultByContext;
-	}
-	
+	def realmService
+	def actionService
 	
 	def add = {
 		def type = params.type
 		def title = params.title
-		def realm = Realm.findByActive(true)
+
 		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
+		def realm = realmService.getActiveRealm(user)
 		
 		if (realm == null) {
 			render {error: "No active realm found!"} as JSON
@@ -54,6 +33,7 @@ class ActionController {
 	
 	def view = {
 		def actionId = params.int("actionId")
+
 		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def action = Action.findByOwnerAndId(user, actionId)
 		
@@ -70,6 +50,7 @@ class ActionController {
 	def complete = {
 		def actionId = params.int("actionId")
 		def done = params.boolean("done")
+
 		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def action = Action.findByOwnerAndId(user, actionId)
 		
@@ -89,6 +70,7 @@ class ActionController {
 	def status = {
 		def actionId = params.int("actionId")
 		def status = params.status
+
 		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def action = Action.findByOwnerAndId(user, actionId)
 		
@@ -103,6 +85,7 @@ class ActionController {
 		def actionId = params.int("actionId")
 		def contextId = params.int("context")
 		def checked = params.boolean("checked")
+
 		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def action = Action.findByOwnerAndId(user, actionId)
 
@@ -180,7 +163,7 @@ class ActionController {
 
 		def dependsOn = Action.findByOwnerAndId(user, dependsOnId)
 		
-		if (dependsOnId != null) {
+		if (dependsOn) {
 			action.dependsOn = dependsOn
 			action.state = State.Future
 			action.save(failOnError: true)
@@ -222,7 +205,7 @@ class ActionController {
 		def result2 = []
 		def doneActions = []
 		if (realms.size() > 0) {
-			result2 = getActionsByStateAndRealms(user, [State.Next, State.Future, State.WaitingFor], realms)
+			result2 = actionService.getActionsByStateAndRealms(user, [State.Next, State.Future, State.WaitingFor], realms)
 			doneActions = getDoneActions(user, realms)
 		}
 		
@@ -237,7 +220,7 @@ class ActionController {
 		
 		def result2 = []
 		if (realms.size() > 0) {
-			result2 = getActionsByStateAndRealms(user, [State.Next, State.WaitingFor], realms)
+			result2 = actionService.getActionsByStateAndRealms(user, [State.Next, State.WaitingFor], realms)
 		}
 		
 		def model = [state: result2]
@@ -251,7 +234,7 @@ class ActionController {
 
 		def result2 = []
 		if (realms.size() > 0) {
-			result2 = getActionsByStateAndRealms(user, [State.Next], realms)
+			result2 = actionService.getActionsByStateAndRealms(user, [State.Next], realms)
 		}
 		
 		def model = [state: result2]
@@ -262,30 +245,9 @@ class ActionController {
 		def actionId = params.int("actionId")
 		def term = params.term;
 		
-		def action = Action.findById(actionId);
-		def actions = Action.findAllByTitleLike("%${term}%");
-		actions.remove(action)
-		
-		def result = actions.collect {
-			if (!hasTransitiveDependency(it, action)) {
-				return [value: it.id, label: it.title]
-			} 
-			return 
-		}
-		result.removeAll{ it ==  null}
+		def result = actionService.search(actionId, term)		
 		
 		render result as JSON
-	}
-	
-	def getActionsByStateAndRealms = {user, states, realms ->
-		def c = Action.createCriteria()
-		def result = c.list {
-			eq('done', false)
-			eq('owner', user)
-			'in'('state', states)
-			'in'('realm', realms)
-		}
-		return groupActionsByStateAndContext(result)
 	}
 	
 	def getDoneActions = {user, realms ->
@@ -298,19 +260,9 @@ class ActionController {
 		}
 	}
 	
-	def hasTransitiveDependency = {action1, action2->
-		def result = false;
-		println "Checking transitive dependency for ${action1.title} and ${action2.title}"
-		if (action1.dependsOn != null) {
-			if (action1.dependsOn.id == action2.id) result = true; 
-			else if (hasTransitiveDependency(action1.dependsOn, action2)) result = true;
-		}
-		println "result is ${result}"
-		return result; 
-	}
-	
 	def toggleStar = {
 		def actionId = params.int("id")
+
 		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def action = Action.findByOwnerAndId(user, actionId)
 		

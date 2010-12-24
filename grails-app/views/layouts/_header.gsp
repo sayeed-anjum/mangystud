@@ -1,7 +1,7 @@
 <div id="header">
      <div id="appname"><p:image src='images/logo.png' alt='aajkaaj'/></div>
 	 <div id="user"><g:message code="nimble.label.usergreeting" /> <n:principalName /> |
-	 <g:if test="${user}.hasRole('SYSTEM ADMINISTRATOR')"><a href='${resource(dir:'/')}administration/users/list'>User Admin</a> | </g:if>  
+	 <g:if test="${isAdmin}"><a href='${resource(dir:'/')}administration/users/list'>User Admin</a> | </g:if>  
 	 <g:link controller="auth" action="logout" class="logout"><g:message code="nimble.link.logout.basic" /></g:link></div>
    	 <div id="realm">
    	 	<span class='rlabel'>REALM</span>
