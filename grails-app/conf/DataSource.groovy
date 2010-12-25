@@ -21,7 +21,7 @@ environments {
     }
     test {
         dataSource {
-            dbCreate = "update"
+            dbCreate = "create-drop"
 			driverClassName = "org.postgresql.Driver"
 			dialect = net.sf.hibernate.dialect.PostgreSQLDialect
 			url = "jdbc:postgresql://localhost:5432/aajkaaj"

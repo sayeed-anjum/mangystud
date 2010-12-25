@@ -1,9 +1,5 @@
 package org.mangystud
 
-class Project extends Action {
+class Project extends Tiddler {
 
-    static constraints = {
-    }
-	
-	static hasMany = [ actions : Action ]
 }
