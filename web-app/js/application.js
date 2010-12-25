@@ -124,7 +124,9 @@ manager = {
 			$.each(data.templates, function(index, name) {
 				manager.templates[name] = $.template(null, $("#" + name));
 			});
-			tl_actionDashboard();
+			if ($.isFunction(data.initialView)) {
+				data.initialView();
+			}
 		});
 
 		this.eventListeners.actionUpdate = [this.actionUpdateListener];
@@ -720,7 +722,8 @@ jQuery(document).ready(function() {
 			"contactDialog" : new ContactDialog().init(),
 			"ticklerDialog" : new TicklerDialog().init(),
 			"actionDialog" : new ActionDialog().init()
-		}
+		},
+		initialView: tl_nextActions
 	});
 	
 	addTiddlerActionHandlers();
