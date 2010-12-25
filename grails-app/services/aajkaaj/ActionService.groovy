@@ -2,6 +2,7 @@ package aajkaaj
 
 import groovy.sql.Sql 
 import org.mangystud.Action 
+import org.mangystud.Project 
 import org.mangystud.Tickler;
 
 class ActionService {
@@ -74,4 +75,23 @@ class ActionService {
 		return Tickler.findByIdAndOwner(actionId, user);
 	}
 	
+	def getProjectsByTypeAndRealms = {user, statuses, realms ->
+		def c = Project.createCriteria()
+		def result = c.list {
+			eq('done', false)
+			eq('owner', user)
+			'in'('projectStatus', statuses)
+			'in'('realm', realms)
+		}
+		return projects.groupBy { it.projectStatus }
+	}
+
+	def getCompletedProjects = {user, realms ->
+		def c = Project.createCriteria()
+		return c.list {
+			eq('done', true)
+			eq('owner', user)
+			'in'('realm', realms)
+		}
+	}
 }

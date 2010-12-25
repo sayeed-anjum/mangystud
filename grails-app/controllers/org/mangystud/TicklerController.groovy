@@ -53,19 +53,6 @@ class TicklerController {
 		render model as JSON
 	}
 	
-	def remove = {
-		def ticklerId = params.int("ticklerId")
-		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
-		def tickler = Tickler.findByOwnerAndId(user, ticklerId)
-		
-		def model = [success: false]
-		if (tickler) {
-			tickler.delete()
-			model.success = true;
-		}
-		render model as JSON
-	}
-
 	def updateDate = {
 		def ticklerId = params.int("ticklerId")
 		def date = new Date().parse("yyyy-MM-dd", params.date)
@@ -118,22 +105,6 @@ class TicklerController {
 		render model as JSON
 	}
 
-	def complete = {
-		def ticklerId = params.int("ticklerId")
-		def done = params.boolean("done")
-		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
-		Tickler tickler = Tickler.findByOwnerAndId(user, ticklerId)
-		
-		def model = [success: false]
-		if (tickler) {
-			tickler.done = done;
-			tickler.save(failOnError: true)
-			model.success = true;
-		}
-		
-		render model as JSON
-	}
-	
 	def view = {
 		def ticklerId = params.int("ticklerId")
 		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
@@ -144,78 +115,12 @@ class TicklerController {
 		render model as JSON
 	}
 	
-	def realmChange = {
-		def ticklerId = params.int("id")
-		def realmId = params.int("realm")
-		
-		Person user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
-		Realm realm = Realm.findById(realmId);
-		
-		if (realm == null || realm.user != user) {
-			String message = "Not a valid realm id: " + realmId;
-			return message as JSON
-		}
-		
-		Tickler tickler = Tickler.findByOwnerAndId(user, ticklerId)
-		
-		tickler.realm = realm
-		tickler.save(failOnError: true)
-		
-		def model = [success: true]
-		render model as JSON
-	}
-
-	def areaUpdate = {
-		def oid = params.int("id")
-		def areaId = params.int("area")
-		
-		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
-		def area = areaId == 0? null : Area.findById(areaId);
-		
-		Tickler tickler = Tickler.findByOwnerAndId(user, oid)
-		
-		tickler.area = area
-		tickler.save(failOnError: true)
-		
-		def model = [success: true]
-		render model as JSON
-	}
-
-	def contactUpdate = {
-		def oid = params.int("id")
-		def contactId = params.int("contact")
-		
-		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
-		def contact = contactId == 0? null : Contact.findById(contactId);
-		
-		Tickler tickler = Tickler.findByOwnerAndId(user, oid)
-		
-		tickler.contact = contact
-		tickler.save(failOnError: true)
-		
-		def model = [success: true]
-		render model as JSON
-	}
-	
 	def activeCount = {
 		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		
 		def result = Tickler.executeQuery('select count(*) as tcount from Tickler where owner = ? and done = false and overdue = true', [user])
 		
 		def model = ["count": result]
-		render model as JSON
-	}
-
-	def toggleStar = {
-		def ticklerId = params.int("id")
-		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
-		def tickler = Tickler.findByOwnerAndId(user, ticklerId)
-		
-		def model = [success: false]
-		if (tickler) {
-			tickler.star = !tickler.star;
-			model.success = true;
-		}
 		render model as JSON
 	}
 

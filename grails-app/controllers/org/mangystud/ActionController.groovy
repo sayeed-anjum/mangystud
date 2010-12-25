@@ -101,59 +101,6 @@ class ActionController {
 		render model as JSON
 	}
 
-	def realmChange = {
-		def actionId = params.int("id")
-		def realmId = params.int("realm")
-		
-		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
-		def realm = Realm.findById(realmId);
-		
-		if (realm == null || realm.user != user) {
-			String message = "Not a valid realm id: " + realmId;
-			return message as JSON
-		}
-		
-		def action = Action.findByOwnerAndId(user, actionId)
-		
-		action.realm = realm
-		action.save(failOnError: true)
-		
-		def model = [success: true]
-		render model as JSON
-	}
-
-	def areaUpdate = {
-		def oid = params.int("id")
-		def areaId = params.int("area")
-		
-		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
-		def area = areaId == 0? null : Area.findById(areaId);
-		
-		Action action = Action.findByOwnerAndId(user, oid)
-		
-		action.area = area
-		action.save(failOnError: true)
-		
-		def model = [success: true]
-		render model as JSON
-	}
-
-	def contactUpdate = {
-		def oid = params.int("id")
-		def contactId = params.int("contact")
-		
-		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
-		def contact = contactId == 0? null : Contact.findById(contactId);
-		
-		Action action = Action.findByOwnerAndId(user, oid)
-		
-		action.contact = contact
-		action.save(failOnError: true)
-		
-		def model = [success: true]
-		render model as JSON
-	}
-
 	def dependsOnUpdate = {
 		def actionId = params.int("actionId")
 		def dependsOnId = params.int("dependsOn")
@@ -186,18 +133,6 @@ class ActionController {
 		render model as JSON
 	}
 
-	def remove = {
-		def actionId = params.int("actionId")
-		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
-		def action = Action.findByOwnerAndId(user, actionId)
-		
-		action.delete()
-		
-		def model = [success: true]
-		render model as JSON
-	}
-	
-	
 	def dashboard = {
 		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def realms = Realm.findAllByActiveAndUser(true, user)
@@ -252,29 +187,11 @@ class ActionController {
 	
 	def getDoneActions = {user, realms ->
 		def c = Action.createCriteria()
-		c = Action.createCriteria()
 		return c.list {
 			eq('done', true)
 			eq('owner', user)
 			'in'('realm', realms)
 		}
-	}
-	
-	def toggleStar = {
-		def actionId = params.int("id")
-
-		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
-		def action = Action.findByOwnerAndId(user, actionId)
-		
-		def model = [success: false]
-		if (action) {
-			println action.star;
-			action.star = !(action.star);
-			println action.star;
-			action.save(failOnError: true)
-			model.success = true;
-		}
-		render model as JSON
 	}
 	
 	def makeTickler = {

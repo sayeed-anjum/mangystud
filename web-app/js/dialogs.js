@@ -137,7 +137,7 @@ ActionDialog.prototype = $.extend({}, Dialog.prototype, {
 	onSuccess : function(data, textStatus) {
 		this.close();
 		tl_viewAction(data.action.id);
-		manager.raiseEvent('actionUpdate', {event: 'new', id: data.action.id});
+		manager.raiseEvent('actionUpdate', {event: 'newAction', id: data.action.id});
 	}
 });
 
@@ -235,5 +235,33 @@ TicklerDialog.prototype = $.extend({}, Dialog.prototype, {
 	onSuccess : function(data, textStatus) {
 		this.close();
 		manager.raiseEvent('ticklerUpdate', {event: 'newTickler', data: data, id: data.tickler.id});
+	}
+});
+
+ProjectDialog = function() {
+	this.name = 'project_dialog';
+	this.title = 'New Project';
+	return this;
+};
+
+ProjectDialog.prototype = $.extend({}, Dialog.prototype, {
+	isValid : function() {
+	   var name = $('[name=title]', this.el).val();
+	   if (name.trim() === "") {
+			alert('Please enter a title');
+			return false;
+	   }
+	  return true;
+	},
+
+	beforeShow : function(event) {
+		var tiddler = manager.currentTiddler;
+		$('[name=title]', this.el).val('');
+		this.el.dialog("option", "title", this.title);
+	}, 
+	
+	onSuccess : function(data, textStatus) {
+		this.close();
+		manager.raiseEvent('projectUpdate', {event: 'newProject', data: data, id: data.project.id});
 	}
 });

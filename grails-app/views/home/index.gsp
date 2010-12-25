@@ -45,6 +45,14 @@
 			</g:formRemote >
         </div>
 
+        <div id="project_dialog" style="display:none">
+			<g:formRemote url="[controller:'project',action:'add']" 
+			          update="[success:'message',failure:'error']" name="newContextForm"
+			          onSuccess="manager.dialogSuccess('projectDialog', data, textStatus)">
+	        	<input type="text" name="title" value="" size="40"/>
+			</g:formRemote >
+        </div>
+        
         <div id="area_dialog" style="display:none">
 			<g:formRemote url="[controller:'realm',action:'addArea']" 
 			          update="[success:'message',failure:'error']" name="newContextForm"
@@ -176,6 +184,30 @@
 				</div>
         	</script>
 
+			<script id="projectViewTemplate" type="text/x-jquery-tmpl"> 
+	        	<div id="td_projct_{{= project.id}}" class="tiddler" tabIndex="{{= tabIndex}}">
+	        		{{tmpl '#toolbarTemplate'}}
+	        		<div class="title"></div>
+	        		<div class="viewer controls project" id="projct_{{= project.id}}">
+	        			{{tmpl({realms:realms, action:project}) '#realmTemplate'}}
+						<div>
+		       				<span class="tick"><input type="checkbox" class="chkOptionInput" {{if project.done}}checked="checked" {{/if}}/></span>
+		       				<span class="title">{{= project.title}}</span>
+		       				<span><a class="button Starred {{if project.star}}on{{else}}off{{/if}}" title="Starred" href="javascript:;">★</a></span>
+		       				<span class="subtitle"></span>
+						</div>
+						<div class="projectStatus">
+							<a class=" button Active {{if (project.projectStatus.name == 'Active')}}on{{else}}off{{/if}}" title="Active" href="javascript:;">active</a>
+							<a class=" button Someday {{if (project.projectStatus.name == 'Someday')}}on{{else}}off{{/if}}" title="Someday" href="javascript:;">someday/maybe</a>
+						</div>
+						<div class='buttonDiv'>
+							<a class="button makeTickler off">make tickler</a>
+						</div>
+						{{tmpl({action: project, areas: areas, contacts: contacts}) '#combosTemplate'}}
+					</div>
+				</div>
+        	</script>
+
 			<script id="ticklerViewTemplate" type="text/x-jquery-tmpl"> 
 	        	<div id="td_ticklr_{{= tickler.id}}" class="tiddler" tabIndex="{{= tabIndex}}">
 	        		{{tmpl '#toolbarTemplate'}}
@@ -192,7 +224,7 @@
 		       				<span><a class="button Starred {{if tickler.star}}on{{else}}off{{/if}}" title="Starred" href="javascript:;">★</a></span>
 		       				<span class="subtitle"></span>
 						</div>
-						<div class="state">
+						<div class="period">
 							<span>
 								<a href="javascript:;" title="Daily" class=" button Daily {{if (tickler.period.name == 'Daily')}}on{{else}}off{{/if}}">daily</a>
 								<a href="javascript:;" title="Once" class=" button Once {{if (tickler.period.name == 'Once')}}on{{else}}off{{/if}}">one time</a>
@@ -218,6 +250,7 @@
 					</div>
 				</div>
         	</script>
+
    </body>
 
 

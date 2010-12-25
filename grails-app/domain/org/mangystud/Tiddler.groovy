@@ -32,6 +32,7 @@ class Tiddler {
 	boolean overdue = false 
 	Date date
 	Period period = Period.Once
+	ProjectStatus projectStatus = ProjectStatus.Someday
 	
 	Area area
 	Contact contact

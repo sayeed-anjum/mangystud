@@ -1,6 +1,6 @@
 package org.mangystud
 
-public enum ProjectType {
+public enum ProjectStatus {
 	Active,
 	Someday,
 	Stalled;
