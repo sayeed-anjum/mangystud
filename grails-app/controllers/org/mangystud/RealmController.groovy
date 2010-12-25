@@ -24,14 +24,11 @@ class RealmController {
 		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		
 		def realm = new Realm(name:name, user:user)
-		try {
-			if (realm.save(failOnError: true)) {
-				def model = [realm: realm];
-				render model as JSON
-			}
-		} catch (Exception e) {
-			render {error: "Error when saving."} as JSON
+		def model = [];
+		if (realm.save(failOnError: true)) {
+			model.realm = realm;
 		}
+		render model as JSON
 	}
 
 	def addContext = {
@@ -46,9 +43,48 @@ class RealmController {
 			def context = new Context(name: name);
 			realm.contexts << context;
 	
-			realm.save(failOnError: true)
+			if (realm.save(failOnError: true, flush:true)) {
+				model = [context: context, realm: realm];
+			}
+		}
+		render model as JSON
+	}
+
+	def addArea = {
+		def realmId = params.int('realm')
+		def name = params.name;
+		
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
+		def realm = Realm.findByIdAndUser(realmId, user)
+		
+		def model = [error:"realm not found!"]
+		if (realm != null) {
+			def area = new Area(name: name);
+			realm.areas << area;
 	
-			model = [context: context, realm: realm];
+			if (realm.save(failOnError: true, flush:true)) {
+				model = [area: area, realm: realm];
+			}
+		}
+		render model as JSON
+	}
+
+	def addContact = {
+		def realmId = params.int('realm')
+		def name = params.name;
+		def email = params.email;
+		
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
+		def realm = Realm.findByIdAndUser(realmId, user)
+		
+		def model = [error:"realm not found!"]
+		if (realm != null) {
+			def contact = new Contact(name: name, email: email);
+			realm.contacts << contact;
+	
+			if (realm.save(failOnError: true, flush:true)) {
+				model = [contact: contact, realm: realm];
+			}
 		}
 		render model as JSON
 	}
@@ -68,45 +104,6 @@ class RealmController {
 		
 		def model = [realms: realms, contexts: contexts, areas: areas, contacts : contacts]
 		
-		render model as JSON
-	}
-	
-	def addArea = {
-		def realmId = params.int('realm')
-		def name = params.name;
-		
-		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
-		def realm = Realm.findByIdAndUser(realmId, user)
-		
-		def model = [error:"realm not found!"]
-		if (realm != null) {
-			def area = new Area(name: name);
-			realm.areas << area;
-	
-			realm.save(failOnError: true)
-	
-			model = [area: area, realm: realm];
-		}
-		render model as JSON
-	}
-
-	def addContact = {
-		def realmId = params.int('realm')
-		def name = params.name;
-		def email = params.email;
-		
-		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
-		def realm = Realm.findByIdAndUser(realmId, user)
-		
-		def model = [error:"realm not found!"]
-		if (realm != null) {
-			def contact = new Contact(name: name, email: email);
-			realm.contacts << contact;
-	
-			realm.save(failOnError: true)
-	
-			model = [contact: contact, realm: realm];
-		}
 		render model as JSON
 	}
 }
