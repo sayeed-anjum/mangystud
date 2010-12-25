@@ -83,7 +83,7 @@ class ActionService {
 			'in'('projectStatus', statuses)
 			'in'('realm', realms)
 		}
-		return projects.groupBy { it.projectStatus }
+		return result.groupBy { it.projectStatus }
 	}
 
 	def getCompletedProjects = {user, realms ->

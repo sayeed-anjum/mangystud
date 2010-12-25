@@ -11,6 +11,7 @@
 		   			<a class="tiddlyLink tiddlyLinkExisting" href="javascript:;" tiddlylink="tl_nextAndWaiting">Next &amp; Waiting Actions</a>
 		   			<a class="tiddlyLink tiddlyLinkExisting" href="javascript:;" tiddlylink="tl_actionDashboard">Action Dashboard</a>
 		   			<a class="tiddlyLink tiddlyLinkExisting" href="javascript:;" tiddlylink="tl_ticklerDashboard">Tickler Dashboard</a>
+		   			<a class="tiddlyLink tiddlyLinkExisting" href="javascript:;" tiddlylink="tl_projectDashboard">Project Dashboard</a>
 	   			</div>
    			</div>
    		</div>

@@ -213,3 +213,61 @@ function getDoneTicklerHtml(ticklers, title) {
 	html += "</div>";
 	return html;
 }
+
+function tl_projectDashboard() {
+	var dashboard = new DashboardView();
+	dashboard.init({
+		name: 'projectDashboard', 
+		title: 'Project Dashboard', 
+		url: 'project/dashboard',
+		onLoad: function(result) {
+			var leftHtml = getProjectHtml(result.state.Active, 'Active Projects', ['on', 'off']);
+
+			var rightHtml = getProjectHtml(result.state.Someday, 'Someday/Maybe Projects', ['off', 'on'])
+			rightHtml += getDoneProjectHtml(result.done, 'Completed Projects')
+			return {left: leftHtml, right: rightHtml}
+		}
+	}).load();
+}
+
+function getProjectHtml(projects, title, state) {
+	if (projects == undefined) return "";
+	
+	var html = "<div class='mgtdList'><h1>" + title + "</h1>";
+	html += "<div class='innerList'>";
+	for (var j = 0; j < projects.length; j++) {
+		var project = projects[j];
+		html += "<span class='link-container project'>" +
+			    "<input type='checkbox' class='chkOptionInput'" + (project.done? " checked='checked'>" : ">") +   
+				"<a class='button Active " + state[0] + "' href='javascript:;' title='Active'>a</a>" +
+				"<a class='button Someday off " + state[1] + "' href='javascript:;' title='Someday'>s/m</a>" +
+				"<a class='button Starred " + (project.star? "on" : "off") + "' href='javascript:;' title='Starred'>★</a>" +
+				"<span>&nbsp;</span>" +
+				"<a href='javascript:;' title='' class='tiddlyLink tiddlyLinkExisting' refresh='link' tiddlylink='tl_viewProject' id='tl_projct_" + project.id + "'>" + project.title + "</a>" + 
+				"<a class='deleteProjectButton' href='javascript:;' title='Delete project'>×</a>" + 
+				"</span><br>";
+	}
+	html += "</div>"
+	html += "</div>";
+	return html;
+}
+
+function getDoneProjectHtml(projects, title) {
+	if (projects == undefined) return "";
+	
+	var html = "<div class='mgtdList'><h1>" + title + "</h1>";
+	html += "<br><div class='doneList'>";
+	for (var j = 0; j < projects.length; j++) {
+		var project = projects[j];
+		html += "<span class='link-container project'>" +
+				"<input type='checkbox' class='chkOptionInput'" + (project.done? " checked='checked'>" : ">") +  
+				"<a class='button Starred  " + (project.star? "on" : "off") + "' href='javascript:;' title='Starred'>★</a>" +
+				"<span>&nbsp;</span>" +
+				"<a href='javascript:;' title='' class='tiddlyLink tiddlyLinkExisting' refresh='link' tiddlylink='tl_viewProject' id='tl_projct_" + project.id + "'>" + project.title + "</a>" + 
+				"<a class='deleteTicklerButton' href='javascript:;' title='Delete tickler'>×</a>" + 
+				"</span><br>"
+	}
+	html += "</div>";
+	html += "</div>";
+	return html;
+}

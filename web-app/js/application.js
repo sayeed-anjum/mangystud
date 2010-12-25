@@ -138,6 +138,10 @@ manager = {
 			"activeTicklerDashboard": tl_activeTicklerDashboard 
 		});
 
+		$.extend(this.projectDashboards, {			
+			"projectDashboard": tl_projectDashboard 
+		});
+
 		this.updateCache(function() {
 			$.each(data.templates, function(index, name) {
 				manager.templates[name] = $.template(null, $("#" + name));
@@ -796,6 +800,8 @@ function addTiddlerActionHandlers() {
 	$('.WaitingFor').live('click', waitingForAction);
 	$('.Future').live('click', futureAction);
 	$('.Starred').live('click', toggleStar);
+	$('.Active').live('click', {status: 'Active'}, updateProjectStatus);
+	$('.Someday').live('click', {status: 'Someday'}, updateProjectStatus);
 	$('.tiddlyLink').live('click', function() {
 		var name = $(this).attr('tiddlylink');
 		var fn = window[name];
@@ -815,7 +821,6 @@ function addTiddlerActionHandlers() {
 	$('.controls .area').live('change', updateArea);
 	$('.controls .contact').live('change', updateContact);
 	$('.controls .deleteDependency').live('click', deleteDependency); 
-	$('.controls .projectStatus .button').live('click', updateProjectStatus); 
 	$('.controls .period .button').live('click', updatePeriodicity); 
 	$('.controls .date .button').live('click', incrementPeriod); 
 	$('.rollPeriod').live('click', incrementPeriod); 
