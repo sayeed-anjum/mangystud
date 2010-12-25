@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>Welcome to mangystud!</title>
+        <title>aajkaaj - Today's work today</title>
         <meta name="layout" content="main" />
 	</head>
    <body>
