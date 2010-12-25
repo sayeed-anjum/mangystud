@@ -77,8 +77,8 @@ nimble {
         }
 
         mail {
-            from = "mangystud <app@mangystud.org>"
-            host = ""
+            from = "aajkaaj <aajkaaj@example.com>"
+            host = "localhost"
             port = 25
             username = ""
             password = ""
