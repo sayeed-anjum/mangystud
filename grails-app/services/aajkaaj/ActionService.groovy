@@ -1,10 +1,12 @@
 package aajkaaj
 
+import groovy.sql.Sql 
 import org.mangystud.Action 
-import org.mangystud.Tickler 
+import org.mangystud.Tickler;
 
 class ActionService {
 	def NO_CONTEXT = "(No Context)"
+	def dataSource
 	
     static transactional = true
 	
@@ -66,21 +68,10 @@ class ActionService {
 	}
 	
 	def makeTickler = { actionId, user ->
-		Action action = Action.findByOwnerAndId(user, actionId)
-		def tickler = null;
-		if (action) {
-			def prunedMap = [:]
-			action.properties.each{
-				if (Tickler.metaClass.properties.find{p-> p.name == it.key}) {
-					prunedMap.put(it.key, it.value)
-				}
-			}
-			println prunedMap;
-			action.delete(flush:true);
-			tickler = new Tickler(prunedMap)
-			tickler.save(failOnError: true, flush:true)
-		}
-		return tickler;
+		def db = new Sql(dataSource)
+		def sql = "update tiddler set class='" + Tickler.class.name + "' where id = " + actionId
+		db.execute(sql);
+		return Tickler.findByIdAndOwner(actionId, user);
 	}
 	
 }

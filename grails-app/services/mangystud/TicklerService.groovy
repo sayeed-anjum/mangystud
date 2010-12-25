@@ -1,10 +1,12 @@
 package mangystud
 
+import groovy.sql.Sql 
 import org.mangystud.Action 
 import org.mangystud.Tickler 
 
 class TicklerService {
-
+	def dataSource
+	
     static transactional = true
 
     def updateTicklerStatus() {
@@ -32,20 +34,10 @@ class TicklerService {
 	}
 	
 	def makeAction = {ticklerId, user ->
-		Tickler tickler = Tickler.findByOwnerAndId(user, ticklerId)
-		def action = null;
-		if (tickler) {
-			def prunedMap = [:]
-			tickler.properties.each{
-				if (Action.metaClass.properties.find{p-> p.name == it.key}) {
-					prunedMap.put(it.key, it.value)
-				}
-			}
-			tickler.delete(flush:true);
-			action = new Action(prunedMap)
-			action.save(failOnError: true, flush:true)
-		}
-		return action;
+		def db = new Sql(dataSource)
+		def sql = "update tiddler set class='" + Action.class.name + "' where id = " + ticklerId
+		db.execute(sql);
+		return Action.findByIdAndOwner(ticklerId, user);
 	}
 
 }
