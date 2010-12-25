@@ -1,6 +1,7 @@
 package aajkaaj
 
 import org.mangystud.Action 
+import org.mangystud.Tickler 
 
 class ActionService {
 	def NO_CONTEXT = "(No Context)"
@@ -62,6 +63,24 @@ class ActionService {
 		}
 		
 		return resultByContext
+	}
+	
+	def makeTickler = { actionId, user ->
+		Action action = Action.findByOwnerAndId(user, actionId)
+		def tickler = null;
+		if (action) {
+			def prunedMap = [:]
+			action.properties.each{
+				if (Tickler.metaClass.properties.find{p-> p.name == it.key}) {
+					prunedMap.put(it.key, it.value)
+				}
+			}
+			println prunedMap;
+			action.delete(flush:true);
+			tickler = new Tickler(prunedMap)
+			tickler.save(failOnError: true, flush:true)
+		}
+		return tickler;
 	}
 	
 }

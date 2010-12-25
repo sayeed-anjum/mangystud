@@ -495,6 +495,48 @@ function saveDependsOnAction(event, ui) {
 	}
 }
 
+function makeTickler() {
+	var me = this;
+	var type = manager.determineTiddlerType(this);
+	var id = manager.determineTiddlerId(this);
+	if (type == 'action' && id != null) {
+		$.ajax({
+			url: serverUrl + "action/makeTickler",
+			data: {id: id}, 
+			type: "POST",
+			dataType: "json",
+			success: function(data) {
+				$(me).closest('.tiddler').remove();
+				tl_viewTickler(data.tickler.id, true);
+				var event = {event: 'makeTickler', id: id};
+				manager.raiseEvent('actionUpdate', event);
+				manager.raiseEvent('ticklerUpdate', event);
+			}
+		});
+	}
+}
+
+function makeAction() {
+	var me = this;
+	var type = manager.determineTiddlerType(this);
+	var id = manager.determineTiddlerId(this);
+	if (type == 'tickler' && id != null) {
+		$.ajax({
+			url: serverUrl + "tickler/makeAction",
+			data: {id: id}, 
+			type: "POST",
+			dataType: "json",
+			success: function(data) {
+				$(me).closest('.tiddler').remove();
+				tl_viewAction(data.action.id, true);
+				var event = {event: 'makeAction', id: id};
+				manager.raiseEvent('actionUpdate', event);
+				manager.raiseEvent('ticklerUpdate', event);
+			}
+		});
+	}
+}
+
 function deleteDependency() {
 	var actionId = manager.determineActionId(this);
 	if (actionId != null) {
@@ -690,6 +732,8 @@ function addTiddlerActionHandlers() {
 	$('.dateControl').datepicker({
 		dateFormat: 'dd/mm/yy'
 	});
+	$('.makeTickler').live('click', makeTickler);
+	$('.makeAction').live('click', makeAction);
 	$('.realm-tab').addClass("ui-corner-tl ui-corner-tr");
 	$('.realm-add').addClass("ui-corner-tl ui-corner-tr");
 }
@@ -733,5 +777,5 @@ jQuery(document).ready(function() {
 
 
 function formatTicklerDate(s) {
-	return $.datepicker.formatDate('D, d-M-y', new Date(s));
+	return s == null? '(set date)' : $.datepicker.formatDate('D, d-M-y', new Date(s));
 }

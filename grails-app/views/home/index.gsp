@@ -164,6 +164,9 @@
 							<span class="contextAdd button off">+</span>
 						</div>
 						{{tmpl({action: action, areas: areas, contacts: contacts}) '#combosTemplate'}}
+						<div class='buttonDiv'>
+							<a class="button makeTickler off">make tickler</a>
+						</div>
 						<div class='combos'>
 							<span class='label'>Depends On</span>
 							<input name='dependsOn' value='{{if dependsOn}}{{= dependsOn.title}}{{/if}}' size='100'/>
@@ -208,6 +211,9 @@
   							</div>
 					    	<div class="clearboth"></div>
  						</div>
+						<div class='buttonDiv'>
+							<a class="button makeAction off">make action</a>
+						</div>
 						{{tmpl({action: tickler, areas: areas, contacts: contacts}) '#combosTemplate'}}
 					</div>
 				</div>

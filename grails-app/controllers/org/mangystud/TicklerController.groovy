@@ -218,4 +218,14 @@ class TicklerController {
 		}
 		render model as JSON
 	}
+
+	def makeAction = {
+		def ticklerId = params.int("id")
+		
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
+		
+		def model = [success: true]
+		model.action = ticklerService.makeAction(ticklerId, user)
+		render model as JSON
+	}
 }

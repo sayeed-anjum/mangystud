@@ -342,6 +342,17 @@ a:hover {
 	color: black;
 }
 
+.controls .buttonDiv {
+	float: right;
+}
+
+.controls .buttonDiv .button {
+	font-size: 100%;
+	color: black;
+	font-weight: normal;
+	cursor: pointer;
+}
+
 .innerList .tick {
 	font-size: 95%;
 }

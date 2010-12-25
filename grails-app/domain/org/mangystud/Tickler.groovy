@@ -6,6 +6,7 @@ class Tickler extends Tiddler {
 		project(nullable:true)
 		area(nullable:true)
 		contact(nullable:true)
+		date(nullable:true)
 	}
 
 	boolean done 
@@ -31,7 +32,7 @@ class Tickler extends Tiddler {
 	
 	def roll = {period ->
 		GregorianCalendar d = new GregorianCalendar()
-		d.setTime(date)
+		if (date) d.setTime(date)
 		if (period == '+d') d.add(Calendar.DATE, 1)
 		if (period == '+w') d.add(Calendar.WEEK_OF_YEAR, 1)
 		if (period == '+m') d.add(Calendar.MONTH, 1)

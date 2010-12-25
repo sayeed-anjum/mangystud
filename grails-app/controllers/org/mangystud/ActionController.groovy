@@ -38,7 +38,7 @@ class ActionController {
 		def action = Action.findByOwnerAndId(user, actionId)
 		
 		def dependsOn = null
-		if (action.dependsOn) { 
+		if (action?.dependsOn) { 
 			dependsOn = Action.findByOwnerAndId(user, action.dependsOn.id)
 		}
 		
@@ -275,5 +275,16 @@ class ActionController {
 			model.success = true;
 		}
 		render model as JSON
+	}
+	
+	def makeTickler = {
+		def actionId = params.int("id")
+		
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
+		
+		def model = [success: true];
+		model.tickler = actionService.makeTickler(actionId, user);
+		render model as JSON
+
 	}
 }
