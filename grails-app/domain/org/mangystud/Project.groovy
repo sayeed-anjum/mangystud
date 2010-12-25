@@ -1,5 +1,4 @@
 package org.mangystud
 
-class Project extends Tiddler {
-
+class Project extends Action {
 }
