@@ -597,6 +597,15 @@ function toggleRealm() {
 	});
 }
 
+function closeOtherTiddlers() {
+	var id = $(this).closest('.tiddler').attr('id');
+	var kids = $('#stage').children(':not(#' + id + ')');
+	$.each(kids, function(index, k){
+		$(k).remove();
+	});
+}
+	
+
 function tl_viewAction(actionId, inFocus) {
 	viewLoader("action/view", {actionId: actionId}, function(data) {
 		var action = data.action; 
@@ -686,6 +695,7 @@ function addTiddlerActionHandlers() {
 	$('.tiddler .command_closeTiddler').live('click', function() {
 		$(this).closest('.tiddler').remove();
 	});
+	$('.tiddler .command_closeOthers').live('click', closeOtherTiddlers);
 	$('.tiddler .command_deleteTiddler').live('click', function() {
 		var actionId = $(this).closest('.tiddler')[0].id;
 		if (actionId.substr(0, 10) === 'td_action_') {
