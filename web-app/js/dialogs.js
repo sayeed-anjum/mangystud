@@ -137,7 +137,7 @@ ActionDialog.prototype = $.extend({}, Dialog.prototype, {
 	onSuccess : function(data, textStatus) {
 		this.close();
 		tl_viewAction(data.action.id);
-		manager.raiseEvent('actionUpdate', {event: 'newAction', id: data.action.id});
+		manager.raiseEvent('actionUpdate', {event: 'newAction', data: data, id: data.action.id});
 	}
 });
 
