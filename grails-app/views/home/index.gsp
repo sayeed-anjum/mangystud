@@ -211,7 +211,7 @@
 						</div>
 						{{tmpl({action: project, areas: areas, contacts: contacts}) '#combosTemplate'}}
 					</div>
-					{{tmpl({tiddlers: tiddlers}) '#projectDetails'}}
+					{{tmpl({project: project, prefix: prefix, tiddlers: tiddlers}) '#projectDetails'}}
 				</div>
         	</script>
 
@@ -263,14 +263,14 @@
         			<table class="panel">
         			<tr>
         			<td><div class="panel1">
-						{{tmpl({title:'Next Actions', ctxList:tiddlers.NextActions, n:"on", w:"off", f:"off"}) '#showActionListByContext'}}
-						{{tmpl({title:'Waiting Actions', ctxList:tiddlers.WaitingForActions, n:"off", w:"on", f:"off"}) '#showActionListByContext'}}
+						{{tmpl({title:'Next Actions', ctxList:tiddlers.NextActions, n:"on", w:"off", f:"off", prefix: prefix}) '#showActionListByContext'}}
+						{{tmpl({title:'Waiting Actions', ctxList:tiddlers.WaitingForActions, n:"off", w:"on", f:"off", prefix: prefix}) '#showActionListByContext'}}
 					</div></td>
         			<td><div class="panel2">
-						{{tmpl({title:'Future Actions', ctxList:tiddlers.FutureActions, n:"off", w:"off", f:"on"}) '#showActionListByContext'}}
+						{{tmpl({title:'Future Actions', ctxList:tiddlers.FutureActions, n:"off", w:"off", f:"on", prefix: prefix}) '#showActionListByContext'}}
 					</div></td>
         			<td><div class="panel3">
-						{{tmpl({title:'Upcoming Ticklers', ticklers:tiddlers.upcomingTicklers}) '#showTicklers'}}
+						{{tmpl({title:'Upcoming Ticklers', ticklers:tiddlers.upcomingTicklers, prefix: prefix}) '#showTicklers'}}
 					</div></td>
         			</tr>
         			</table>
@@ -286,7 +286,7 @@
 							<span class='link-container action'>
 							<input type='checkbox' class='chkOptionInput' {{if action.done}}checked='checked'{{/if}}>
 							<a class='button Next {{= n}}' href='javascript:;' title='Next'>n</a><a class='button WaitingFor {{= w}}' href='javascript:;' title='Waiting For'>w</a><a class='button Future {{= f}}' href='javascript:;' title='Future'>f</a>
-							<a class='button Starred {{if action.star}}on{{else}}off{{/if}}' href='javascript:;' title='Starred'>★</a><span>&nbsp;</span><a class='tiddlyLink tiddlyLinkExisting' href='javascript:;' tiddlyLink='tl_viewAction' id='tl_action_{{= action.id}}'>{{= action.title}}</a> 
+							<a class='button Starred {{if action.star}}on{{else}}off{{/if}}' href='javascript:;' title='Starred'>★</a><span>&nbsp;</span><a class='tiddlyLink tiddlyLinkExisting' href='javascript:;' tiddlyLink='tl_viewAction' id='tl_{{= prefix}}{{= action.id}}'>{{= action.title}}</a> 
 							<a class='deleteTiddlerButton' href='javascript:;' title='Delete tiddler'>×</a>
 							</span><br>
 						{{/each}}
@@ -310,7 +310,7 @@
 					<a class='button Starred {{if tickler.star}}on{{else}}off{{/if}}' href='javascript:;' title='Starred'>★</a>
 					<input class='dateBox' value='{{= formatTicklerDate(tickler.date)}}'>
 					<span>&nbsp;</span>
-					<a class='tiddlyLink tiddlyLinkExisting' href='javascript:;' tiddlyLink='tl_viewTickler' id='tl_ticklr_{{= tickler.id}}'>{{= tickler.title}}</a> 
+					<a class='tiddlyLink tiddlyLinkExisting' href='javascript:;' tiddlyLink='tl_viewTickler' id='tl_{{= prefix}}{{= tickler.id}}'>{{= tickler.title}}</a> 
 					<a class='deleteTiddlerButton' href='javascript:;' title='Delete tiddler'>×</a>
 					</span><br>
 				{{/each}}					

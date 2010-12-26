@@ -55,11 +55,11 @@ function tl_actionDashboard() {
 		title: 'Action Dashboard By Context', 
 		url: 'action/dashboard',
 		onLoad: function(result) {
-			var leftHtml = getContextActionsHtml(result.state.Next, 'Next Actions', ["on", "off", "off"]);
-			leftHtml += getContextActionsHtml(result.state.WaitingFor, 'Waiting Actions', ["off", "on", "off"]);
+			var leftHtml = getContextActionsHtml(result.state.Next, 'Next Actions', ["on", "off", "off"], "adna__");
+			leftHtml += getContextActionsHtml(result.state.WaitingFor, 'Waiting Actions', ["off", "on", "off"], "adwa__");
 
-			var rightHtml = getContextActionsHtml(result.state.Future, 'Future Actions', ["off", "off", "on"]);
-			rightHtml += getDoneActionsHtml(result.done, 'Done Actions')
+			var rightHtml = getContextActionsHtml(result.state.Future, 'Future Actions', ["off", "off", "on"], "adfa__");
+			rightHtml += getDoneActionsHtml(result.done, 'Done Actions', "adda__");
 			
 			return {left: leftHtml, right: rightHtml}
 		}
@@ -73,7 +73,7 @@ function tl_nextActions() {
 		title: 'Next Actions By Context', 
 		url: 'action/nextActions',
 		onLoad: function(result) {
-			var leftHtml = getContextActionsHtml(result.state.Next, 'Next Actions', ["on", "off", "off"]);
+			var leftHtml = getContextActionsHtml(result.state.Next, 'Next Actions', ["on", "off", "off"], "nana__");
 			return {left: leftHtml, right: ""}
 		}
 	}).load();
@@ -86,14 +86,14 @@ function tl_nextAndWaiting() {
 		title: 'Next And Waiting Actions By Context', 
 		url: 'action/next_waiting',
 		onLoad: function(result) {
-			var leftHtml = getContextActionsHtml(result.state.Next, 'Next Actions', ["on", "off", "off"]);
-			var rightHtml = getContextActionsHtml(result.state.WaitingFor, 'Waiting Actions', ["off", "on", "off"]);
+			var leftHtml = getContextActionsHtml(result.state.Next, 'Next Actions', ["on", "off", "off"], "nwna__");
+			var rightHtml = getContextActionsHtml(result.state.WaitingFor, 'Waiting Actions', ["off", "on", "off"], "nwwa__");
 			return {left: leftHtml, right: rightHtml}
 		}
 	}).load();
 }
 
-function getContextActionsHtml(stateMap, title, state) {
+function getContextActionsHtml(stateMap, title, state, prefix) {
 	if (stateMap == undefined) return "";
 	
 	var html = "<div class='mgtdList'><h1>" + title + "</h1>";
@@ -109,7 +109,7 @@ function getContextActionsHtml(stateMap, title, state) {
 					"<a class='button Future off " + state[2] + "' href='javascript:;' title='Future'>f</a>" +
 					"<a class='button Starred " + (action.star? "on" : "off") + "' href='javascript:;' title='Starred'>★</a>" +
 					"<span>&nbsp;</span>" + 
-					"<a class='tiddlyLink tiddlyLinkExisting' href='javascript:;' tiddlyLink='tl_viewAction' id='tl_action_" + action.id + "'>" + action.title + "</a>" +
+					"<a class='tiddlyLink tiddlyLinkExisting' href='javascript:;' tiddlyLink='tl_viewAction' id='tl_" + prefix + "@" + action.id + "'>" + action.title + "</a>" +
 					"<a class='deleteTiddlerButton' href='javascript:;' title='Delete tiddler'>×</a>" + 
 					"</span><br>"
 		}
@@ -119,7 +119,7 @@ function getContextActionsHtml(stateMap, title, state) {
 	return html;
 }
 
-function getDoneActionsHtml(doneActions, title) {
+function getDoneActionsHtml(doneActions, title, prefix) {
 	if (doneActions == undefined) return "";
 	
 	var html = "<div class='scroll10'><div class='mgtdList'><h1>" + title + "</h1>";
@@ -129,7 +129,7 @@ function getDoneActionsHtml(doneActions, title) {
 		html += "<span class='link-container action'>" +
 				"<input type='checkbox' class='chkOptionInput'" + (action.done? " checked='checked'>" : ">") +  
 				"<span>&nbsp;</span>" + 
-				"<a class='tiddlyLink tiddlyLinkExisting' href='javascript:;' tiddlyLink='tl_viewAction' id='tl_action_" + action.id + "'>" + action.title + "</a>" +
+				"<a class='tiddlyLink tiddlyLinkExisting' href='javascript:;' tiddlyLink='tl_viewAction' id='tl_" + prefix + "@" + action.id + "'>" + action.title + "</a>" +
 				"<a class='deleteTiddlerButton' href='javascript:;' title='Delete tiddler'>×</a>" + 
 				"</span><br>"
 	}
@@ -184,7 +184,7 @@ function getTicklerHtml(ticklers, title) {
 				"<a class='button Starred " + (tickler.star? "on" : "off") + "' href='javascript:;' title='Starred'>★</a>" +
 				"<input class='dateBox' value='" + formatTicklerDate(tickler.date) + "'>" +
 				"<span>&nbsp;</span>" +
-				"<a href='javascript:;' title='' class='tiddlyLink tiddlyLinkExisting' refresh='link' tiddlylink='tl_viewTickler' id='tl_ticklr_" + tickler.id + "'>" + tickler.title + "</a>" + 
+				"<a href='javascript:;' title='' class='tiddlyLink tiddlyLinkExisting' refresh='link' tiddlylink='tl_viewTickler' id='tl_" + tickler.id + "'>" + tickler.title + "</a>" + 
 				"<a class='deleteTicklerButton' href='javascript:;' title='Delete tickler'>×</a>" + 
 				"</span><br>";
 	}
@@ -205,7 +205,7 @@ function getDoneTicklerHtml(ticklers, title) {
 				"<a class='button Starred  " + (tickler.star? "on" : "off") + "' href='javascript:;' title='Starred'>★</a>" +
 				"<input class='dateBox' value='" + formatTicklerDate(tickler.date) + "'>" +
 				"<span>&nbsp;</span>" +
-				"<a href='javascript:;' title='' class='tiddlyLink tiddlyLinkExisting' refresh='link' tiddlylink='tl_viewTickler' id='tl_ticklr_" + tickler.id + "'>" + tickler.title + "</a>" + 
+				"<a href='javascript:;' title='' class='tiddlyLink tiddlyLinkExisting' refresh='link' tiddlylink='tl_viewTickler' id='tl_" + tickler.id + "'>" + tickler.title + "</a>" + 
 				"<a class='deleteTicklerButton' href='javascript:;' title='Delete tickler'>×</a>" + 
 				"</span><br>"
 	}
@@ -221,16 +221,16 @@ function tl_projectDashboard() {
 		title: 'Project Dashboard', 
 		url: 'project/dashboard',
 		onLoad: function(result) {
-			var leftHtml = getProjectHtml(result.state.Active, 'Active Projects', ['on', 'off']);
+			var leftHtml = getProjectHtml(result.state.Active, 'Active Projects', ['on', 'off'], "pdacti");
 
-			var rightHtml = getProjectHtml(result.state.Someday, 'Someday/Maybe Projects', ['off', 'on'])
-			rightHtml += getDoneProjectHtml(result.done, 'Completed Projects')
+			var rightHtml = getProjectHtml(result.state.Someday, 'Someday/Maybe Projects', ['off', 'on'], "pdsome");
+			rightHtml += getDoneProjectHtml(result.done, 'Completed Projects', "pdcomp");
 			return {left: leftHtml, right: rightHtml}
 		}
 	}).load();
 }
 
-function getProjectHtml(projects, title, state) {
+function getProjectHtml(projects, title, state, prefix) {
 	if (projects == undefined) return "";
 	
 	var html = "<div class='mgtdList'><h1>" + title + "</h1>";
@@ -243,7 +243,7 @@ function getProjectHtml(projects, title, state) {
 				"<a class='button Someday off " + state[1] + "' href='javascript:;' title='Someday'>s/m</a>" +
 				"<a class='button Starred " + (project.star? "on" : "off") + "' href='javascript:;' title='Starred'>★</a>" +
 				"<span>&nbsp;</span>" +
-				"<a href='javascript:;' title='' class='tiddlyLink tiddlyLinkExisting' refresh='link' tiddlylink='tl_viewProject' id='tl_projct_" + project.id + "'>" + project.title + "</a>" + 
+				"<a href='javascript:;' title='' class='tiddlyLink tiddlyLinkExisting' refresh='link' tiddlylink='tl_viewProject' id='tl_" + prefix + '@' + project.id + "'>" + project.title + "</a>" + 
 				"<a class='deleteProjectButton' href='javascript:;' title='Delete project'>×</a>" + 
 				"</span><br>";
 	}
@@ -252,7 +252,7 @@ function getProjectHtml(projects, title, state) {
 	return html;
 }
 
-function getDoneProjectHtml(projects, title) {
+function getDoneProjectHtml(projects, title, prefix) {
 	if (projects == undefined) return "";
 	
 	var html = "<div class='mgtdList'><h1>" + title + "</h1>";
@@ -263,7 +263,7 @@ function getDoneProjectHtml(projects, title) {
 				"<input type='checkbox' class='chkOptionInput'" + (project.done? " checked='checked'>" : ">") +  
 				"<a class='button Starred  " + (project.star? "on" : "off") + "' href='javascript:;' title='Starred'>★</a>" +
 				"<span>&nbsp;</span>" +
-				"<a href='javascript:;' title='' class='tiddlyLink tiddlyLinkExisting' refresh='link' tiddlylink='tl_viewProject' id='tl_projct_" + project.id + "'>" + project.title + "</a>" + 
+				"<a href='javascript:;' title='' class='tiddlyLink tiddlyLinkExisting' refresh='link' tiddlylink='tl_viewProject' id='tl_" + prefix + '@' + project.id + "'>" + project.title + "</a>" + 
 				"<a class='deleteTicklerButton' href='javascript:;' title='Delete tickler'>×</a>" + 
 				"</span><br>"
 	}

@@ -106,6 +106,7 @@ manager = {
 	actionUpdateListener : function(manager, event) {
 		manager.updateStaticActionTiddlers();
 		refreshActionView(event.id, (event.event=='newAction'));
+		refreshProjectDetailsView(event)
 	}, 
 	
 	ticklerUpdateListener : function(manager, event) {
@@ -279,6 +280,22 @@ function refreshProjectView(id, isNew) {
 		tl_viewProject(id);
 	}
 }
+
+function refreshProjectDetailsView(event) {
+	var views = $('#tl_' + event.id).parents('.tiddler');
+	var projectViews = [];
+	$.each(views, function(index, value){
+		if ($('.project', value).length) {
+			projectViews.push(value);
+		}
+	});
+
+	for (var j = 0; j < projectViews.length; j++) {
+		var viewId = projectViews[j].id.substr(10); 
+		tl_viewProject(viewId);
+	}
+}
+
 
 function getOpenActionIdsForRealm(id) {
 	var actionIds = [];
@@ -795,10 +812,13 @@ function tl_viewTickler(ticklerId, inFocus) {
 
 function tl_viewProject(projectId, inFocus) {
 	viewLoader("project/view", {projectId: projectId}, function(data) {
-		var project = data.project; 
+		var project = data.project;
+		prefix =  "______" + project.id;
+		prefix = 'p' + prefix.substr(prefix.length-5) + '@';
 
 		var data = {
 			project: project, 
+			prefix: prefix,
 			tiddlers: data.tiddlers,
 			areas: manager.getAreas(project.realm.id),
 			contacts: manager.getContacts(project.realm.id),
