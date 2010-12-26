@@ -24,7 +24,7 @@ class RealmController {
 		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		
 		def realm = new Realm(name:name, user:user)
-		def model = [];
+		def model = [:];
 		if (realm.save(failOnError: true)) {
 			model.realm = realm;
 		}
