@@ -211,6 +211,7 @@
 						</div>
 						{{tmpl({action: project, areas: areas, contacts: contacts}) '#combosTemplate'}}
 					</div>
+					{{tmpl({tiddlers: tiddlers}) '#projectDetails'}}
 				</div>
         	</script>
 
@@ -252,11 +253,48 @@
 						<div class='buttonDiv'>
 							<a class="button makeAction off">make action</a>
 						</div>
-						{{tmpl({action: tickler, areas: areas, contacts: contacts}) '#combosTemplate'}}
+						{{tmpl({action: tickler, areas: areas, contacts: contacts, project: project}) '#combosTemplate'}}
 					</div>
 				</div>
         	</script>
+   
+   			<script id="projectDetails" type="text/x-jquery-tmpl"> 
+        		<div class="projectDetails">
+        			<table class="panel">
+        			<tr>
+        			<td><div class="panel1">
+						{{tmpl({title:'Next Actions', ctxList:tiddlers.NextActions, n:"on", w:"off", f:"off"}) '#showActionListByContext'}}
+						{{tmpl({title:'Waiting Actions', ctxList:tiddlers.WaitingForActions, n:"off", w:"on", f:"off"}) '#showActionListByContext'}}
+					</div></td>
+        			<td><div class="panel2">
+						{{tmpl({title:'Future Actions', ctxList:tiddlers.FutureActions, n:"off", w:"off", f:"on"}) '#showActionListByContext'}}
+					</div></td>
+        			<td><div class="panel3">
+						{{tmpl({title:'Upcoming Ticklers', ticklers:[], n:"off", w:"off", f:"on"}) '#showActionListByContext'}}
+					</div></td>
+        			</tr>
+        			</table>
+        		</div>
+			</script>
 
+			<script id="showActionListByContext" type="text/x-jquery-tmpl">
+				<div class='viewer'>
+				<div class='mgtdList'><h1>{{= title}}</h1>
+				{{each(key,ctx) ctxList}}
+					<div class='innerList'><h2>{{= key}}</h2>
+						{{each(i,action) ctx}}
+							<span class='link-container action'>
+							<input type='checkbox' class='chkOptionInput' {{if action.done}}checked='checked'{{/if}}>
+							<a class='button Next {{= n}}' href='javascript:;' title='Next'>n</a><a class='button WaitingFor {{= w}}' href='javascript:;' title='Waiting For'>w</a><a class='button Future {{= f}}' href='javascript:;' title='Future'>f</a>
+							<a class='button Starred {{if action.star}}on{{else}}off{{/if}}' href='javascript:;' title='Starred'>★</a><span>&nbsp;</span><a class='tiddlyLink tiddlyLinkExisting' href='javascript:;' tiddlyLink='tl_viewAction' id='tl_action_{{= action.id}}'>{{= action.title}}</a> 
+							<a class='deleteTiddlerButton' href='javascript:;' title='Delete tiddler'>×</a>
+							</span><br>
+						{{/each}}
+					</div>
+				{{/each}}					
+				</div>			
+				</div>
+			</script> 
    </body>
 
 

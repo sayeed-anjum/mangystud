@@ -109,8 +109,13 @@ class TicklerController {
 		def ticklerId = params.int("ticklerId")
 		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		Tickler tickler = Tickler.findByOwnerAndId(user, ticklerId)
-		
-		def model = [tickler: tickler]
+
+		def project = null
+		if (tickler?.project) {
+			project = Project.findByOwnerAndId(user, tickler.project.id)
+		}
+
+		def model = [tickler: tickler, project: project]
 		
 		render model as JSON
 	}

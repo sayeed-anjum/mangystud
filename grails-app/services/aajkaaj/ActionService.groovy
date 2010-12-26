@@ -1,9 +1,11 @@
 package aajkaaj
 
+import org.mangystud.State;
 import groovy.sql.Sql 
 import org.mangystud.Action 
 import org.mangystud.Project 
 import org.mangystud.Tickler;
+import org.mangystud.Tiddler 
 
 class ActionService {
 	def NO_CONTEXT = "(No Context)"
@@ -51,21 +53,25 @@ class ActionService {
 		
 		def resultByContext = new TreeMap();
 		resultByState.entrySet().each {
-			def stateContextMap = new TreeMap();
-			it.value.each {action ->
-				def actionContext = action.contexts
-				if (actionContext.size() == 0) {
-					stateContextMap.get(NO_CONTEXT, []) << action
-				} else {
-					actionContext.each {context ->
-						stateContextMap.get(context.name, []) << action
-					}
-				}
-			}
-			resultByContext[it.key] = stateContextMap
+			resultByContext[it.key] = getContextActionMap(it.value)
 		}
 		
 		return resultByContext
+	}
+	
+	def getContextActionMap = {actions ->
+		def ctxMap = new TreeMap();
+		actions.each {action ->
+			def actionContext = action.contexts
+			if (actionContext.size() == 0) {
+				ctxMap.get(NO_CONTEXT, []) << action
+			} else {
+				actionContext.each {context ->
+					ctxMap.get(context.name, []) << action
+				}
+			}
+		}
+		return ctxMap;
 	}
 	
 	def makeTickler = { actionId, user ->
@@ -93,5 +99,44 @@ class ActionService {
 			eq('owner', user)
 			'in'('realm', realms)
 		}
+	}
+	
+	def getProjectTiddlers = {user, project ->
+		def tiddlers = Tiddler.findAllByOwnerAndProject(user, project);
+		
+		def map = [:]
+		map.NextActions = []
+		map.FutureActions = []
+		map.WaitingForActions = []
+		map.subProjects = []
+		map.upcomingTicklers = []
+		
+		tiddlers.each {
+			String key = null
+			if (it.done) {
+				key = "done${it.class.name}s"
+			} else {
+				switch (it.class) {
+					case Action.class:
+						key = "${it.state}Actions"
+						break
+
+					case Project.class:
+						key = "subProjects";
+						break
+						
+					case Tickler.class:
+						key = (it.overdue? "pending" : "upcoming") + "Ticklers";
+						break
+				}
+			}
+			if (key) map.get(key, []) << it;
+		}
+
+		map.NextActions = getContextActionMap(map.NextActions)
+		map.WaitingForActions = getContextActionMap(map.WaitingForActions)
+		map.FutureActions = getContextActionMap(map.FutureActions)
+
+		return map;
 	}
 }

@@ -582,15 +582,17 @@ function  projectSource ( request, response ) {
 }
 
 function saveProjectAction(event, ui) {
-	var actionId = manager.determineActionId(event.currentTarget.activeElement);
-	if (actionId != null) {
+	var obj = event.currentTarget.activeElement;
+	var type = manager.determineTiddlerType(obj);
+	var id = manager.determineTiddlerId(obj);
+	if (id != null) {
 		$.ajax({
-			url: serverUrl + "action/projectUpdate",
-			data: {actionId: actionId, projectId: ui.item.value}, 
+			url: serverUrl + "tiddler/projectUpdate",
+			data: {id: id, projectId: ui.item.value}, 
 			type: "POST",
 			dataType: "json",
 			success: function(data) {
-				manager.raiseEvent('actionUpdate', {event: 'projectUpdate', id: actionId, item: ui.item});
+				manager.raiseEvent(type + 'Update', {event: 'projectUpdate', id: id, item: ui.item});
 			}
 		});
 	}
@@ -654,15 +656,16 @@ function deleteDependency() {
 }
 
 function deleteProject() {
-	var actionId = manager.determineActionId(this);
-	if (actionId != null) {
+	var type = manager.determineTiddlerType(this);
+	var id = manager.determineTiddlerId(this);
+	if (id != null) {
 		$.ajax({
-			url: serverUrl + "action/deleteProject",
-			data: {actionId: actionId}, 
+			url: serverUrl + "tiddler/deleteProject",
+			data: {id: id}, 
 			type: "POST",
 			dataType: "json",
 			success: function(data) {
-				manager.raiseEvent('actionUpdate', {event: 'deleteProject', id: actionId});
+				manager.raiseEvent(type + 'Update', {event: 'deleteProject', id: id});
 			}
 		});
 	}
@@ -759,6 +762,7 @@ function tl_viewTickler(ticklerId, inFocus) {
 
 		var data = {
 			tickler: tickler, 
+			project: data.project,
 			areas: manager.getAreas(tickler.realm.id),
 			contacts: manager.getContacts(tickler.realm.id),
 			realms: manager.getRealms(), 
@@ -780,6 +784,11 @@ function tl_viewTickler(ticklerId, inFocus) {
 			dateFormat: 'D, d-M-y',
 			onSelect: updateTicklerDate
 		});
+		$('[name=project]', template).autocomplete({
+			source: projectSource,
+			minLength: 2,
+			select: saveProjectAction
+		});
 	});
 	
 }
@@ -790,6 +799,7 @@ function tl_viewProject(projectId, inFocus) {
 
 		var data = {
 			project: project, 
+			tiddlers: data.tiddlers,
 			areas: manager.getAreas(project.realm.id),
 			contacts: manager.getContacts(project.realm.id),
 			realms: manager.getRealms(), 
@@ -899,7 +909,9 @@ function checkForActiveTicklers() {
 
 jQuery(document).ready(function() {
 	manager.init({
-		templates: ["actionViewTemplate", "dashboardTemplate", "ticklerViewTemplate", "projectViewTemplate", "activeTicklerDashboard"],
+		templates: ["actionViewTemplate", "dashboardTemplate", 
+		            "ticklerViewTemplate", "projectViewTemplate", 
+		            "activeTicklerDashboard"],
 		dialogs: {
 			"realmDialog" : new RealmDialog().init(), 
 			"contextDialog" : new ContextDialog().init(),
@@ -909,7 +921,7 @@ jQuery(document).ready(function() {
 			"projectDialog" : new ProjectDialog().init(),
 			"actionDialog" : new ActionDialog().init()
 		},
-		initialView: tl_nextActions
+		initialView: tl_projectDashboard
 	});
 	
 	addTiddlerActionHandlers();

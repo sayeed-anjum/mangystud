@@ -35,7 +35,9 @@ class ProjectController {
 		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def project = Project.findByOwnerAndId(user, projectId)
 		
-		def model = [project: project]
+		def tiddlers = actionService.getProjectTiddlers(user, project)
+		
+		def model = [project: project, tiddlers: tiddlers]
 		
 		render model as JSON
 	}

@@ -125,24 +125,6 @@ class ActionController {
 		render model as JSON
 	}
 	
-	def projectUpdate = {
-		def actionId = params.int("actionId")
-		def projectId = params.int("projectId")
-
-		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
-		def action = Action.findByOwnerAndId(user, actionId)
-		def project = Project.findByOwnerAndId(user, projectId)
-		
-		if (action && project) {
-			action.project = project
-			action.save(failOnError: true)
-		}	
-	
-		
-		def model = [success: true]
-		render model as JSON
-	}
-
 	def deleteDependency = {
 		def actionId = params.int("actionId")
 
@@ -150,21 +132,6 @@ class ActionController {
 		def action = Action.findByOwnerAndId(user, actionId)
 		action.dependsOn = null
 		action.save(failOnError: true)
-
-		def model = [success: true]
-		render model as JSON
-	}
-
-	def deleteProject = {
-		def actionId = params.int("actionId")
-
-		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
-		def action = Action.findByOwnerAndId(user, actionId)
-		
-		if (action) {
-			action.project = null
-			action.save(failOnError: true)
-		}
 
 		def model = [success: true]
 		render model as JSON

@@ -108,4 +108,36 @@ class TiddlerController {
 		render model as JSON
 	}
 	
+	def projectUpdate = {
+		def tid = params.int("id")
+		def projectId = params.int("projectId")
+		
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
+		def tiddler = Tiddler.findByOwnerAndId(user, tid)
+		def project = Project.findByOwnerAndId(user, projectId)
+		
+		if (tiddler && project) {
+			tiddler.project = project
+			tiddler.save(failOnError: true)
+		}	
+		
+		def model = [success: true]
+		render model as JSON
+	}
+
+	def deleteProject = {
+		def tid = params.int("id")
+
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
+		def tiddler = Tiddler.findByOwnerAndId(user, tid)
+		
+		if (tiddler) {
+			tiddler.project = null
+			tiddler.save(failOnError: true)
+		}
+
+		def model = [success: true]
+		render model as JSON
+	}
+
 }

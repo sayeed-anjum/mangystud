@@ -37,19 +37,18 @@ table.panel {
 }
 
 table.panel td {
-	width: 50%;
 	padding: 5px;
 	vertical-align: top;
 }
 
 .mgtdList  {
-	margin-bottom: 1.5em;
+	margin-bottom: 1em;
 }
 
 .mgtdList h1 {
     border-bottom: 1px solid #AAAAAA;
     color: #444444;
-    font-size: 110%;
+    font-size: 100%;
     margin: 0;
     padding: 0;
 }
@@ -57,8 +56,8 @@ table.panel td {
 .mgtdList h2 {
     border-style: none !important;
     color: #444444;
-    font-size: 100%;
-    margin: 0.7em 0 0 -0.2em;
+    font-size: 90%;
+    margin: 0.3em 0 0 -0.2em;
     padding: 0;
 }
 
@@ -68,7 +67,7 @@ table.panel td {
 }
 	
 .mgtdList .innerList {
-	padding: 0.5em 1em 0;
+	padding: 0.2em 1em 0;
 }
 
 .scroll10 .innerList {
@@ -195,7 +194,7 @@ a:hover {
 }	
 
 .viewer .button {
-    margin: 0 4px;
+    margin: 0 0px;
     padding: 1px 4px;
     font-size: 75%;
 }
@@ -390,4 +389,12 @@ div#user {
 
 #header a:hover {
 	text-decoration: underline;
+}
+
+.viewer .Starred {
+	font-size: 1em;
+}
+
+.link-container a {
+	font-size: .85em;
 }
