@@ -270,7 +270,7 @@
 						{{tmpl({title:'Future Actions', ctxList:tiddlers.FutureActions, n:"off", w:"off", f:"on"}) '#showActionListByContext'}}
 					</div></td>
         			<td><div class="panel3">
-						{{tmpl({title:'Upcoming Ticklers', ticklers:[], n:"off", w:"off", f:"on"}) '#showActionListByContext'}}
+						{{tmpl({title:'Upcoming Ticklers', ticklers:tiddlers.upcomingTicklers}) '#showTicklers'}}
 					</div></td>
         			</tr>
         			</table>
@@ -291,6 +291,28 @@
 							</span><br>
 						{{/each}}
 					</div>
+				{{/each}}					
+				</div>			
+				</div>
+			</script> 
+
+			<script id="showTicklers" type="text/x-jquery-tmpl">
+				<div class='viewer'>
+				<div class='mgtdList'><h1>{{= title}}</h1>
+				<div class='innerList'><h2>{{= key}}</h2>
+				{{each(key,tickler) ticklers}}
+					<span class='link-container action'>
+					{{if tickler.period.name == 'Once'}}
+						<input type='checkbox' class='chkOptionInput' {{if tickler.done}}checked='checked{{/if}}>  
+					{{else}}
+						<a href='javascript:;' title='' class='rollPeriod button off'>{{= tickler.p}}</a>  
+					{{/if}}
+					<a class='button Starred {{if tickler.star}}on{{else}}off{{/if}}' href='javascript:;' title='Starred'>★</a>
+					<input class='dateBox' value='{{= formatTicklerDate(tickler.date)}}'>
+					<span>&nbsp;</span>
+					<a class='tiddlyLink tiddlyLinkExisting' href='javascript:;' tiddlyLink='tl_viewTickler' id='tl_ticklr_{{= tickler.id}}'>{{= tickler.title}}</a> 
+					<a class='deleteTiddlerButton' href='javascript:;' title='Delete tiddler'>×</a>
+					</span><br>
 				{{/each}}					
 				</div>			
 				</div>
