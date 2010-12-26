@@ -1,10 +1,12 @@
 package org.mangystud
 
+import java.util.Date;
+import java.util.GregorianCalendar;
+
 import grails.converters.JSON 
 import org.apache.shiro.SecurityUtils 
 
-import com.ibm.icu.util.Calendar;
-import com.ibm.icu.util.GregorianCalendar;
+
 
 class TicklerController {
 	def realmService
@@ -63,8 +65,10 @@ class TicklerController {
 		def model = [success: false]
 		if (tickler) {
 			tickler.date = date
-			def tomorrow = new Date()+1
+			def tomorrow = new Date() + 1
+			tomorrow.clearTime()
 			tickler.overdue = tickler.date.before(tomorrow)
+			tickler.save(failOnError: true);
 			model.success = true;
 		}
 
