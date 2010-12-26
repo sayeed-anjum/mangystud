@@ -40,6 +40,7 @@ $.extend(DashboardView.prototype, {
 		} else {
 			template.prependTo('#stage');
 		} 
+		$(template).data('result', result);
 		
 		$('.dateBox').datepicker({
 			dateFormat: 'D, d-M-y',
@@ -145,10 +146,10 @@ function tl_ticklerDashboard() {
 		title: 'Tickler Dashboard', 
 		url: 'tickler/dashboard',
 		onLoad: function(result) {
-			var leftHtml = getTicklerHtml(result.overdue, 'Ticklers Requiring Action');
-			leftHtml += getTicklerHtml(result.upcoming, 'Upcoming Ticklers');
+			var leftHtml = getTicklerHtml(result.overdue, 'Ticklers Requiring Action', 'tdtkac');
+			leftHtml += getTicklerHtml(result.upcoming, 'Upcoming Ticklers', 'tduptk');
 
-			var rightHtml = getDoneTicklerHtml(result.done, 'Old Ticklers')
+			var rightHtml = getDoneTicklerHtml(result.done, 'Old Ticklers', 'tdoltk')
 			return {left: leftHtml, right: rightHtml}
 		}
 	}).load();
@@ -161,13 +162,13 @@ function tl_activeTicklerDashboard() {
 		title: 'Ticklers Requiring Action', 
 		url: 'tickler/dashboard',
 		onLoad: function(result) {
-			var leftHtml = getTicklerHtml(result.overdue, '');
+			var leftHtml = getTicklerHtml(result.overdue, '', 'actkdb');
 			return {left: leftHtml, right: ""}
 		}
 	}).load({mode: 4});
 }
 
-function getTicklerHtml(ticklers, title) {
+function getTicklerHtml(ticklers, title, prefix) {
 	if (ticklers == undefined) return "";
 	
 	var html = "<div class='mgtdList'><h1>" + title + "</h1>";
@@ -184,7 +185,7 @@ function getTicklerHtml(ticklers, title) {
 				"<a class='button Starred " + (tickler.star? "on" : "off") + "' href='javascript:;' title='Starred'>★</a>" +
 				"<input class='dateBox' value='" + formatTicklerDate(tickler.date) + "'>" +
 				"<span>&nbsp;</span>" +
-				"<a href='javascript:;' title='' class='tiddlyLink tiddlyLinkExisting' refresh='link' tiddlylink='tl_viewTickler' id='tl_" + tickler.id + "'>" + tickler.title + "</a>" + 
+				"<a href='javascript:;' title='' class='tiddlyLink tiddlyLinkExisting' refresh='link' tiddlylink='tl_viewTickler' id='tl_" + prefix + "@" + tickler.id + "'>" + tickler.title + "</a>" + 
 				"<a class='deleteTicklerButton' href='javascript:;' title='Delete tickler'>×</a>" + 
 				"</span><br>";
 	}
@@ -193,7 +194,7 @@ function getTicklerHtml(ticklers, title) {
 	return html;
 }
 
-function getDoneTicklerHtml(ticklers, title) {
+function getDoneTicklerHtml(ticklers, title, prefix) {
 	if (ticklers == undefined) return "";
 	
 	var html = "<div class='mgtdList'><h1>" + title + "</h1>";
@@ -205,7 +206,7 @@ function getDoneTicklerHtml(ticklers, title) {
 				"<a class='button Starred  " + (tickler.star? "on" : "off") + "' href='javascript:;' title='Starred'>★</a>" +
 				"<input class='dateBox' value='" + formatTicklerDate(tickler.date) + "'>" +
 				"<span>&nbsp;</span>" +
-				"<a href='javascript:;' title='' class='tiddlyLink tiddlyLinkExisting' refresh='link' tiddlylink='tl_viewTickler' id='tl_" + tickler.id + "'>" + tickler.title + "</a>" + 
+				"<a href='javascript:;' title='' class='tiddlyLink tiddlyLinkExisting' refresh='link' tiddlylink='tl_viewTickler' id='tl_" + prefix + "@" + tickler.id + "'>" + tickler.title + "</a>" + 
 				"<a class='deleteTicklerButton' href='javascript:;' title='Delete tickler'>×</a>" + 
 				"</span><br>"
 	}

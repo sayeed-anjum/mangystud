@@ -301,7 +301,7 @@
 				<div class='mgtdList'><h1>{{= title}}</h1>
 				<div class='innerList'><h2>{{= key}}</h2>
 				{{each(key,tickler) ticklers}}
-					<span class='link-container action'>
+					<span class='link-container tickler'>
 					{{if tickler.period.name == 'Once'}}
 						<input type='checkbox' class='chkOptionInput' {{if tickler.done}}checked='checked{{/if}}>  
 					{{else}}
