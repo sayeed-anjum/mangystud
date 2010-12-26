@@ -11,9 +11,9 @@ class ActionService {
 	
     static transactional = true
 	
-	def search = {actionId, term ->
+	def search = {actionId, term, user ->
 		def action = Action.findById(actionId);
-		def actions = Action.findAllByTitleLike("%${term}%");
+		def actions = Action.findAllByOwnerAndTitleLike(user, "%${term}%");
 		actions.remove(action)
 		
 		def result = actions.collect {

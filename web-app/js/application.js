@@ -566,7 +566,31 @@ function saveDependsOnAction(event, ui) {
 			type: "POST",
 			dataType: "json",
 			success: function(data) {
-				manager.raiseEvent('actionUpdate', {event: 'dependOnUpdate', id: actionId});
+				manager.raiseEvent('actionUpdate', {event: 'dependOnUpdate', id: actionId, item: ui.item});
+			}
+		});
+	}
+}
+
+function  projectSource ( request, response ) {
+	$.ajax({
+		url: serverUrl + "project/search",
+		dataType: "json",
+		data: {term: request.term},
+		success: response
+	});
+}
+
+function saveProjectAction(event, ui) {
+	var actionId = manager.determineActionId(event.currentTarget.activeElement);
+	if (actionId != null) {
+		$.ajax({
+			url: serverUrl + "action/projectUpdate",
+			data: {actionId: actionId, projectId: ui.item.value}, 
+			type: "POST",
+			dataType: "json",
+			success: function(data) {
+				manager.raiseEvent('actionUpdate', {event: 'projectUpdate', id: actionId, item: ui.item});
 			}
 		});
 	}
@@ -629,6 +653,21 @@ function deleteDependency() {
 	}
 }
 
+function deleteProject() {
+	var actionId = manager.determineActionId(this);
+	if (actionId != null) {
+		$.ajax({
+			url: serverUrl + "action/deleteProject",
+			data: {actionId: actionId}, 
+			type: "POST",
+			dataType: "json",
+			success: function(data) {
+				manager.raiseEvent('actionUpdate', {event: 'deleteProject', id: actionId});
+			}
+		});
+	}
+}
+
 function deleteAction(actionId) {
 	deleteTiddler("action", actionId);
 }
@@ -669,6 +708,7 @@ function tl_viewAction(actionId, inFocus) {
 		var data = {
 			action: action, 
 			dependsOn : data.dependsOn,
+			project: data.project,
 			contexts: manager.getContexts(action.realm.id),
 			areas: manager.getAreas(action.realm.id),
 			contacts: manager.getContacts(action.realm.id),
@@ -691,6 +731,11 @@ function tl_viewAction(actionId, inFocus) {
 			source: dependsOnSource,
 			minLength: 2,
 			select: saveDependsOnAction
+		});
+		$('[name=project]', template).autocomplete({
+			source: projectSource,
+			minLength: 2,
+			select: saveProjectAction
 		});
 	});
 	
@@ -821,6 +866,7 @@ function addTiddlerActionHandlers() {
 	$('.controls .area').live('change', updateArea);
 	$('.controls .contact').live('change', updateContact);
 	$('.controls .deleteDependency').live('click', deleteDependency); 
+	$('.controls .deleteProject').live('click', deleteProject); 
 	$('.controls .period .button').live('click', updatePeriodicity); 
 	$('.controls .date .button').live('click', incrementPeriod); 
 	$('.rollPeriod').live('click', incrementPeriod); 

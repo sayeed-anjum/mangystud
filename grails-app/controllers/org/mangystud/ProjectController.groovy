@@ -85,4 +85,17 @@ class ProjectController {
 
 		render model as JSON
 	}
+
+	def search = {
+		def term = params.term;
+
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
+		def projects = Project.findAllByOwnerAndTitleLike(user, "%${term}%");		
+		def result = projects.collect {
+				return [value: it.id, label: it.title]
+		}
+		
+		render result as JSON
+	}
+	
 }

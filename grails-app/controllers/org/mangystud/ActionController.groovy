@@ -41,8 +41,12 @@ class ActionController {
 		if (action?.dependsOn) { 
 			dependsOn = Action.findByOwnerAndId(user, action.dependsOn.id)
 		}
-		
-		def model = [action: action, dependsOn: dependsOn]
+		def project = null
+		if (action?.project) {
+			project = Project.findByOwnerAndId(user, action.project.id)
+		}
+
+		def model = [action: action, dependsOn: dependsOn, project: project]
 		
 		render model as JSON
 	}
@@ -121,6 +125,24 @@ class ActionController {
 		render model as JSON
 	}
 	
+	def projectUpdate = {
+		def actionId = params.int("actionId")
+		def projectId = params.int("projectId")
+
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
+		def action = Action.findByOwnerAndId(user, actionId)
+		def project = Project.findByOwnerAndId(user, projectId)
+		
+		if (action && project) {
+			action.project = project
+			action.save(failOnError: true)
+		}	
+	
+		
+		def model = [success: true]
+		render model as JSON
+	}
+
 	def deleteDependency = {
 		def actionId = params.int("actionId")
 
@@ -128,6 +150,21 @@ class ActionController {
 		def action = Action.findByOwnerAndId(user, actionId)
 		action.dependsOn = null
 		action.save(failOnError: true)
+
+		def model = [success: true]
+		render model as JSON
+	}
+
+	def deleteProject = {
+		def actionId = params.int("actionId")
+
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
+		def action = Action.findByOwnerAndId(user, actionId)
+		
+		if (action) {
+			action.project = null
+			action.save(failOnError: true)
+		}
 
 		def model = [success: true]
 		render model as JSON
@@ -179,8 +216,9 @@ class ActionController {
 	def search = {
 		def actionId = params.int("actionId")
 		def term = params.term;
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		
-		def result = actionService.search(actionId, term)		
+		def result = actionService.search(actionId, term, user)		
 		
 		render result as JSON
 	}

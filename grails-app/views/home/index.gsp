@@ -23,7 +23,7 @@
 			<g:formRemote url="[controller:'realm',action:'add']" 
 		          update="[success:'message',failure:'error']" name="newRealmForm"
 		          onSuccess="manager.dialogSuccess('realmDialog', data, textStatus)">
-		      	<input type="text" name="name" value="" size="40" maxSize="25"/>
+		      	<input type="text" name="name" value="" size="40" maxLength="25"/>
 			</g:formRemote >
 		</div>
 		
@@ -114,6 +114,7 @@
 
 			<script id="combosTemplate" type="text/x-jquery-tmpl"> 
 				<div class='combos'>
+					{{if areas}}
 					<span class="label">Area:</span>
 					<select class='area' id='area_{{= action.id}}'>
 						<option value="0">-</span>
@@ -122,6 +123,7 @@
 							<option value="{{= area.id}}" {{if action.area != null && action.area.id == area.id}}selected="selected"{{/if}}>{{= area.name}}</span>
 						{{/each}}
 					</select>
+					{{/if}}
 					<span class="label">Contact:</span>
 					<select class='contact' id='contact_{{= action.id}}'>
 						<option value="0">-</span>
@@ -130,6 +132,9 @@
 							<option value="{{= contact.id}}" {{if action.contact != null && action.contact.id == contact.id}}selected="selected"{{/if}}>{{= contact.name}}</span>
 						{{/each}}
 					</select>
+					<span class='label'>Project:</span>
+					<input name='project' value='{{if project}}{{= project.title}}{{/if}}' size='50'/>
+					{{if project}}<a class='deleteProject' href='javascript:;' title='Remove project'>×</a>{{/if}}
 				</div>
 			</script>
 
@@ -172,7 +177,7 @@
 							{{/each}}
 							<span class="contextAdd button off">+</span>
 						</div>
-						{{tmpl({action: action, areas: areas, contacts: contacts}) '#combosTemplate'}}
+						{{tmpl({action: action, contacts: contacts, project: project}) '#combosTemplate'}}
 						<div class='buttonDiv'>
 							<a class="button makeTickler off">make tickler</a>
 						</div>
