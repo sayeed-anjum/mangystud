@@ -40,7 +40,6 @@ $.extend(DashboardView.prototype, {
 		} else {
 			template.prependTo('#stage');
 		} 
-		$(template).data('result', result);
 		
 		$('.dateBox').datepicker({
 			dateFormat: 'D, d-M-y',

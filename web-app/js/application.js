@@ -112,6 +112,7 @@ manager = {
 	ticklerUpdateListener : function(manager, event) {
 		manager.updateTicklerDashboards();
 		refreshTicklerView(event.id, (event.event=='newTickler'));
+		refreshProjectDetailsView(event)
 	}, 
 
 	projectUpdateListener : function(manager, event) {
@@ -282,12 +283,10 @@ function refreshProjectView(id, isNew) {
 }
 
 function refreshProjectDetailsView(event) {
-	var views = $('#tl_' + event.id).parents('.tiddler');
+	var views = $('.viewer.project').parents('.tiddler');
 	var projectViews = [];
 	$.each(views, function(index, value){
-		if ($('.project', value).length) {
-			projectViews.push(value);
-		}
+		projectViews.push(value);
 	});
 
 	for (var j = 0; j < projectViews.length; j++) {
