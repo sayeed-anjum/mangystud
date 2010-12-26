@@ -921,7 +921,7 @@ function checkForActiveTicklers() {
 		dataType: "json",
 		success: function(data) {
 			$('#ticklerAlert').toggle(data.count > 0);
-			setTimeout(checkForActiveTicklers, 30000);
+			setTimeout(checkForActiveTicklers, 120000);
 		}
 	});
 }
