@@ -11,6 +11,7 @@ class ActionController {
 		def title = params.title
 		def stateId  = params.state
 		def contextId = params.context
+		def contactName = params.contact
 		def projectId = params.int("project")
 		
 		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
@@ -25,12 +26,16 @@ class ActionController {
 		try {
 			State state = stateId? State.valueOf(stateId) : null;
 			if (state) action.state = state;
-			def context = actionService.getContext(user, contextId)
+			Action context = actionService.getContext(user, contextId)
 			if (context) {
 				action.contexts = [context];
 				if (context.realm.active) {
 					action.realm = context.realm;
 				}
+			}
+			def contact = actionService.getContact(user, contactName)
+			if (contact) {
+				action.contact = contact;
 			}
 			if (projectId) {
 				action.project = Project.findByIdAndOwner(projectId, user);

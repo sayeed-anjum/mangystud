@@ -34,6 +34,7 @@
 	        	<input type="hidden" name="type" value=""/>
 	        	<input type="hidden" name="state" value=""/>
 	        	<input type="hidden" name="context" value=""/>
+	        	<input type="hidden" name="contact" value=""/>
 	        	<input type="hidden" name="project" value=""/>
 	        	<input type="text" name="title" value="" size="40"/>
 			</g:formRemote >
@@ -262,11 +263,11 @@
         			<table class="panel">
         			<tr>
         			<td><div class="panel1">
-						{{tmpl({title:'Next Actions', ctxList:tiddlers.NextActions, n:"on", w:"off", f:"off", stateName: 'Next', prefix: prefix}) '#showActionListByContext'}}
-						{{tmpl({title:'Waiting Actions', ctxList:tiddlers.WaitingForActions, n:"off", w:"on", f:"off", stateName:'WaitingFor', prefix: prefix}) '#showActionListByContext'}}
+						{{tmpl({title:'Next Actions', ctxList:tiddlers.NextActions, n:"on", w:"off", f:"off", stateName: 'Next', prefix: prefix, groupBy:'ctx'}) '#showActionListByContext'}}
+						{{tmpl({title:'Waiting Actions', ctxList:tiddlers.WaitingForActions, n:"off", w:"on", f:"off", stateName:'WaitingFor', prefix: prefix, groupBy:'contact'}) '#showActionListByContext'}}
 					</div></td>
         			<td><div class="panel2">
-						{{tmpl({title:'Future Actions', ctxList:tiddlers.FutureActions, n:"off", w:"off", f:"on", stateName: 'Future', prefix: prefix}) '#showActionListByContext'}}
+						{{tmpl({title:'Future Actions', ctxList:tiddlers.FutureActions, n:"off", w:"off", f:"on", stateName: 'Future', prefix: prefix, groupBy:'ctx'}) '#showActionListByContext'}}
 					</div></td>
         			<td><div class="panel3">
 						{{tmpl({title:'Upcoming Ticklers', ticklers:tiddlers.upcomingTicklers, prefix: prefix}) '#showTicklers'}}
@@ -280,7 +281,7 @@
 				<div class='viewer'>
 				<div class='mgtdList'><h1 class='dc_state_{{= stateName}}'>{{= title}} <a class='action_link new_action'>+</a></h1>
 				{{each(key,ctx) ctxList}}
-					<div class='innerList'><h2 class='dc_ctx dc_state_{{= stateName}}'>{{= key}} <a class='action_link new_action'>+</a></h2>
+					<div class='innerList'><h2 class='dc_{{= groupBy}} dc_state_{{= stateName}}'>{{= key}} <a class='action_link new_action'>+</a></h2>
 						{{each(i,action) ctx}}
 							<span class='link-container action'>
 							<input type='checkbox' class='chkOptionInput' {{if action.done}}checked='checked'{{/if}}>

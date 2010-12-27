@@ -2,13 +2,16 @@ package aajkaaj
 
 import groovy.sql.Sql 
 import org.mangystud.Action 
+import org.mangystud.Contact 
 import org.mangystud.Context 
 import org.mangystud.Project 
+import org.mangystud.State;
 import org.mangystud.Tickler;
 import org.mangystud.Tiddler 
 
 class ActionService {
 	def NO_CONTEXT = "(No Context)"
+	def NO_CONTACT = "(No Contact)"
 	def dataSource
 	
     static transactional = true
@@ -52,8 +55,13 @@ class ActionService {
 		def resultByState = actions.groupBy { it.state }
 		
 		def resultByContext = new TreeMap();
+		
 		resultByState.entrySet().each {
-			resultByContext[it.key] = getContextActionMap(it.value)
+			if (it.key == State.WaitingFor) {
+				resultByContext[it.key] = getContactActionMap(it.value)
+			} else {
+				resultByContext[it.key] = getContextActionMap(it.value)
+			}
 		}
 		
 		return resultByContext
@@ -73,7 +81,20 @@ class ActionService {
 		}
 		return ctxMap;
 	}
-	
+
+	def getContactActionMap = {actions ->
+		def contactMap = new TreeMap();
+		actions.each {action ->
+			def contact = action.contact
+			if (contact) {
+				contactMap.get(contact.name, []) << action
+			} else {
+				contactMap.get(NO_CONTACT, []) << action
+			}
+		}
+		return contactMap;
+	}
+
 	def makeTickler = { actionId, user ->
 		def db = new Sql(dataSource)
 		def sql = "update tiddler set class='" + Tickler.class.name + "' where id = " + actionId
@@ -134,7 +155,7 @@ class ActionService {
 		}
 
 		map.NextActions = getContextActionMap(map.NextActions)
-		map.WaitingForActions = getContextActionMap(map.WaitingForActions)
+		map.WaitingForActions = getContactActionMap(map.WaitingForActions)
 		map.FutureActions = getContextActionMap(map.FutureActions)
 
 		return map;
@@ -149,5 +170,16 @@ class ActionService {
 			} 
 		}
 		return context	
+	}
+
+	def getContact = {user, contactName ->
+		def items = Contact.findAllByName(contactName.trim())
+		def contact = null
+		items.each {item ->
+			if (item.realm.user.id == user.id) {
+				contact = item
+			} 
+		}
+		return contact	
 	}
 }

@@ -152,6 +152,11 @@ ActionDialog.prototype = $.extend({}, Dialog.prototype, {
 			ctx = ctx.substr(0, ctx.length-1)
 			$('[name=context]', this.el).val(ctx);
 		}
+		if ($(p).hasClass('dc_contact')) {
+			var contact = $(p).text();
+			contact = contact.substr(0, contact.length-1)
+			$('[name=contact]', this.el).val(contact);
+		}
 		
 	},
 	
