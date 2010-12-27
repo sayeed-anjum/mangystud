@@ -940,7 +940,7 @@ jQuery(document).ready(function() {
 			"projectDialog" : new ProjectDialog().init(),
 			"actionDialog" : new ActionDialog().init()
 		},
-		initialView: tl_projectDashboard
+		initialView: tl_nextActions
 	});
 	
 	addTiddlerActionHandlers();
