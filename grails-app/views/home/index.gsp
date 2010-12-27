@@ -54,6 +54,7 @@
 			<g:formRemote url="[controller:'project',action:'add']" 
 			          update="[success:'message',failure:'error']" name="newContextForm"
 			          onSuccess="manager.dialogSuccess('projectDialog', data, textStatus)">
+	        	<input type="hidden" name="status" value=""/>
 	        	<input type="text" name="title" value="" size="40"/>
 			</g:formRemote >
         </div>

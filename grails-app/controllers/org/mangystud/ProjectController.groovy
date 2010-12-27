@@ -10,7 +10,8 @@ class ProjectController {
 	
 	def add = {
 		def title = params.title
-
+		def status = params.status
+		
 		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def realm = realmService.getActiveRealm(user)
 		
@@ -19,6 +20,10 @@ class ProjectController {
 			return;
 		}
 		Project project = new Project(title:title, realm:realm, owner:user)
+		def projectStatus = ProjectStatus.valueOf(status);
+		if (projectStatus) {
+			project.projectStatus = projectStatus;
+		}
 		try {
 			if (project.save(failOnError: true)) {
 				def model = [project: project, realm: realm];

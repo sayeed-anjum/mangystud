@@ -221,17 +221,17 @@ function tl_projectDashboard() {
 		title: 'Project Dashboard', 
 		url: 'project/dashboard',
 		onLoad: function(result) {
-			var leftHtml = getProjectHtml(result.state.Active, 'Active Projects', ['on', 'off'], "pdacti");
+			var leftHtml = getProjectHtml(result.state.Active, 'Active Projects', ['on', 'off'], "pdacti", 'Active');
 
-			var rightHtml = getProjectHtml(result.state.Someday, 'Someday/Maybe Projects', ['off', 'on'], "pdsome");
+			var rightHtml = getProjectHtml(result.state.Someday, 'Someday/Maybe Projects', ['off', 'on'], "pdsome", 'Someday');
 			rightHtml += getDoneProjectHtml(result.done, 'Completed Projects', "pdcomp");
 			return {left: leftHtml, right: rightHtml}
 		}
 	}).load();
 }
 
-function getProjectHtml(projects, title, state, prefix) {
-	var html = "<div class='mgtdList'><h1>" + title + "</h1>";
+function getProjectHtml(projects, title, state, prefix, statusName) {
+	var html = "<div class='mgtdList'><h1 class='dc_status_" + statusName + "'>" + title + " <a class='action_link new_project'>+</a></h1>";
 	if (projects) {
 		html += "<div class='innerList'>";
 		for (var j = 0; j < projects.length; j++) {

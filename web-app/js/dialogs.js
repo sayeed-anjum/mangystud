@@ -129,10 +129,10 @@ ActionDialog.prototype = $.extend({}, Dialog.prototype, {
 
 	beforeShow : function(event) {
 		var obj = event.currentTarget;
+		this.updateContext(obj);
 		$('[name=type]', this.el).val(obj.id);
 		$('[name=title]', this.el).val('');
 		$('[name=state]', this.el).val('');
-		this.updateContext(obj);
 		this.el.dialog("option", "title", 'New ' + event.data.type);
 	}, 
 	
@@ -283,8 +283,15 @@ ProjectDialog.prototype = $.extend({}, Dialog.prototype, {
 	  return true;
 	},
 
+	updateContext : function(obj) {
+		var p = $(obj).parent();
+		if ($(p).hasClass('dc_status_Active')) $('[name=status]', this.el).val('Active')
+		if ($(p).hasClass('dc_status_Someday')) $('[name=status]', this.el).val('Someday')
+	},
+	
 	beforeShow : function(event) {
-		var tiddler = manager.currentTiddler;
+		var obj = event.currentTarget;
+		this.updateContext(obj);
 		$('[name=title]', this.el).val('');
 		this.el.dialog("option", "title", this.title);
 	}, 
