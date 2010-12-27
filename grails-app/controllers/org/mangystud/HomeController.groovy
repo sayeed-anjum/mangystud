@@ -11,6 +11,7 @@ class HomeController {
 		def realms = realmService.getRealms(user)
 		if (realms.count() == 0) {
 			realmService.initialize(user)
+			realms = realmService.getRealms(user)
 		}
 		def isAdmin = SecurityUtils.getSubject()?.hasRole('SYSTEM ADMINISTRATOR')
 		
