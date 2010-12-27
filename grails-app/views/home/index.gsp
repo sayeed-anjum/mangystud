@@ -280,7 +280,7 @@
 
 			<script id="showActionListByContext" type="text/x-jquery-tmpl">
 				<div class='viewer'>
-				<div class='mgtdList'><h1 classs='dc_state_{{= stateName}}'>{{= title}} <a class='action_link new_action'>+</a></h1>
+				<div class='mgtdList'><h1 class='dc_state_{{= stateName}}'>{{= title}} <a class='action_link new_action'>+</a></h1>
 				{{each(key,ctx) ctxList}}
 					<div class='innerList'><h2 class='dc_ctx dc_state_{{= stateName}}'>{{= key}} <a class='action_link new_action'>+</a></h2>
 						{{each(i,action) ctx}}
