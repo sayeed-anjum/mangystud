@@ -179,6 +179,15 @@ AreaDialog.prototype = $.extend({}, ContextDialog.prototype, {
 	  return true;
 	},
 
+	beforeShow : function(event) {
+		var tiddler = manager.currentTiddler;
+		var realm = $('.realm_select select', tiddler).val();
+
+		$('[name=realm]', this.el).val(realm);
+		$('[name=name]', this.el).val('');
+		this.el.dialog("option", "title", this.title);
+	}, 
+
 	onSuccess : function(data, textStatus) {
 		this.close();
 		var event = {event: 'newArea', data: data};
@@ -203,19 +212,13 @@ ContactDialog.prototype = $.extend({}, Dialog.prototype, {
 	},
 
 	beforeShow : function(event) {
-		var actionId = manager.getCurrentActionId();
-		if (actionId) {
-			var tiddler = manager.currentTiddler;
-			var realm = $('.realm_select select', tiddler).val();
-	
-			$('[name=realm]', this.el).val(realm);
-			$('[name=actionId]', this.el).val(actionId);
-			$('[name=name]', this.el).val('');
-			$('[name=email]', this.el).val('');
-			this.el.dialog("option", "title", this.title);
-		} else {
-			alert('Unable to get action id!');
-		}
+		var tiddler = manager.currentTiddler;
+		var realm = $('.realm_select select', tiddler).val();
+
+		$('[name=realm]', this.el).val(realm);
+		$('[name=name]', this.el).val('');
+		$('[name=email]', this.el).val('');
+		this.el.dialog("option", "title", this.title);
 	}, 
 	
 	onSuccess : function(data, textStatus) {

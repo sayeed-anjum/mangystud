@@ -62,7 +62,6 @@
 			          update="[success:'message',failure:'error']" name="newContextForm"
 			          onSuccess="manager.dialogSuccess('areaDialog', data, textStatus)">
 	        	<input type="hidden" name="realm" value=""/>
-	        	<input type="hidden" name="actionId" value=""/>
 	        	<input type="text" name="name" value="" size="40" maxLength="25"/>
 			</g:formRemote >
         </div>
@@ -72,7 +71,6 @@
 			          update="[success:'message',failure:'error']" name="newContextForm"
 			          onSuccess="manager.dialogSuccess('contactDialog', data, textStatus)">
 	        	<input type="hidden" name="realm" value=""/>
-	        	<input type="hidden" name="actionId" value=""/>
 	        	<label>Name:</label><input type="text" name="name" value="" size="40" maxLength="100"/>
 	        	<label>Email:</label><input type="text" name="email" value="" size="40" maxLength="100"/>
 			</g:formRemote >

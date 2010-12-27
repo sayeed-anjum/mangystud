@@ -38,6 +38,10 @@ manager = {
 		$.each(actionIds, function(index, value) {
 			refreshActionView(value);
 		});
+		var ticklerIds = getOpenTiddlerIdsForRealm(event.data.realm.id);
+		$.each(ticklerIds, function(index, value) {
+			refreshTicklerView(value);
+		});
 	},
 	
 	getContexts : function (realmId) {
@@ -304,6 +308,16 @@ function getOpenActionIdsForRealm(id) {
 		}
 	});
 	return actionIds;
+}
+
+function getOpenTiddlerIdsForRealm(id) {
+	var tiddlerIds = [];
+	$.each($('.controls .realm'), function(index, value) {
+		if ($(this).val() == id) {
+			tiddlerIds.push(manager.determineTiddlerId(this))
+		}
+	});
+	return tiddlerIds;
 }
 
 function completeAction() {
