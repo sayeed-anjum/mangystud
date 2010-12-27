@@ -887,9 +887,9 @@ function addTiddlerActionHandlers() {
 		}
 	});
 	$(".ticklers_pending").click(tl_activeTicklerDashboard);
-	$(".new_action").click({manager:manager, dialog:'actionDialog'}, manager.showDialog);
-	$('.new_tickler').click({manager:manager, dialog:'ticklerDialog'}, manager.showDialog);
-	$('.new_project').click({manager:manager, dialog:'projectDialog'}, manager.showDialog);
+	$(".new_action").live('click', {manager:manager, dialog:'actionDialog', type:'Action'}, manager.showDialog);
+	$('.new_tickler').live('click', {manager:manager, dialog:'ticklerDialog', type:'Tickler'}, manager.showDialog);
+	$('.new_project').live('click', {manager:manager, dialog:'projectDialog', type:'Project'}, manager.showDialog);
 	$('.contextAdd').live('click', {manager:manager, dialog:'contextDialog'}, manager.showDialog);
 	$('.controls .chkContext').live('click', updateContextState);
 	$('.controls .area').live('change', updateArea);

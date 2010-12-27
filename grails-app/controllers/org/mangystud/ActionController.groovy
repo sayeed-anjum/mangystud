@@ -8,9 +8,11 @@ class ActionController {
 	def actionService
 	
 	def add = {
-		def type = params.type
 		def title = params.title
-
+		def stateId  = params.state
+		def contextId = params.context
+		def projectId = params.int("project")
+		
 		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def realm = realmService.getActiveRealm(user)
 		
@@ -18,16 +20,27 @@ class ActionController {
 			render {error: "No active realm found!"} as JSON
 			return;
 		}
-		if (type == "Action") {
-			Action action = new Action(title:title, realm:realm, owner:user)
-			try {
-				if (action.save(failOnError: true)) {
-					def model = [action: action, realm: realm];
-					render model as JSON
+
+		Action action = new Action(title:title, realm:realm, owner:user)
+		try {
+			State state = stateId? State.valueOf(stateId) : null;
+			if (state) action.state = state;
+			def context = actionService.getContext(user, contextId)
+			if (context) {
+				action.contexts = [context];
+				if (context.realm.active) {
+					action.realm = context.realm;
 				}
-			} catch (Exception e) {
-				render {error: "Error when saving."} as JSON
 			}
+			if (projectId) {
+				action.project = Project.findByIdAndOwner(projectId, user);
+			}
+			if (action.save(failOnError: true, flush:true)) {
+				def model = [action: action, realm: realm];
+				render model as JSON
+			}
+		} catch (Exception e) {
+			render {error: "Error when saving."} as JSON
 		}
 	}
 	

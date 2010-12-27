@@ -129,10 +129,31 @@ ActionDialog.prototype = $.extend({}, Dialog.prototype, {
 
 	beforeShow : function(event) {
 		var obj = event.currentTarget;
-		$('[name=type]').val(obj.id);
-		$('[name=title]').val('');
-		this.el.dialog("option", "title", 'New ' + obj.id);
+		$('[name=type]', this.el).val(obj.id);
+		$('[name=title]', this.el).val('');
+		$('[name=state]', this.el).val('');
+		this.updateContext(obj);
+		this.el.dialog("option", "title", 'New ' + event.data.type);
 	}, 
+	
+	updateContext : function(obj) {
+		var p = $(obj).parent();
+		var tiddler = $(obj).closest('.tiddler');
+		if ($('.project', tiddler).length) {
+			var projectId = $(tiddler).attr('id').substr(10);
+			$('[name=project]', this.el).val(projectId);
+		}
+		
+		if ($(p).hasClass('dc_state_Next')) $('[name=state]', this.el).val('Next')
+		if ($(p).hasClass('dc_state_Future')) $('[name=state]', this.el).val('Future')
+		if ($(p).hasClass('dc_state_WaitingFor')) $('[name=state]', this.el).val('WaitingFor');
+		if ($(p).hasClass('dc_ctx')) {
+			var ctx = $(p).text();
+			ctx = ctx.substr(0, ctx.length-1)
+			$('[name=context]', this.el).val(ctx);
+		}
+		
+	},
 	
 	onSuccess : function(data, textStatus) {
 		this.close();

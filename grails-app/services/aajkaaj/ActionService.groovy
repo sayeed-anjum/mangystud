@@ -1,8 +1,8 @@
 package aajkaaj
 
-import org.mangystud.State;
 import groovy.sql.Sql 
 import org.mangystud.Action 
+import org.mangystud.Context 
 import org.mangystud.Project 
 import org.mangystud.Tickler;
 import org.mangystud.Tiddler 
@@ -138,5 +138,16 @@ class ActionService {
 		map.FutureActions = getContextActionMap(map.FutureActions)
 
 		return map;
+	}
+	
+	def getContext = {user, contextId ->
+		def items = Context.findAllByName(contextId.trim())
+		def context = null
+		items.each {item ->
+			if (item.realm.user.id == user.id) {
+				context = item
+			} 
+		}
+		return context	
 	}
 }
