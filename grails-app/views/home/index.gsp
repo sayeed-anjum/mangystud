@@ -115,7 +115,6 @@
 
 			<script id="combosTemplate" type="text/x-jquery-tmpl"> 
 				<div class='combos'>
-					{{if areas}}
 					<span class="label">Area:</span>
 					<select class='area' id='area_{{= action.id}}'>
 						<option value="0">-</span>
@@ -124,7 +123,6 @@
 							<option value="{{= area.id}}" {{if action.area != null && action.area.id == area.id}}selected="selected"{{/if}}>{{= area.name}}</span>
 						{{/each}}
 					</select>
-					{{/if}}
 					<span class="label">Contact:</span>
 					<select class='contact' id='contact_{{= action.id}}'>
 						<option value="0">-</span>
