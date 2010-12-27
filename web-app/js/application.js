@@ -954,7 +954,7 @@ jQuery(document).ready(function() {
 			"projectDialog" : new ProjectDialog().init(),
 			"actionDialog" : new ActionDialog().init()
 		},
-		initialView: tl_nextActions
+		initialView: tl_nextAndWaiting
 	});
 	
 	addTiddlerActionHandlers();
