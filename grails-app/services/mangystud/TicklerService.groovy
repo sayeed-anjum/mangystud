@@ -11,6 +11,7 @@ class TicklerService {
 
     def updateTicklerStatus() {
 		def tomorrow = new Date() + 1;
+		tomorrow.clearTime()
 		def result = Tickler.executeUpdate("update Tickler t set t.overdue = true where t.overdue = false and t.done = false and t.date < ?", [tomorrow]);
     }
 
