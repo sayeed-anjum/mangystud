@@ -800,6 +800,7 @@ function editTiddler() {
 	$('.viewToolbar', tiddler).hide();
 	$('.viewer', tiddler).hide();
 	$('.content', tiddler).hide();
+	$('.projectDetails', tiddler).hide();
 	$('.editToolbar', tiddler).show();
 	$(editor).show();
 	$('[name=title]', editor).select().focus();
@@ -814,6 +815,7 @@ function cancelTiddler() {
 	$('.viewToolbar', tiddler).show();
 	$('.viewer', tiddler).show();
 	$('.content', tiddler).show();
+	$('.projectDetails', tiddler).show();
 	$('.editToolbar', tiddler).hide();
 	$('.editor', tiddler).hide();
 	$('.td_title', tiddler).empty();
@@ -949,6 +951,8 @@ function addTiddlerActionHandlers() {
 	$('.tiddler .command_closeTiddler').live('click', closeTiddler);
 	$('.tiddler .command_closeOthers').live('click', closeOtherTiddlers);
 	$('.tiddler .command_editTiddler').live('click', editTiddler);
+	$('.tiddler .vw_title').live('dblclick', editTiddler);
+	$('.tiddler .tiddlerContent').live('dblclick', editTiddler);
 	$('.tiddler .command_doneTiddler').live('click', doneTiddler);
 	$('.tiddler .command_doneCloseTiddler').live('click', doneCloseTiddler);
 	$('.tiddler .command_cancelTiddler').live('click', cancelTiddler);

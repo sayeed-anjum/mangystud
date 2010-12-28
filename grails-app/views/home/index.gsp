@@ -186,11 +186,11 @@
 	        			{{tmpl({realms:realms, action:action}) '#realmTemplate'}}
 						<div>
 		       				<span class="tick"><input type="checkbox" class="chkOptionInput" {{if action.done}}checked="checked" {{/if}}/></span>
-		       				<span class="title">{{= action.title}}</span>
+		       				<span class="title vw_title">{{= action.title}}</span>
 		       				<span><a class="button Starred {{if action.star}}on{{else}}off{{/if}}" title="Starred" href="javascript:;">★</a></span>
 		       				<span class="subtitle"></span>
 						</div>
-						<div class="state">
+						<div class="state longButton">
 							<a class=" button Next {{if (action.state.name == 'Next')}}on{{else}}off{{/if}}" title="Next" href="javascript:;">next</a>
 							<a class=" button WaitingFor {{if (action.state.name == 'WaitingFor')}}on{{else}}off{{/if}}" title="Waiting For" href="javascript:;">waiting for</a>
 							<a class=" button Future {{if (action.state.name == 'Future')}}on{{else}}off{{/if}}" title="Future" href="javascript:;">future</a>
@@ -212,7 +212,7 @@
 							{{if dependsOn}}<a class='deleteDependency' href='javascript:;' title='Remove dependency'>×</a>{{/if}}
 						</div>
 					</div>
-					<div class='content'><pre>{{= action.notes}}</pre></div>
+					<div class='content tiddlerContent'><pre>{{= action.notes}}</pre></div>
 	        		{{tmpl({tiddler:action, class: 'action'}) '#editorTemplate'}}
 				</div>
         	</script>
@@ -220,16 +220,16 @@
 			<script id="projectViewTemplate" type="text/x-jquery-tmpl"> 
 	        	<div id="td_projct_{{= project.id}}" class="tiddler" tabIndex="{{= tabIndex}}">
 	        		{{tmpl '#toolbarTemplate'}}
-	        		<div class="title"></div>
+	        		<div class="title td_title"></div>
 	        		<div class="viewer controls project" id="projct_{{= project.id}}">
 	        			{{tmpl({realms:realms, action:project}) '#realmTemplate'}}
 						<div>
 		       				<span class="tick"><input type="checkbox" class="chkOptionInput" {{if project.done}}checked="checked" {{/if}}/></span>
-		       				<span class="title">{{= project.title}}</span>
+		       				<span class="title vw_title">{{= project.title}}</span>
 		       				<span><a class="button Starred {{if project.star}}on{{else}}off{{/if}}" title="Starred" href="javascript:;">★</a></span>
 		       				<span class="subtitle"></span>
 						</div>
-						<div class="projectStatus">
+						<div class="projectStatus longButton">
 							<a class=" button Active {{if (project.projectStatus.name == 'Active')}}on{{else}}off{{/if}}" title="Active" href="javascript:;">active</a>
 							<a class=" button Someday {{if (project.projectStatus.name == 'Someday')}}on{{else}}off{{/if}}" title="Someday" href="javascript:;">someday/maybe</a>
 						</div>
@@ -239,13 +239,14 @@
 						{{tmpl({action: project, areas: areas, contacts: contacts}) '#combosTemplate'}}
 					</div>
 					{{tmpl({project: project, prefix: prefix, tiddlers: tiddlers}) '#projectDetails'}}
+	        		{{tmpl({tiddler:project, class: 'project'}) '#editorTemplate'}}
 				</div>
         	</script>
 
 			<script id="ticklerViewTemplate" type="text/x-jquery-tmpl"> 
 	        	<div id="td_ticklr_{{= tickler.id}}" class="tiddler" tabIndex="{{= tabIndex}}">
 	        		{{tmpl '#toolbarTemplate'}}
-	        		<div class="title"></div>
+	        		<div class="title td_title"></div>
 	        		<div class="viewer controls tickler" id="ticklr_{{= tickler.id}}">
 	        			{{tmpl({realms:realms, action:tickler}) '#realmTemplate'}}
 						<div>
@@ -254,11 +255,11 @@
 						    {{else}}
 		       				<span class="tick"><a href='javascript:;' title='' class='rollPeriod button off'>+{{= tickler.p}}</a></span>
 							{{/if}}
-		       				<span class="title">{{= tickler.title}}</span>
+		       				<span class="title vw_title">{{= tickler.title}}</span>
 		       				<span><a class="button Starred {{if tickler.star}}on{{else}}off{{/if}}" title="Starred" href="javascript:;">★</a></span>
 		       				<span class="subtitle"></span>
 						</div>
-						<div class="period">
+						<div class="period longButton">
 							<span>
 								<a href="javascript:;" title="Daily" class=" button Daily {{if (tickler.period.name == 'Daily')}}on{{else}}off{{/if}}">daily</a>
 								<a href="javascript:;" title="Once" class=" button Once {{if (tickler.period.name == 'Once')}}on{{else}}off{{/if}}">one time</a>
@@ -282,6 +283,8 @@
 						</div>
 						{{tmpl({action: tickler, areas: areas, contacts: contacts, project: project}) '#combosTemplate'}}
 					</div>
+					<div class='content tiddlerContent'><pre>{{= tickler.notes}}</pre></div>
+	        		{{tmpl({tiddler:tickler, class: 'tickler'}) '#editorTemplate'}}
 				</div>
         	</script>
    

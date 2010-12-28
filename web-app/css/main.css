@@ -191,6 +191,10 @@ a:hover {
 	border: 1px solid #BBB;
 	line-height: 1.4em;
 	padding: 10px; 
+}
+
+.controls span {
+	margin-bottom: 1px;
 }	
 
 .viewer .button {
@@ -276,8 +280,12 @@ a:hover {
     font-size: 90%;
 }
 
-.viewer .state {
+.viewer .longbutton  {
 	margin: 0.5em 0;
+}
+
+.viewer .longbutton a {
+	font-size: 0.9em;
 }
 
 .viewer .chkContext {
