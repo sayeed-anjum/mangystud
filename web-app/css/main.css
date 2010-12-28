@@ -398,3 +398,22 @@ div#user {
 .link-container a {
 	font-size: .85em;
 }
+
+.editor {
+	clear: both;
+}
+
+.editor input, .editor textarea {
+	border: 1px solid #444444;
+	width: 100%;
+	display: block;
+}
+
+.tiddler .content pre {
+	margin-top: 5px;
+	padding: 5px;
+	width: 100%;
+	overflow: auto;
+	color: #222222;
+	font-family: Arial, Verdana;
+}

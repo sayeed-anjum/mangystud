@@ -7,6 +7,23 @@ import org.apache.shiro.SecurityUtils
 
 class TiddlerController {
 	
+	def update = {
+		def tid = params.int("id")
+		def title = params.title
+		def content = params.content
+		
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
+		def tiddler = Tiddler.findByOwnerAndId(user, tid)
+		
+		tiddler.title = title;
+		tiddler.notes = content;
+		tiddler.save(failOnError: true)
+		
+		def model = [success: true, tiddler: tiddler]
+		render model as JSON
+	}
+		
+	
 	def realmChange = {
 		def actionId = params.int("id")
 		def realmId = params.int("realm")

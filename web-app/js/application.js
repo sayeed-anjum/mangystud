@@ -167,7 +167,8 @@ manager = {
 	
 	determineTiddlerType : function(obj) {
 		var type = "";
-		var controlDiv = $(obj).closest('.controls');
+		var tiddler = $(obj).closest('.tiddler');
+		var controlDiv = $('.controls', tiddler);
 		if (!controlDiv.length) {
 			controlDiv = $(obj).closest('.link-container');
 		} 
@@ -185,7 +186,8 @@ manager = {
 	
 	determineTiddlerId : function(obj) {
 		var id = null;
-		var controlDiv = $(obj).closest('.controls');
+		var tiddler = $(obj).closest('.tiddler');
+		var controlDiv = $('.controls', tiddler);
 		if (controlDiv.length > 0) {
 			id = controlDiv[0].id.substr(7);
 		} else {
@@ -725,6 +727,40 @@ function toggleRealm() {
 	});
 }
 
+function deleteTiddler() {
+	var actionId = $(this).closest('.tiddler')[0].id;
+	if (actionId.substr(0, 10) === 'td_action_') {
+		deleteAction(actionId.substr(10));
+		$(this).closest('.tiddler').remove();
+	}
+}
+
+function deleteTiddlerButton() {
+	var actionId = manager.determineActionId(this);
+	deleteAction(actionId);
+}
+
+function deleteTicklerButton() {
+	var ticklerId = manager.determineTicklerId(this);
+	deleteTickler(ticklerId);
+}
+
+function cancelCloseTiddler() {
+		cancelTiddler.call(this);
+		closeTiddler.call(this);
+}
+
+function doneCloseTiddler() {
+	if (doneTiddler.call(this)) {
+		closeTiddler.call(this);
+	}
+}
+
+
+function closeTiddler() {
+	$(this).closest('.tiddler').remove();
+}
+
 function closeOtherTiddlers() {
 	var id = $(this).closest('.tiddler').attr('id');
 	var kids = $('#stage').children(':not(#' + id + ')');
@@ -732,7 +768,56 @@ function closeOtherTiddlers() {
 		$(k).remove();
 	});
 }
-	
+
+function doneTiddler() {
+	var id = manager.determineTiddlerId(this);
+	var type = manager.determineTiddlerType(this);
+	var tiddler = $(this).closest('.tiddler');
+	var editor = $('.editor', tiddler);
+	var title = $.trim($('[name=title]', editor).val());
+	var content = $.trim($('[name=content]', editor).val());
+	if (title == '') {
+		alert('Please specify a proper title!');
+		return false;
+	}
+	if (id != null) {
+		$.ajax({
+			url: serverUrl + "tiddler/update",
+			data: {id: id, title: title, content: content}, 
+			type: "POST",
+			dataType: "json",
+			success: function(data) {
+				manager.raiseEvent(type + 'Update', {event: 'editTiddler', id: id, data: data});
+			}
+		});
+	}
+	return true;
+}
+
+function editTiddler() {
+	var tiddler = $(this).closest('.tiddler');
+	var editor = $('.editor', tiddler);
+	$('.viewToolbar', tiddler).hide();
+	$('.viewer', tiddler).hide();
+	$('.content', tiddler).hide();
+	$('.editToolbar', tiddler).show();
+	$(editor).show();
+	$('[name=title]', editor).select().focus();
+	$('.td_title', tiddler).text($('[name=oldTitle]', editor).val());
+}
+
+function cancelTiddler() {
+	var tiddler = $(this).closest('.tiddler');
+	var editor = $('.editor', tiddler);
+	$('[name=title]', editor).val($('[name=oldTitle]', editor).val());
+	$('[name=content]', editor).val($('[name=oldContent]', editor).val());
+	$('.viewToolbar', tiddler).show();
+	$('.viewer', tiddler).show();
+	$('.content', tiddler).show();
+	$('.editToolbar', tiddler).hide();
+	$('.editor', tiddler).hide();
+	$('.td_title', tiddler).empty();
+}
 
 function tl_viewAction(actionId, inFocus) {
 	viewLoader("action/view", {actionId: actionId}, function(data) {
@@ -861,25 +946,16 @@ function addTiddlerActionHandlers() {
 	$('.tiddler').live('mouseleave', function() {
 		$(this).removeClass("selected");
 	});
-	$('.tiddler .command_closeTiddler').live('click', function() {
-		$(this).closest('.tiddler').remove();
-	});
+	$('.tiddler .command_closeTiddler').live('click', closeTiddler);
 	$('.tiddler .command_closeOthers').live('click', closeOtherTiddlers);
-	$('.tiddler .command_deleteTiddler').live('click', function() {
-		var actionId = $(this).closest('.tiddler')[0].id;
-		if (actionId.substr(0, 10) === 'td_action_') {
-			deleteAction(actionId.substr(10));
-			$(this).closest('.tiddler').remove();
-		}
-	});
-	$('.tiddler .deleteTiddlerButton').live('click', function() {
-		var actionId = manager.determineActionId(this);
-		deleteAction(actionId);
-	});
-	$('.tiddler .deleteTicklerButton').live('click', function() {
-		var ticklerId = manager.determineTicklerId(this);
-		deleteTickler(ticklerId);
-	});
+	$('.tiddler .command_editTiddler').live('click', editTiddler);
+	$('.tiddler .command_doneTiddler').live('click', doneTiddler);
+	$('.tiddler .command_doneCloseTiddler').live('click', doneCloseTiddler);
+	$('.tiddler .command_cancelTiddler').live('click', cancelTiddler);
+	$('.tiddler .command_cancelCloseTiddler').live('click', cancelCloseTiddler);
+	$('.tiddler .command_deleteTiddler').live('click', deleteTiddler);
+	$('.tiddler .deleteTiddlerButton').live('click', deleteTiddlerButton);
+	$('.tiddler .deleteTicklerButton').live('click', deleteTicklerButton);
 
 	$('.action .chkOptionInput').live('click', completeAction);
 	$('.tickler .chkOptionInput').live('click', completeTickler);

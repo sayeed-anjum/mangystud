@@ -89,7 +89,7 @@
    </div>
 
 			<script id="toolbarTemplate" type="text/x-jquery-tmpl"> 
-	        	<div class="toolbar">
+	        	<div class="toolbar viewToolbar">
 					<span style="padding: 1em;"></span>
 					<span>
 						<a name="closeTiddler" class="button command_closeTiddler" title="Close this tiddler" href="javascript:;">close</a>
@@ -98,6 +98,18 @@
 						<a name="deleteTiddler" class="button command_deleteTiddler" title="Delete this tiddler" href="javascript:;">delete</a>
 					</span>
 					<span><a name="newHere" class="button" title="Create a new tiddler" href="javascript:;">new here</a></span>
+					<span style="padding: 1em;"></span>
+				</div>
+	        	<div class="toolbar editToolbar" style='display:none'>
+					<span style="padding: 1em;"></span>
+					<span>
+						<a name="doneTiddler" class="button command_doneTiddler" title="Save changes to this tiddler" href="javascript:;">done</a>
+						<a name="doneCloseTiddler" class="button command_doneCloseTiddler" title="Save changes to this tiddler and close it" href="javascript:;">done/close</a>
+						<a name="closeOthers" class="button command_closeOthers" title="Close all other tiddlers" href="javascript:;">close others</a>
+						<a name="cancelTiddler" class="button command_cancelTiddler defaultCommand" title="Undo changes to this tiddler" href="javascript:;">cancel</a>
+						<a name="cancelCloseTiddler" class="button command_cancelCloseTiddler defaultCommand" title="Undo changes to this tiddler and close it" href="javascript:;">cancel/close</a>
+						<a name="deleteTiddler" class="button command_deleteTiddler" title="Delete this tiddler" href="javascript:;">delete</a>
+					</span>
 					<span style="padding: 1em;"></span>
 				</div>
 			</script>
@@ -139,6 +151,18 @@
 				</div>
 			</script>
 
+			<script id="editorTemplate" type="text/x-jquery-tmpl"> 
+				<div class='editor {{= class}}' id='tiddler_{{= tiddler.id}}' style='display:none'>
+					<input type='hidden' name='oldTitle' value='{{= tiddler.title}}'>
+					<input type='hidden' name='oldContent' value='{{= tiddler.notes}}'>
+					<label>Title</label>
+					<input name='title' maxlength='100' value="{{= tiddler.title}}" tabindex='1'>
+					<br/>
+					<label>Content</label>
+					<textarea name='content' rows='10' tabindex='2'>{{= tiddler.notes}}</textarea>
+				</div>
+			</script>
+
 			<script id="dashboardTemplate" type="text/x-jquery-tmpl"> 
         	<div id="{{= name}}" class="tiddler" tabIndex="{{= tabIndex}}">
         		{{tmpl '#toolbarTemplate'}}
@@ -157,7 +181,7 @@
 			<script id="actionViewTemplate" type="text/x-jquery-tmpl"> 
 	        	<div id="td_action_{{= action.id}}" class="tiddler" tabIndex="{{= tabIndex}}">
 	        		{{tmpl '#toolbarTemplate'}}
-	        		<div class="title"></div>
+	        		<div class="title td_title"></div>
 	        		<div class="viewer controls action" id="action_{{= action.id}}">
 	        			{{tmpl({realms:realms, action:action}) '#realmTemplate'}}
 						<div>
@@ -188,6 +212,8 @@
 							{{if dependsOn}}<a class='deleteDependency' href='javascript:;' title='Remove dependency'>×</a>{{/if}}
 						</div>
 					</div>
+					<div class='content'><pre>{{= action.notes}}</pre></div>
+	        		{{tmpl({tiddler:action, class: 'action'}) '#editorTemplate'}}
 				</div>
         	</script>
 
