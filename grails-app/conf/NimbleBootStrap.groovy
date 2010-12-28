@@ -44,6 +44,7 @@ class NimbleBootStrap {
   def nimbleService
   def userService
   def adminsService
+  def inboxService
   
   def createRealm = {name, user, contextNames, areaNames, contactNames ->
 	  def realm = Realm.findByName(name)
@@ -134,6 +135,8 @@ if (!Realm.count()) {
 	addAction "Work", admin, 'my second action', State.WaitingFor, ["Email"]  
 		addAction "Work", admin, 'my third action', State.Future, ["Meeting"]  
 	}
+
+	inboxService.readMailbox();
 
 	addInboxItem admin, "admin@xyz.com", "inbox item #1", "please look into this one"
 	addInboxItem admin, "admin@xyz.com", "inbox item #2", "please look into this two"

@@ -104,3 +104,12 @@ uiperformance.exclusions = [
 	"**/plugins/**",
 	"**/dojo/**"
  ]
+
+beans {
+	inboxSettings {
+		host = ''
+		port = 143
+		user = ''
+		password = ''
+	}
+}
