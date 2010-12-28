@@ -16,6 +16,7 @@
  */
  
 
+import aajkaaj.Inbox 
 import grails.plugins.nimble.InstanceGenerator
 
 import grails.plugins.nimble.core.Role
@@ -52,6 +53,10 @@ class NimbleBootStrap {
 		  def contacts = contactNames.collect {new Contact(name: it)}
 		  new Realm(name: name, user: user, contexts: contexts, areas : areas, contacts: contacts).save(failOnError: true, flush:true)
 	  }
+  }
+  
+  def addInboxItem = {user, source, subject, body ->
+	  new Inbox(source: source, subject: subject, body: body, owner: user).save(failOnError: true, flush:true)
   }
   
   def addAction = {realmName, user, title, state, contextNames ->
@@ -107,6 +112,7 @@ class NimbleBootStrap {
 	    def adminProfile = InstanceGenerator.profile()
 	    adminProfile.fullName = "Administrator"
 	    adminProfile.owner = admin
+		adminProfile.email = "admin@xyz.com"
 	    admin.profile = adminProfile
 	
 	    def savedAdmin = userService.createUser(admin)
@@ -129,6 +135,9 @@ if (!Realm.count()) {
 		addAction "Work", admin, 'my third action', State.Future, ["Meeting"]  
 	}
 
+	addInboxItem admin, "admin@xyz.com", "inbox item #1", "please look into this one"
+	addInboxItem admin, "admin@xyz.com", "inbox item #2", "please look into this two"
+	addInboxItem admin, "admin@xyz.com", "inbox item #3", "please look into this three"
   }
 
   def destroy = {

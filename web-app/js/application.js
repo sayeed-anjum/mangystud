@@ -1020,7 +1020,7 @@ function checkForActiveTicklers() {
 	});
 }
 
-jQuery(document).ready(function() {
+function initTiddlerManager() {
 	manager.init({
 		templates: ["actionViewTemplate", "dashboardTemplate", 
 		            "ticklerViewTemplate", "projectViewTemplate", 
@@ -1040,8 +1040,9 @@ jQuery(document).ready(function() {
 	addTiddlerActionHandlers();
 	addRealmActionHandlers();
 	checkForActiveTicklers();
-});
-
+	
+	$('#inboxAlert').show();
+}
 
 function formatTicklerDate(s) {
 	return s == null? '(set date)' : $.datepicker.formatDate('D, d-M-y', new Date(s));

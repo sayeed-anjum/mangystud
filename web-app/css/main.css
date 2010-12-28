@@ -13,6 +13,7 @@ div#header {
 	background-color: #0C113B;
 	color: white;
 	padding: 5px 5px 2px 5px;
+	height: 72px;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -424,4 +425,38 @@ div#user {
 	overflow: auto;
 	color: #222222;
 	font-family: Arial, Verdana;
+}
+
+.inboxOuter {
+	width: 95%;
+	background-color: white;
+	padding: 10px;
+	margin: 5px;
+	border-right: 2px solid #999999; 
+	border-bottom: 2px solid #999999;
+}
+
+.inboxOuter h2 {
+	margin-top: 5px;
+}
+
+.inboxList {
+	width: 200px;
+	border: 1px solid #8E8E8E;
+	padding: 5px;
+}
+
+.inboxList div {
+	margin-bottom: 3px;
+}
+
+.inboxItem {
+	border-bottom: 1px solid #DEDEDE;
+}
+
+.inboxItem a {
+	padding: 5px;
+	width: 95%;
+	display: block;
+	overflow: hidden;
 }
