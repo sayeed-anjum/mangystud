@@ -47,6 +47,8 @@ grails.logging.jul.usebridge = true
 // packages to include in Spring bean scanning
 grails.spring.bean.packages = []
 
+def logDirectory = '.'
+
 // set per-environment serverURL stem for creating absolute links
 environments {
     production {
@@ -59,19 +61,18 @@ environments {
     test {
         grails.serverURL = "http://localhost:8080/${appName}"
 		uiperformance.enabled = false
+		logDirectory = "../logs"
     }
 
 }
 
 // log4j configuration
 log4j = {
-    // Example of changing the log pattern for the default console
-    // appender:
-    //
-    //appenders {
-    //    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
-    //}
-
+	appenders {
+		console name:'stdout'
+		rollingFile  name:'file', file: logDirectory + '/aajkaaj.log', threshold: org.apache.log4j.Level.INFO, maxFileSize:"1MB", maxBackupIndex: 10, 'append':true
+	}
+	
     error  'org.codehaus.groovy.grails.web.servlet',  //  controllers
            'org.codehaus.groovy.grails.web.pages', //  GSP
            'org.codehaus.groovy.grails.web.sitemesh', //  layouts
@@ -86,10 +87,14 @@ log4j = {
 
     warn   'org.mortbay.log'
 	
-	debug  'org.mangystud',
-		   'NimbleBootStrap' //, 'org.hibernate.SQL'
-}
+	debug  'NimbleBootStrap',
+		   'grails.app'
 
+   root {
+	   warn 'stdout', 'file'
+	   additivity = true
+   }
+}
 
 uiperformance.bundles = [
 	[type: 'js',

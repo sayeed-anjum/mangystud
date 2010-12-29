@@ -41,14 +41,12 @@ class InboxService {
 			inbox.open Folder.READ_WRITE
 			def messages = inbox.search(
 				new FlagTerm(new Flags(Flags.Flag.SEEN), false))
-			// println "total messages: ${messages.size()}"
 			messages.each { msg ->
 				callback msg
 				msg.setFlag(Flags.Flag.SEEN, true)
 			}
 		} catch (Exception e) {
-			println "error when reading emails: \n" + e.message
-			// log it
+			log.error "error when reading emails: \n" + e.message
 		} finally {
 			if(inbox) {
 				inbox.close(true)
@@ -64,11 +62,11 @@ class InboxService {
 		
 		def mailbox = Mailbox.findByEmailAndValid(from, true);
 		if (mailbox) {
-			println "Saving new message from source: ${from} - subject: ${subject} owner: ${mailbox.owner.username}"
+			log.debug "Saving new message from source: ${from} - subject: ${subject} owner: ${mailbox.owner.username}"
 			def text = StringUtils.abbreviate(body, 1999); 
 			new InboxMessage(source: from, subject: subject, body: text, owner: mailbox.owner).save(failOnError: true, flush:true)
 		} else {
-			println "Unable to locate a mailbox for source: ${from} - subject: ${subject}"
+			log.warn "Unable to locate a mailbox for source: ${from} - subject: ${subject}"
 		}
 	}
 
@@ -81,7 +79,7 @@ class InboxService {
 			mailbox.valid = true
 			mailbox.save()
 		} else {
-			println "Unable to validate the message for source: ${from} - subject: ${subject}"
+			log.warn "Unable to validate the message for source: ${from} - subject: ${subject}"
 		}
 	}
 	

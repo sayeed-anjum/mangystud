@@ -23,7 +23,7 @@ class ActionController {
 			render model as JSON
 			return;
 		}
-
+		
 		try {
 			Action action = new Action(title:title, realm:realm, owner:user)
 			State state = State.valueOf(stateId?:'Next');
@@ -47,6 +47,7 @@ class ActionController {
 			}
 		} catch (Exception e) {
 			model.message = e.message;
+			log.error "exception when adding new action", e 
 		}
 		render model as JSON
 	}
