@@ -20,7 +20,7 @@ class ProjectController {
 			return;
 		}
 		Project project = new Project(title:title, realm:realm, owner:user)
-		def projectStatus = ProjectStatus.valueOf(status);
+		def projectStatus = ProjectStatus.valueOf(status?:"Active");
 		if (projectStatus) {
 			project.projectStatus = projectStatus;
 		}
