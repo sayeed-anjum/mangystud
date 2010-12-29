@@ -26,7 +26,7 @@ public class NimbleSecurityFilters extends grails.plugins.nimble.security.Nimble
     def filters = {
 
         // Content requiring users to be authenticated
-        secure(controller: "(home|action|tiddler|main|realm)") {
+        secure(controller: "(home|action|tiddler|main|realm|inbox)") {
             before = {
                 accessControl {
                     true

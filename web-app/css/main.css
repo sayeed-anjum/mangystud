@@ -442,6 +442,8 @@ div#user {
 
 .inboxList {
 	width: 200px;
+	height: 280px;
+	overflow: auto;
 	border: 1px solid #8E8E8E;
 	padding: 5px;
 }
@@ -451,7 +453,7 @@ div#user {
 }
 
 .inboxItem {
-	border-bottom: 1px solid #DEDEDE;
+	border-bottom: 1px solid #BEBEBE;
 }
 
 .inboxItem a {
@@ -460,3 +462,41 @@ div#user {
 	display: block;
 	overflow: hidden;
 }
+
+.mailboxEntry {
+	font-size: 140%;
+	padding: 5px;
+	border-top: 1px solid #BEBEBE;
+	border-bottom: 1px solid #BEBEBE;
+	border-collapse: collapse;
+}
+
+.mailboxEntry .status {
+	margin-left: 5px;
+	font-size: 65%;
+	color: #8E8E8E;
+}
+	
+
+.mailboxEntry .links a {
+	margin-left: 15px;
+	font-size: 80%;
+	color: #8E8E8E;
+}
+
+.mailboxEntry .secret {
+	padding: 10px;
+	border: 1px dotted #AEAEAE;
+	color: #777777;
+	font-size: 80%;
+}
+
+.mailboxEntry .valid {
+	color: green;
+}
+
+.mailboxEntry .invalid {
+	color: red;
+}
+
+	
