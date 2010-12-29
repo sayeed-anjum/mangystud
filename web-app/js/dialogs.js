@@ -129,35 +129,46 @@ ActionDialog.prototype = $.extend({}, Dialog.prototype, {
 
 	beforeShow : function(event) {
 		var obj = event.currentTarget;
-		this.updateContext(obj);
+		
+		var form = $('form', this.el);
+		
 		$('[name=type]', this.el).val(obj.id);
 		$('[name=title]', this.el).val('');
-		$('[name=state]', this.el).val('');
+		this.updateContext(obj);
 		this.el.dialog("option", "title", 'New ' + event.data.type);
 	}, 
 	
 	updateContext : function(obj) {
 		var p = $(obj).parent();
 		var tiddler = $(obj).closest('.tiddler');
+		
+		var projectId = "";
 		if ($('.project', tiddler).length) {
-			var projectId = $(tiddler).attr('id').substr(10);
-			$('[name=project]', this.el).val(projectId);
+			projectId = $(tiddler).attr('id').substr(10);
 		}
+		$('[name=project]', this.el).val(projectId);
+
+		var state = "";
+		if ($(p).hasClass('dc_state_Next')) state = 'Next';
+		if ($(p).hasClass('dc_state_Future')) state = 'Future';
+		if ($(p).hasClass('dc_state_WaitingFor')) state = 'WaitingFor';
+		$('[name=state]', this.el).val(state);
 		
-		if ($(p).hasClass('dc_state_Next')) $('[name=state]', this.el).val('Next')
-		if ($(p).hasClass('dc_state_Future')) $('[name=state]', this.el).val('Future')
-		if ($(p).hasClass('dc_state_WaitingFor')) $('[name=state]', this.el).val('WaitingFor');
+		var ctx = "";
 		if ($(p).hasClass('dc_ctx')) {
-			var ctx = $(p).text();
+			ctx = $(p).text();
 			ctx = ctx.substr(0, ctx.length-1)
-			$('[name=context]', this.el).val(ctx);
 		}
+		$('[name=context]', this.el).val(ctx);
+
+		var contact = "";
 		if ($(p).hasClass('dc_contact')) {
-			var contact = $(p).text();
+			contact = $(p).text();
 			contact = contact.substr(0, contact.length-1)
-			$('[name=contact]', this.el).val(contact);
 		}
+		$('[name=contact]', this.el).val(contact);
 		
+		console.log('project:' + projectId + ", state: " + state + ", ctx: " + ctx + ", contact: " + contact);
 	},
 	
 	onSuccess : function(data, textStatus) {
