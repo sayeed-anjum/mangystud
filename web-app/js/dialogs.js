@@ -167,8 +167,6 @@ ActionDialog.prototype = $.extend({}, Dialog.prototype, {
 			contact = contact.substr(0, contact.length-1)
 		}
 		$('[name=contact]', this.el).val(contact);
-		
-		console.log('project:' + projectId + ", state: " + state + ", ctx: " + ctx + ", contact: " + contact);
 	},
 	
 	onSuccess : function(data, textStatus) {
