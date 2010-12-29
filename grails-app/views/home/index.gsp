@@ -170,7 +170,7 @@
 					</select>
 					<span class='label'>Project:</span>
 					<input name='project' value='{{if project}}{{= project.title}}{{/if}}' size='50'/>
-					{{if project}}<a class='deleteProject' href='javascript:;' title='Remove project'>×</a>{{/if}}
+					{{if project}}<a class='unlinkProject' href='javascript:;' title='Remove project'>×</a>{{/if}}
 				</div>
 			</script>
 
@@ -340,7 +340,7 @@
 							<input type='checkbox' class='chkOptionInput' {{if action.done}}checked='checked'{{/if}}>
 							<a class='button Next {{= n}}' href='javascript:;' title='Next'>n</a><a class='button WaitingFor {{= w}}' href='javascript:;' title='Waiting For'>w</a><a class='button Future {{= f}}' href='javascript:;' title='Future'>f</a>
 							<a class='button Starred {{if action.star}}on{{else}}off{{/if}}' href='javascript:;' title='Starred'>★</a><span>&nbsp;</span><a class='tiddlyLink tiddlyLinkExisting' href='javascript:;' tiddlyLink='tl_viewAction' id='tl_{{= prefix}}{{= action.id}}'>{{= action.title}}</a> 
-							<a class='deleteTiddlerButton' href='javascript:;' title='Delete tiddler'>×</a>
+							<a class='deleteActionButton' href='javascript:;' title='Delete action'>×</a>
 							</span><br>
 						{{/each}}
 					</div>
@@ -364,7 +364,7 @@
 					<input class='dateBox' value='{{= formatTicklerDate(tickler.date)}}'>
 					<span>&nbsp;</span>
 					<a class='tiddlyLink tiddlyLinkExisting' href='javascript:;' tiddlyLink='tl_viewTickler' id='tl_{{= prefix}}{{= tickler.id}}'>{{= tickler.title}}</a> 
-					<a class='deleteTiddlerButton' href='javascript:;' title='Delete tiddler'>×</a>
+					<a class='deleteTicklerButton' href='javascript:;' title='Delete tickler'>×</a>
 					</span><br>
 				{{/each}}					
 				</div>			

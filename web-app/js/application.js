@@ -109,19 +109,31 @@ manager = {
 
 	actionUpdateListener : function(manager, event) {
 		manager.updateStaticActionTiddlers();
-		refreshActionView(event.id, (event.event=='newAction'));
-		refreshProjectDetailsView(event)
+		if (event.event == 'delete') {
+			$('#td_action_' + event.id).remove();
+		} else {
+			refreshActionView(event.id, (event.event=='newAction'));
+			refreshProjectDetailsView(event)
+		}
 	}, 
 	
 	ticklerUpdateListener : function(manager, event) {
 		manager.updateTicklerDashboards();
-		refreshTicklerView(event.id, (event.event=='newTickler'));
-		refreshProjectDetailsView(event)
+		if (event.event == 'delete') {
+			$('#td_ticklr_' + event.id).remove();
+		} else {
+			refreshTicklerView(event.id, (event.event=='newTickler'));
+			refreshProjectDetailsView(event)
+		}
 	}, 
 
 	projectUpdateListener : function(manager, event) {
 		manager.updateProjectDashboards();
-		refreshProjectView(event.id, (event.event=='newProject'));
+		if (event.event == 'delete') {
+			$('#td_projct_' + event.id).remove();
+		} else {
+			refreshProjectView(event.id, (event.event=='newProject'));
+		}
 	}, 
 	
 	tmpl : function(name, data) {
@@ -546,20 +558,6 @@ function toggleStar() {
 	}
 }
 
-function deleteTiddler(type, id) {
-	if (id != null) {
-		$.ajax({
-			url: serverUrl + "tiddler/remove",
-			data: {id: id}, 
-			type: "POST",
-			dataType: "json",
-			success: function(data) {
-				manager.raiseEvent(type + 'Update', {event: 'delete', id: id});
-			}
-		});
-	}
-}
-
 function updateContextState(event) {
 	var checked = $(this).is(':checked');
 	var context = $(this).val();
@@ -687,7 +685,7 @@ function deleteDependency() {
 	}
 }
 
-function deleteProject() {
+function unlinkProject() {
 	var type = manager.determineTiddlerType(this);
 	var id = manager.determineTiddlerId(this);
 	if (id != null) {
@@ -701,14 +699,6 @@ function deleteProject() {
 			}
 		});
 	}
-}
-
-function deleteAction(actionId) {
-	deleteTiddler("action", actionId);
-}
-
-function deleteTickler(ticklerId) {
-	deleteTiddler("tickler", ticklerId);
 }
 
 function toggleRealm() {
@@ -727,15 +717,39 @@ function toggleRealm() {
 	});
 }
 
-function deleteTiddler() {
-	var actionId = $(this).closest('.tiddler')[0].id;
-	if (actionId.substr(0, 10) === 'td_action_') {
-		deleteAction(actionId.substr(10));
-		$(this).closest('.tiddler').remove();
+function deleteTiddler(type, id) {
+	if (id != null) {
+		$.ajax({
+			url: serverUrl + "tiddler/remove",
+			data: {id: id}, 
+			type: "POST",
+			dataType: "json",
+			success: function(data) {
+				manager.raiseEvent(type + 'Update', {event: 'delete', id: id});
+			}
+		});
 	}
 }
 
-function deleteTiddlerButton() {
+function deleteProject(id) {
+	deleteTiddler("project", id);
+}
+
+function deleteAction(id) {
+	deleteTiddler("action", id);
+}
+
+function deleteTickler(id) {
+	deleteTiddler("tickler", id);
+}
+
+function deleteTiddlerCommand() {
+	var type = manager.determineTiddlerType(this);
+	var id = manager.determineTiddlerId(this);
+	deleteTiddler(type, id);
+}
+
+function deleteActionButton() {
 	var actionId = manager.determineActionId(this);
 	deleteAction(actionId);
 }
@@ -743,6 +757,11 @@ function deleteTiddlerButton() {
 function deleteTicklerButton() {
 	var ticklerId = manager.determineTicklerId(this);
 	deleteTickler(ticklerId);
+}
+
+function deleteProjectButton() {
+	var projectId = manager.determineTiddlerId(this);
+	deleteProject(projectId);
 }
 
 function cancelCloseTiddler() {
@@ -957,9 +976,10 @@ function addTiddlerActionHandlers() {
 	$('.tiddler .command_doneCloseTiddler').live('click', doneCloseTiddler);
 	$('.tiddler .command_cancelTiddler').live('click', cancelTiddler);
 	$('.tiddler .command_cancelCloseTiddler').live('click', cancelCloseTiddler);
-	$('.tiddler .command_deleteTiddler').live('click', deleteTiddler);
-	$('.tiddler .deleteTiddlerButton').live('click', deleteTiddlerButton);
+	$('.tiddler .command_deleteTiddler').live('click', deleteTiddlerCommand);
+	$('.tiddler .deleteActionButton').live('click', deleteActionButton);
 	$('.tiddler .deleteTicklerButton').live('click', deleteTicklerButton);
+	$('.tiddler .deleteProjectButton').live('click', deleteProjectButton);
 
 	$('.action .chkOptionInput').live('click', completeAction);
 	$('.tickler .chkOptionInput').live('click', completeTickler);
@@ -989,7 +1009,7 @@ function addTiddlerActionHandlers() {
 	$('.controls .area').live('change', updateArea);
 	$('.controls .contact').live('change', updateContact);
 	$('.controls .deleteDependency').live('click', deleteDependency); 
-	$('.controls .deleteProject').live('click', deleteProject); 
+	$('.controls .unlinkProject').live('click', unlinkProject); 
 	$('.controls .period .button').live('click', updatePeriodicity); 
 	$('.controls .date .button').live('click', incrementPeriod); 
 	$('.rollPeriod').live('click', incrementPeriod); 

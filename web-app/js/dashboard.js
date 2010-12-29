@@ -109,7 +109,7 @@ function getContextActionsHtml(stateMap, title, state, stateName, prefix) {
 						"<a class='button Starred " + (action.star? "on" : "off") + "' href='javascript:;' title='Starred'>★</a>" +
 						"<span>&nbsp;</span>" + 
 						"<a class='tiddlyLink tiddlyLinkExisting' href='javascript:;' tiddlyLink='tl_viewAction' id='tl_" + prefix + "@" + action.id + "'>" + action.title + "</a>" +
-						"<a class='deleteTiddlerButton' href='javascript:;' title='Delete tiddler'>×</a>" + 
+						"<a class='deleteActionButton' href='javascript:;' title='Delete action'>×</a>" + 
 						"</span><br>"
 			}
 			html += "</div>"
@@ -129,7 +129,7 @@ function getDoneActionsHtml(doneActions, title, prefix) {
 					"<input type='checkbox' class='chkOptionInput'" + (action.done? " checked='checked'>" : ">") +  
 					"<span>&nbsp;</span>" + 
 					"<a class='tiddlyLink tiddlyLinkExisting' href='javascript:;' tiddlyLink='tl_viewAction' id='tl_" + prefix + "@" + action.id + "'>" + action.title + "</a>" +
-					"<a class='deleteTiddlerButton' href='javascript:;' title='Delete tiddler'>×</a>" + 
+					"<a class='deleteActionButton' href='javascript:;' title='Delete action'>×</a>" + 
 					"</span><br>"
 		}
 		html += "</div>";
