@@ -3,7 +3,7 @@ package org.mangystud
 class Contact {
 
     static constraints = {
-		name(size:1..100, blank:false, unique:true)
+		name(size:1..100, blank:false)
 		email(email:true, nullable:true)
     }
 	

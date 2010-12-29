@@ -11,7 +11,7 @@ class Tiddler {
 
     static constraints = {
 		realm(nullable:false)
-		title(size:3..100, blank: false, unique:true)
+		title(size:3..100, blank: false)
 		notes(maxSize:2000,nullable:true)
 		owner(nullable:false)
 		project(nullable:true)
