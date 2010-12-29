@@ -16,7 +16,7 @@
  */
  
 
-import aajkaaj.Inbox 
+import aajkaaj.InboxMessage 
 import grails.plugins.nimble.InstanceGenerator
 
 import grails.plugins.nimble.core.Role
@@ -57,7 +57,7 @@ class NimbleBootStrap {
   }
   
   def addInboxItem = {user, source, subject, body ->
-	  new Inbox(source: source, subject: subject, body: body, owner: user).save(failOnError: true, flush:true)
+	  new InboxMessage(source: source, subject: subject, body: body, owner: user).save(failOnError: true, flush:true)
   }
   
   def addAction = {realmName, user, title, state, contextNames ->
@@ -135,8 +135,6 @@ if (!Realm.count()) {
 	addAction "Work", admin, 'my second action', State.WaitingFor, ["Email"]  
 		addAction "Work", admin, 'my third action', State.Future, ["Meeting"]  
 	}
-
-	inboxService.readMailbox();
 
 	addInboxItem admin, "admin@xyz.com", "inbox item #1", "please look into this one"
 	addInboxItem admin, "admin@xyz.com", "inbox item #2", "please look into this two"

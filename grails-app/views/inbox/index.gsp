@@ -11,6 +11,7 @@
 		<g:javascript>
 		   jQuery(document).ready(function() {
 		   		initMailboxTabs();
+		   		refreshInbox();
 		   });
 		</g:javascript>
 	</head>
@@ -21,15 +22,25 @@
 		<li><a href="#inboxTab">Process Inbox</a></li>
 		<li><a href="#settingsTab">Settings</a></li>
 	</ul>		
-	<div id='inboxTab' class='inboxOuter'>   	
+	<div id='inboxTab' class='inboxOuter'>
+			<table>
+			<tr>
+			<td>
 	   		<h2>Inbox</h2>
-		   	<div class="inboxList">	
-			   	<g:each in="${items}" var="item">
-			   		<div class="inboxItem"><a href='javascript:;' class='inbox_link'>${item.subject}</a></div>
-			   	</g:each>
-		   	</div>
-		   	<div class="inboxContentOuter">
-		   	</div>
+			<div id='inboxRefresh'><a href='javascript:;' class='inboxRefreshLink'>Refresh</a></div>
+		   	<div id="inboxList"></div>
+		   	</td>
+		   	<td>
+	   		<div id='inbox_action_links'>
+	   			<a href='javascript:;' class='button makeTiddler action'>Make Action</a> 
+	   			<a href='javascript:;' class='button makeTiddler project'>Make Project</a> 
+	   			<a href='javascript:;' class='button makeTiddler tickler'>Make Tickler</a>
+	   			<a href='javascript:;' class='button makeTiddler dump'>Dump It!</a>
+	   		</div>
+		   	<div id="inboxView"></div>
+			</td>
+			</tr>		   	
+			</table>
 	</div>
 	<div id='settingsTab'>
 		<h2>My Mailboxes</h2>
@@ -37,9 +48,24 @@
 		Step 2) Sending a mail from this email id to the VERIFICATION MAILBOX with the secret code as subject line.
 		<br>Click on the email to view the secret code.</h4>
 		<br/>
-		<div id='mailboxes'>
-		</div>
-	</div>   	
+		<div id='mailboxRefresh'><a href='javascript:;' class='mailboxRefreshLink'>Refresh</a></div>
+		<div id='mailboxes'></div>
+	</div>
+
+	<script id="messageTemplate" type="text/x-jquery-tmpl">
+		{{each(i,msg) messages}}
+	 		<div class="message" id='msg_{{= msg.id}}' style='display:none'>
+				<h3>Subject: {{= msg.subject}}</h3>
+				<textarea class='body'>{{= msg.body}}</textarea>
+			</div>
+	   	{{/each}}
+	</script>
+	
+	<script id="messageListTemplate" type="text/x-jquery-tmpl">
+		{{each(i,msg) messages}}
+	 		<div class="inboxItem"><a href='javascript:;' class='message_link' id='ml_{{= msg.id}}'>{{= msg.subject}}</a></div>
+	   	{{/each}}
+	</script>
    	
 	<script id="mailboxEntryTemplate" type="text/x-jquery-tmpl">
 		<div class='mailboxEntry' id='mailbox_{{= mailbox.id}}'>
@@ -54,7 +80,7 @@
 			{{tmpl({mailbox:mailbox}) '#mailboxEntryTemplate'}}
 		{{/each}}
 		<div class='mailboxEntry' id='mailbox_0'>
-			* <input class='newMailboxEntry' type='text' name='email' value='' size='50' maxLength=200'> 
+			* <input class='newMailboxEntry' type='text' name='email' value='' size='50' maxLength=200' title="Type new email address and press ENTER key"> 
 		</div>
 		</div>
 	</script>

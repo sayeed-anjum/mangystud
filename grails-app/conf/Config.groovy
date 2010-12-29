@@ -112,4 +112,11 @@ beans {
 		user = ''
 		password = ''
 	}
+
+	verifyInboxSettings {
+		host = ''
+		port = 143
+		user = ''
+		password = ''
+	}
 }

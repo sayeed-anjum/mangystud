@@ -1,7 +1,7 @@
 package org.mangystud
 
 
-import aajkaaj.Inbox;
+import aajkaaj.InboxMessage;
 import aajkaaj.Mailbox 
 import grails.converters.JSON 
 import grails.validation.ValidationException;
@@ -10,11 +10,12 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.shiro.SecurityUtils 
 
 class InboxController {
+	def realmService
 
     def index = { 
 		Person user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		
-		def items = Inbox.findAllByOwnerAndProcessed(user, false)
+		def items = InboxMessage.findAllByOwnerAndProcessed(user, false)
 		return [user: user, items: items];
 	}
 	
@@ -23,6 +24,14 @@ class InboxController {
 		
 		def items = Mailbox.findAllByOwner(user)
 		def model = [mailboxes: items]
+		render model as JSON
+	}
+
+	def list = {
+		Person user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
+		
+		def items = InboxMessage.findAllByOwnerAndProcessed(user, false)
+		def model = [messages: items]
 		render model as JSON
 	}
 
@@ -48,6 +57,45 @@ class InboxController {
 		render model as JSON
 	}
 	
+	def make = {
+		def messageId = params.int('id')
+		def type = params.type
+		Person user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
+		
+		def msg = InboxMessage.findByOwnerAndId(user, messageId)
+		def model = [success: false]
+		if (msg) {
+			def realm = realmService.getActiveRealm(user)
+			def values = [owner: msg.owner, realm: realm, title: msg.subject, notes: msg.body];
+			try {
+				switch (type) {
+					case "dump":
+						msg.delete();
+						break;
+					case "action":
+						new Action(values).save(failOnError: true)
+						break;
+					case "project":
+						new Project(values).save(failOnError: true)
+						break;
+					case "tickler":
+						new Tickler(values).save(failOnError: true)
+						break;
+				}
+				if (type != "dump") {
+					msg.processed = true;
+					msg.save();
+				}
+				model.success = true
+			} catch (ValidationException e) {
+				model.message = e.message
+			}
+		} else {
+			model.message = "Cannot locate inbox message for processing"
+		}
+		render model as JSON
+	}
+
 	def deleteMailbox = {
 		def mailboxId = params.int('id')
 		Person user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
@@ -61,16 +109,5 @@ class InboxController {
 
 		render model as JSON
 	}
-	
-	def getDigest = {
-		def mailboxId = params.int('id')
-		Person user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
-		
-		def mailbox = Mailbox.findByOwnerAndId(user, mailboxId)
-
-		def model = [digest: mailbox.digest] 
-		render model as JSON
-	}
-	
 	
 }

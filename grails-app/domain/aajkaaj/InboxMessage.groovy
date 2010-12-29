@@ -4,7 +4,7 @@ import java.util.Date;
 import org.mangystud.Person 
 import org.mangystud.Tiddler 
 
-class Inbox {
+class InboxMessage {
 
     static constraints = {
 		source(nullable: false)

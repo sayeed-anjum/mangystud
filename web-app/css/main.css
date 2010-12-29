@@ -440,20 +440,45 @@ div#user {
 	margin-top: 5px;
 }
 
-.inboxList {
-	width: 200px;
+#inboxTab table td {
+	vertical-align: top
+}
+
+#inboxList {
+	width: 250px;
 	height: 280px;
 	overflow: auto;
 	border: 1px solid #8E8E8E;
 	padding: 5px;
 }
 
-.inboxList div {
+#inboxView {
+	padding: 5px;
+}
+
+#inboxView .body {
+	overflow: auto;
+	width: 600px;
+	height: 255px;
+	border: 1px solid #8E8E8E;
+	padding: 5px;
+}	
+
+#inboxList div {
 	margin-bottom: 3px;
 }
 
 .inboxItem {
 	border-bottom: 1px solid #BEBEBE;
+}
+
+.message_link.selected {
+	color: blue;
+	border-bottom: 1px solid blue;
+}
+
+.message_link.selected:hover {
+	color: white;
 }
 
 .inboxItem a {
@@ -499,4 +524,17 @@ div#user {
 	color: red;
 }
 
+input.newMailboxEntry {
+	border: 1px solid #6B95BF; 
+}
+
+#inbox_action_links {
+	padding: 5px;
+}
 	
+#inbox_action_links a.button  {
+	border: 1px solid blue;
+	padding: 2px 5px;
+	margin: 0 10px;
+	font-size: 85%;
+}

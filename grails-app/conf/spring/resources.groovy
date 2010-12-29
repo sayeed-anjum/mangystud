@@ -7,4 +7,5 @@ beans = {
 	customPropertyEditorRegistrar(CustomDateEditorRegistrar)
 	
 	inboxSettings(MailboxInfo)
+	verifyInboxSettings(MailboxInfo)
 }
