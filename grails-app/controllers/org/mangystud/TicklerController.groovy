@@ -1,10 +1,11 @@
 package org.mangystud
 
 import java.util.Date;
-import java.util.GregorianCalendar;
 
 import grails.converters.JSON 
 import org.apache.shiro.SecurityUtils 
+
+import aajkaaj.InboxMessage;
 
 
 
@@ -128,8 +129,11 @@ class TicklerController {
 		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		
 		def result = Tickler.executeQuery('select count(*) as tcount from Tickler where owner = ? and done = false and overdue = true', [user])
-		
 		def model = ["count": result]
+		
+		result = Tickler.executeQuery('select count(*) as tcount from InboxMessage where owner = ? and processed = false', [user])
+		model.inboxCount = result
+		
 		render model as JSON
 	}
 

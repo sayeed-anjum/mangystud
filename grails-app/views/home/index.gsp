@@ -11,7 +11,7 @@
 			   	<span class="realm-add"> + </span>
 			   	<span class="spacer"></span>
 			   	<span id="ticklerAlert" class="action_link ticklers_pending" style='display:none'><blink>*ticklers*</blink></span> 
-			   	<span id="inboxAlert" class="action_link inbox_pending"><g:link url="[action:'index',controller:'inbox']">*inbox*</g:link></span> 
+			   	<span id="inboxAlert" class="action_link inbox_pending"><g:link url="[action:'index',controller:'inbox']"><blink>*inbox*</blink></g:link></span> 
 			   	<span class="spacer"></span>
 			   	<span id="Action" class="action_link new_action">+action</span> 
 			   	<span id="Project" class="action_link new_project">+project</span> 

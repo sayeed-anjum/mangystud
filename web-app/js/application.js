@@ -1038,7 +1038,8 @@ function checkForActiveTicklers() {
 		type: "GET",
 		dataType: "json",
 		success: function(data) {
-			$('#ticklerAlert').toggle(data.count > 0);
+			data.count > 0? $('#ticklerAlert').show() : $('#ticklerAlert').hide();
+			data.inboxCount > 0? $('#inboxAlert').show() : $('#inboxAlert').hide();
 			setTimeout(checkForActiveTicklers, 120000);
 		}
 	});
@@ -1064,8 +1065,6 @@ function initTiddlerManager() {
 	addTiddlerActionHandlers();
 	addRealmActionHandlers();
 	checkForActiveTicklers();
-	
-	$('#inboxAlert').show();
 }
 
 function formatTicklerDate(s) {

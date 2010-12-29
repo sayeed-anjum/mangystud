@@ -14,9 +14,7 @@ class InboxController {
 
     def index = { 
 		Person user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
-		
-		def items = InboxMessage.findAllByOwnerAndProcessed(user, false)
-		return [user: user, items: items];
+		return [user: user];
 	}
 	
 	def mailboxes = {

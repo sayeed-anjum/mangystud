@@ -16,6 +16,7 @@
 		<div id="header">
 		     <div id="appname"><g:link url="[action:'index',controller:'home']"><p:image src='logo.png' alt='aajkaaj'/></g:link></div>
 			 <div id="user"><g:message code="nimble.label.usergreeting" /> <n:principalName /> |
+			 <g:link url="[action:'index',controller:'inbox']">Inbox</g:link> |
 			 <g:if test="${isAdmin}"><a href='${resource(dir:'/')}administration/users/list'>User Admin</a> | </g:if>  
 			 <g:link controller="auth" action="logout" class="logout"><g:message code="nimble.link.logout.basic" /></g:link></div>
 			 <g:pageProperty name="page.headerContent"/>
