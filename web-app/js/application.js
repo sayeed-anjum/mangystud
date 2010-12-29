@@ -252,8 +252,12 @@ manager = {
 	
 	dialogSuccess : function(dialogName, data, textStatus) {
 		var dialog = this.dialogs[dialogName];
-		if (dialog) {
-			dialog.onSuccess(data, textStatus);
+		if (data.success) {
+			if (dialog) {
+				dialog.onSuccess(data, textStatus);
+			}
+		} else {
+			alert('Server error: ' + data.message);
 		}
 	}, 
 	

@@ -25,14 +25,16 @@ class TicklerController {
 		def tomorrow = new Date()+1
 		tickler.overdue = tickler.date.before(tomorrow)
 		
+		def model = [success: false]
 		try {
 			if (tickler.save(failOnError: true)) {
-				def model = [tickler: tickler, realm: realm];
-				render model as JSON
+				model = [tickler: tickler, realm: realm, success: true];
 			}
 		} catch (Exception e) {
-			render {error: "Error when saving."} as JSON
+			model.message = e.message;
 		}
+
+		render model as JSON
 	}
 	
 	def dashboard = {

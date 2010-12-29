@@ -15,23 +15,26 @@ class ProjectController {
 		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def realm = realmService.getActiveRealm(user)
 		
+		def model = [success: false]
 		if (realm == null) {
-			render {error: "No active realm found!"} as JSON
+			model.message = "No active realm found!"
+			render model as JSON
 			return;
 		}
-		Project project = new Project(title:title, realm:realm, owner:user)
-		def projectStatus = ProjectStatus.valueOf(status?:"Active");
-		if (projectStatus) {
-			project.projectStatus = projectStatus;
-		}
 		try {
+			Project project = new Project(title:title, realm:realm, owner:user)
+			def projectStatus = ProjectStatus.valueOf(status?:"Active");
+			if (projectStatus) {
+				project.projectStatus = projectStatus;
+			}
 			if (project.save(failOnError: true)) {
-				def model = [project: project, realm: realm];
-				render model as JSON
+				model = [project: project, realm: realm, success:true];
 			}
 		} catch (Exception e) {
-			render {error: "Error when saving."} as JSON
+			model.message = e.message
 		}
+		
+		render model as JSON
 	}
 	
 	def view = {

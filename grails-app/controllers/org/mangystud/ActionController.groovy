@@ -17,16 +17,18 @@ class ActionController {
 		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def realm = realmService.getActiveRealm(user)
 		
+		def model = [success: false]
 		if (realm == null) {
-			render {error: "No active realm found!"} as JSON
+			model.message = "There are no active realms for the user!";
+			render model as JSON
 			return;
 		}
 
-		Action action = new Action(title:title, realm:realm, owner:user)
 		try {
-			State state = stateId? State.valueOf(stateId) : null;
+			Action action = new Action(title:title, realm:realm, owner:user)
+			State state = State.valueOf(stateId?:'Next');
 			if (state) action.state = state;
-			Action context = actionService.getContext(user, contextId)
+			def context = actionService.getContext(user, contextId)
 			if (context) {
 				action.contexts = [context];
 				if (context.realm.active) {
@@ -41,12 +43,12 @@ class ActionController {
 				action.project = Project.findByIdAndOwner(projectId, user);
 			}
 			if (action.save(failOnError: true, flush:true)) {
-				def model = [action: action, realm: realm];
-				render model as JSON
+				model = [action: action, realm: realm, success: true];
 			}
 		} catch (Exception e) {
-			render {error: "Error when saving."} as JSON
+			model.message = e.message;
 		}
+		render model as JSON
 	}
 	
 	def view = {
