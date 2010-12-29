@@ -725,7 +725,11 @@ function deleteTiddler(type, id) {
 			type: "POST",
 			dataType: "json",
 			success: function(data) {
-				manager.raiseEvent(type + 'Update', {event: 'delete', id: id});
+				if (data.success) {
+					manager.raiseEvent(type + 'Update', {event: 'delete', id: id});
+				} else {
+					alert('Unable to delete this item: ' + data.message);
+				}
 			}
 		});
 	}

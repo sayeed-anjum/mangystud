@@ -1,6 +1,5 @@
 package org.mangystud
 
-import java.util.TreeMap;
 
 import grails.converters.JSON 
 import org.apache.shiro.SecurityUtils 
@@ -87,6 +86,14 @@ class TiddlerController {
 		def tid = params.int("id")
 		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def tiddler = Tiddler.findByOwnerAndId(user, tid)
+		
+		def childItems = Tiddler.findAllByProject(tiddler);
+		def dependents = Tiddler.findAllByDependsOn(tiddler);
+		
+		if (childItems.size() > 0 || dependents.size() > 0) {
+			def model = [success: false, message: 'Cannot delete due to references!']
+			render model as JSON
+		}  
 		
 		if (tiddler) {
 			tiddler.delete()
