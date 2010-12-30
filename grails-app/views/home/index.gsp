@@ -171,7 +171,7 @@
 					</select>
 					<span class='label'>Project:</span>
 					<input name='project' value='{{if project}}{{= project.title}}{{/if}}' size='50'/>
-					{{if project}}<a class='unlinkProject' href='javascript:;' title='Remove project'>×</a>{{/if}}
+					{{if project}}<a href='javascript:openProjectView({{= project.id}})'>>></a> <a class='unlinkProject' href='javascript:;' title='Remove project'>×</a>{{/if}}
 				</div>
 			</script>
 
@@ -233,7 +233,7 @@
 						<div class='combos'>
 							<span class='label'>Depends On</span>
 							<input name='dependsOn' value='{{if dependsOn}}{{= dependsOn.title}}{{/if}}' size='100'/>
-							{{if dependsOn}}<a class='deleteDependency' href='javascript:;' title='Remove dependency'>×</a>{{/if}}
+							{{if dependsOn}}<a href='javascript:openActionView({{= dependsOn.id}})'>>></a>  <a class='deleteDependency' href='javascript:;' title='Remove dependency'>×</a>{{/if}}
 						</div>
 					</div>
 					<div class='content tiddlerContent'><pre>{{= action.notes}}</pre></div>

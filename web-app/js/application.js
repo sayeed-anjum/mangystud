@@ -284,6 +284,24 @@ function isContextPresent(action, context) {
 	return result;
 }
 
+function openActionView(id) {
+	var tiddler = $('#td_action_' + id);
+	if (tiddler.length > 0) {
+		tiddler.focus();
+	} else {
+		tl_viewAction(id, true);
+	}
+}
+
+function openProjectView(id, isNew) {
+	var tiddler = $('#td_projct_' + id);
+	if (tiddler.length > 0) {
+		tiddler.focus();
+	} else {
+		tl_viewProject(id, true);
+	}
+}
+
 function refreshActionView(actionId, isNew) {
 	var tiddler = $('#td_action_' + actionId);
 	if (isNew || tiddler.length > 0) {
