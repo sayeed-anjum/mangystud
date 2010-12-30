@@ -148,7 +148,8 @@ manager = {
 		$.extend(this.staticTiddlers, {			
 			"nextActions": tl_nextActions, 
 			"actionDashboard": tl_actionDashboard, 
-			"nextAndWaiting" : tl_nextAndWaiting
+			"nextAndWaiting" : tl_nextAndWaiting,
+			"doneActionDashboard" : tl_doneActionDashboard
 		});
 		
 		$.extend(this.ticklerDashboards, {			

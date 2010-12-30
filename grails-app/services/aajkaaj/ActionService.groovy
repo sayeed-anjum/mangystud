@@ -40,6 +40,21 @@ class ActionService {
 		return result
 	}
 
+	def getActionsByDoneAndRealms = {user, realms ->
+		def cal = new GregorianCalendar();
+		cal.add(GregorianCalendar.MONTH, -1);
+		def c = Action.createCriteria()
+		def result = c.list {
+			eq('done', true)
+			ge('lastUpdated', cal.getTime())
+			'in'('realm', realms)
+		}
+		def formatter = new java.text.SimpleDateFormat("yyyy-MM-dd")
+		def resultByDate = result.groupBy { formatter.format(it.lastUpdated) }
+		println resultByDate
+		return resultByDate
+	}
+	
 	def getActionsByStateAndRealms = {user, states, realms ->
 		def c = Action.createCriteria()
 		def result = c.list {

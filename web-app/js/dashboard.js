@@ -263,7 +263,41 @@ function getDoneProjectHtml(projects, title, prefix) {
 					"<a class='button Starred  " + (project.star? "on" : "off") + "' href='javascript:;' title='Starred'>★</a>" +
 					"<span>&nbsp;</span>" +
 					"<a href='javascript:;' title='' class='tiddlyLink tiddlyLinkExisting' refresh='link' tiddlylink='tl_viewProject' id='tl_" + prefix + '@' + project.id + "'>" + project.title + "</a>" + 
-					"<a class='deleteTicklerButton' href='javascript:;' title='Delete tickler'>×</a>" + 
+					"<a class='deleteProjectButton' href='javascript:;' title='Delete project'>×</a>" + 
+					"</span><br>"
+		}
+		html += "</div>";
+	}
+	html += "</div>";
+	return html;
+}
+
+function tl_doneActionDashboard() {
+	var dashboard = new DashboardView();
+	dashboard.init({
+		name: 'doneActionDashboard', 
+		title: 'Done Actions By Date', 
+		url: 'action/doneByDateActions',
+		onLoad: function(result) {
+			var leftHtml = getDoneByDateHtml(result.dateMap, 'Done Actions', 'dacbyd');
+			return {left: leftHtml, right: ""}
+		}
+	}).load();
+}
+
+function getDoneByDateHtml(dateMap, title, prefix) {
+	var html = "<div class='mgtdList'><h1>" + title + "</h1>";
+	for (var date in dateMap) {
+		html += "<div class='innerList'><h2>" + date +  "</h2>";
+		var dateActions = dateMap[date];
+		for (var j = 0; j < dateActions.length; j++) {
+			var action = dateActions[j];
+			html += "<span class='link-container action'>" +
+					"<input type='checkbox' class='chkOptionInput'" + (action.done? " checked='checked'>" : ">") +  
+					"<a class='button Starred  " + (action.star? "on" : "off") + "' href='javascript:;' title='Starred'>★</a>" +
+					"<span>&nbsp;</span>" +
+					"<a href='javascript:;' title='' class='tiddlyLink tiddlyLinkExisting' refresh='link' tiddlylink='tl_viewAction' id='tl_" + prefix + '@' + action.id + "'>" + action.title + "</a>" + 
+					"<a class='deleteActionButton' href='javascript:;' title='Delete action'>×</a>" + 
 					"</span><br>"
 		}
 		html += "</div>";

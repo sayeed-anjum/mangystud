@@ -201,6 +201,19 @@ class ActionController {
 		render model as JSON
 	}
 
+	def doneByDateActions = {
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
+		def realms = Realm.findAllByActiveAndUser(true, user)
+
+		def result2 = []
+		if (realms.size() > 0) {
+			result2 = actionService.getActionsByDoneAndRealms(user, realms)
+		}
+		
+		def model = [dateMap: result2]
+		render model as JSON
+	}
+
 	def search = {
 		def actionId = params.int("actionId")
 		def term = params.term;
