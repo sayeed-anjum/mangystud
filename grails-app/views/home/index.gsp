@@ -340,7 +340,7 @@
 							<span class='link-container action'>
 							<input type='checkbox' class='chkOptionInput' {{if action.done}}checked='checked'{{/if}}>
 							<a class='button Next {{= n}}' href='javascript:;' title='Next'>n</a><a class='button WaitingFor {{= w}}' href='javascript:;' title='Waiting For'>w</a><a class='button Future {{= f}}' href='javascript:;' title='Future'>f</a>
-							<a class='button Starred {{if action.star}}on{{else}}off{{/if}}' href='javascript:;' title='Starred'>★</a><span>&nbsp;</span><a class='tiddlyLink tiddlyLinkExisting' href='javascript:;' tiddlyLink='tl_viewAction' id='tl_{{= prefix}}{{= action.id}}'>{{= action.title}}</a> 
+							<a class='button Starred {{if action.star}}on{{else}}off{{/if}}' href='javascript:;' title='Starred'>★</a><span>&nbsp;</span><a class='tiddlyLink tiddlyLinkExisting' href='javascript:;' tiddlyLink='tl_viewAction' id='tl_{{= prefix}}{{= action.id}}'>{{= action.title}}</a>
 							<a class='deleteActionButton' href='javascript:;' title='Delete action'>×</a>
 							</span><br>
 						{{/each}}

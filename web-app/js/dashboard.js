@@ -110,6 +110,7 @@ function getContextActionsHtml(stateMap, title, state, stateName, prefix) {
 						"<span>&nbsp;</span>" + 
 						"<a class='tiddlyLink tiddlyLinkExisting' href='javascript:;' tiddlyLink='tl_viewAction' id='tl_" + prefix + "@" + action.id + "'>" + action.title + "</a>" +
 						"<a class='deleteActionButton' href='javascript:;' title='Delete action'>×</a>" + 
+						(action.project? " <a href='javascript:openProjectView(" + action.project.id + ")'>[P]</a> " : "") +
 						"</span><br>"
 			}
 			html += "</div>"
@@ -184,8 +185,9 @@ function getTicklerHtml(ticklers, title, prefix) {
 				"<a class='button Starred " + (tickler.star? "on" : "off") + "' href='javascript:;' title='Starred'>★</a>" +
 				"<input class='dateBox' value='" + formatTicklerDate(tickler.date) + "'>" +
 				"<span>&nbsp;</span>" +
-				"<a href='javascript:;' title='' class='tiddlyLink tiddlyLinkExisting' refresh='link' tiddlylink='tl_viewTickler' id='tl_" + prefix + "@" + tickler.id + "'>" + tickler.title + "</a>" + 
+				"<a href='javascript:;' title='' class='tiddlyLink tiddlyLinkExisting' refresh='link' tiddlylink='tl_viewTickler' id='tl_" + prefix + "@" + tickler.id + "'>" + tickler.title + "</a>" +
 				"<a class='deleteTicklerButton' href='javascript:;' title='Delete tickler'>×</a>" + 
+				(tickler.project? " <a href='javascript:openProjectView(" + tickler.project.id + ")'>[P]</a> " : "") +
 				"</span><br>";
 	}
 	html += "</div>"
