@@ -903,6 +903,7 @@ function tl_viewAction(actionId, inFocus) {
 			minLength: 2,
 			select: saveProjectAction
 		});
+		jQuery("abbr.timeago").timeago();	
 	});
 	
 }
@@ -952,6 +953,7 @@ function tl_viewTickler(ticklerId, inFocus) {
 			minLength: 2,
 			select: saveProjectAction
 		});
+		jQuery("abbr.timeago").timeago();	
 	});
 	
 }
@@ -983,6 +985,7 @@ function tl_viewProject(projectId, inFocus) {
 		if (inFocus) {
 			$(template).focus();
 		}
+		jQuery("abbr.timeago").timeago();	
 	});
 }
 
@@ -1088,6 +1091,7 @@ function initTiddlerManager() {
 	addTiddlerActionHandlers();
 	addRealmActionHandlers();
 	checkForActiveTicklers();
+	jQuery("abbr.timeago").timeago();	
 }
 
 function formatTicklerDate(s) {

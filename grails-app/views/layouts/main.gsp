@@ -6,6 +6,7 @@
 		<p:javascript src="jquery/jquery-1.4.4.min"/>
 		<p:javascript src="jquery/jquery-ui-1.8.7.custom.min"/>
 		<p:javascript src="jquery/jquery.tmpl.min"/>
+		<p:javascript src="jquery/jquery.timeago"/>
 		<p:javascript src="app.all"/>
 		<g:javascript>
 			serverUrl = "${resource(dir:'/')}";

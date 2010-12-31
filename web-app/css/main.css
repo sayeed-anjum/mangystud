@@ -538,3 +538,13 @@ input.newMailboxEntry {
 	margin: 0 10px;
 	font-size: 85%;
 }
+
+span.subtitle {
+	color: #6A6A6A;
+	font-size: 95%;
+}
+
+span.subtitle abbr {
+	text-decoration: none;
+	border: none;
+}

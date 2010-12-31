@@ -212,7 +212,10 @@
 		       				<span class="tick"><input type="checkbox" class="chkOptionInput" {{if action.done}}checked="checked" {{/if}}/></span>
 		       				<span class="title vw_title">{{= action.title}}</span>
 		       				<span><a class="button Starred {{if action.star}}on{{else}}off{{/if}}" title="Starred" href="javascript:;">★</a></span>
-		       				<span class="subtitle"></span>
+		       				<span class="subtitle">
+								Updated <abbr class='timeago' title='{{= action.lastUpdated}}'>{{= jQuery.timeago(action.lastUpdated)}}</abbr>
+								(Created <abbr class='timeago' title='{{= action.dateCreated}}'>{{= jQuery.timeago(action.dateCreated)}}</abbr>)
+							</span>
 						</div>
 						<div class="state longButton">
 							<a class=" button Next {{if (action.state.name == 'Next')}}on{{else}}off{{/if}}" title="Next" href="javascript:;">next</a>
@@ -251,7 +254,10 @@
 		       				<span class="tick"><input type="checkbox" class="chkOptionInput" {{if project.done}}checked="checked" {{/if}}/></span>
 		       				<span class="title vw_title">{{= project.title}}</span>
 		       				<span><a class="button Starred {{if project.star}}on{{else}}off{{/if}}" title="Starred" href="javascript:;">★</a></span>
-		       				<span class="subtitle"></span>
+		       				<span class="subtitle">
+								Updated <abbr class='timeago' title='{{= project.lastUpdated}}'>{{= jQuery.timeago(project.lastUpdated)}}</abbr>
+								(Created <abbr class='timeago' title='{{= project.dateCreated}}'>{{= jQuery.timeago(project.dateCreated)}}</abbr>)
+							</span>
 						</div>
 						<div class="projectStatus longButton">
 							<a class=" button Active {{if (project.projectStatus.name == 'Active')}}on{{else}}off{{/if}}" title="Active" href="javascript:;">active</a>
@@ -281,7 +287,10 @@
 							{{/if}}
 		       				<span class="title vw_title">{{= tickler.title}}</span>
 		       				<span><a class="button Starred {{if tickler.star}}on{{else}}off{{/if}}" title="Starred" href="javascript:;">★</a></span>
-		       				<span class="subtitle"></span>
+		       				<span class="subtitle">
+								Updated <abbr class='timeago' title='{{= tickler.lastUpdated}}'>{{= jQuery.timeago(tickler.lastUpdated)}}</abbr>
+								(Created <abbr class='timeago' title='{{= tickler.dateCreated}}'>{{= jQuery.timeago(tickler.dateCreated)}}</abbr>)
+							</span>
 						</div>
 						<div class="period longButton">
 							<span>
