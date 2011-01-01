@@ -65,22 +65,27 @@ class InboxController {
 		if (msg) {
 			def realm = realmService.getActiveRealm(user)
 			def values = [owner: msg.owner, realm: realm, title: msg.subject, notes: msg.body];
+			def tiddler = null;
 			try {
 				switch (type) {
 					case "dump":
 						msg.delete();
 						break;
 					case "action":
-						new Action(values).save(failOnError: true)
+						tiddler = new Action(values)
+						tiddler.save(failOnError: true)
 						break;
 					case "project":
-						new Project(values).save(failOnError: true)
+						tiddler = new Project(values)
+						tiddler.save(failOnError: true)
 						break;
 					case "tickler":
-						new Tickler(values).save(failOnError: true)
+						tiddler = new Tickler(values)
+						tiddler.save(failOnError: true)
 						break;
 				}
 				if (type != "dump") {
+					msg.tiddler = tiddler;
 					msg.processed = true;
 					msg.save();
 				}
