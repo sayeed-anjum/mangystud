@@ -9,11 +9,13 @@ class InboxMessage {
     static constraints = {
 		source(nullable: false)
 		subject(maxSize:200,nullable:false)
+		type(nullable: true)
 		body(maxSize:2000, nullable:true)
 		tiddler(nullable:true)
 		owner(nullable: true)
     }
 	
+	MessageType type = MessageType.Mail;
 	String source
 	String subject
 	String body
