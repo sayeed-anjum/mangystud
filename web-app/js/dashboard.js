@@ -111,6 +111,7 @@ function getContextActionsHtml(stateMap, title, state, stateName, prefix) {
 						"<a class='tiddlyLink tiddlyLinkExisting' href='javascript:;' tiddlyLink='tl_viewAction' id='tl_" + prefix + "@" + action.id + "'>" + action.title + "</a>" +
 						"<a class='deleteActionButton' href='javascript:;' title='Delete action'>×</a>" + 
 						(action.project? " <a href='javascript:openProjectView(" + action.project.id + ")'>[P]</a> " : "") +
+						(action.contact? " <a href='javascript:openContactView(" + action.contact.id + ")'>[C]</a> " : "") +
 						"</span><br>"
 			}
 			html += "</div>"

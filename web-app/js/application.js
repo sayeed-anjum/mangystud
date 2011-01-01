@@ -293,12 +293,21 @@ function openActionView(id) {
 	}
 }
 
-function openProjectView(id, isNew) {
+function openProjectView(id) {
 	var tiddler = $('#td_projct_' + id);
 	if (tiddler.length > 0) {
 		tiddler.focus();
 	} else {
 		tl_viewProject(id, true);
+	}
+}
+
+function openContactView(id) {
+	var tiddler = $('#td_contct_' + id);
+	if (tiddler.length > 0) {
+		tiddler.focus();
+	} else {
+		tl_viewContact(id, true);
 	}
 }
 
@@ -320,6 +329,13 @@ function refreshProjectView(id, isNew) {
 	var tiddler = $('#td_projct_' + id);
 	if (isNew || tiddler.length > 0) {
 		tl_viewProject(id);
+	}
+}
+
+function refreshContactView(id, isNew) {
+	var tiddler = $('#td_contct_' + id);
+	if (isNew || tiddler.length > 0) {
+		tl_viewContact(id);
 	}
 }
 
@@ -989,6 +1005,35 @@ function tl_viewProject(projectId, inFocus) {
 	});
 }
 
+function tl_viewContact(contactId, inFocus) {
+	viewLoader("realm/contactDashboard", {contactId: contactId}, function(data) {
+		var contact = data.contact;
+		prefix =  "______" + contact.id;
+		prefix = 'c' + prefix.substr(prefix.length-5) + '@';
+
+		var data = {
+			contact: contact, 
+			prefix: prefix,
+			tiddlers: data.tiddlers,
+			realms: manager.getRealms(), 
+			tabIndex: 1
+		};
+		
+		var template = manager.tmpl("contactViewTemplate", data);
+
+		var tiddler = $('#td_contct_' + contact.id);
+		if (tiddler.length) {
+			tiddler.replaceWith(template);
+		} else {
+			template.appendTo('#stage');
+		} 
+		if (inFocus) {
+			$(template).focus();
+		}
+		jQuery("abbr.timeago").timeago();	
+	});
+}
+
 function addTiddlerActionHandlers() {
 	$('.tiddler').live('mouseenter', function() {
 		$(this).addClass("selected");
@@ -1075,7 +1120,7 @@ function initTiddlerManager() {
 	manager.init({
 		templates: ["actionViewTemplate", "dashboardTemplate", 
 		            "ticklerViewTemplate", "projectViewTemplate", 
-		            "activeTicklerDashboard"],
+		            "contactViewTemplate", "activeTicklerDashboard"],
 		dialogs: {
 			"realmDialog" : new RealmDialog().init(), 
 			"contextDialog" : new ContextDialog().init(),

@@ -4,6 +4,7 @@ import grails.converters.JSON
 import org.apache.shiro.SecurityUtils 
 
 class RealmController {
+	def actionService;
 
     def toggle = {
 		def name= params.name;
@@ -120,6 +121,20 @@ class RealmController {
 		}
 		
 		def model = [realms: realms, contexts: contexts, areas: areas, contacts : contacts]
+		
+		render model as JSON
+	}
+	
+	def contactDashboard = {
+		def contactId = params.int("contactId")
+
+		def model = [success: false];
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
+		def contact = Contact.get(contactId)
+		if (contact && contact.realm.user == user) {
+			def tiddlers = actionService.getContactTiddlers(user, contact)
+			model = [contact: contact, tiddlers: tiddlers, success: true]
+		}
 		
 		render model as JSON
 	}

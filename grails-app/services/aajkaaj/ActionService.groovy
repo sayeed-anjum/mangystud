@@ -197,4 +197,41 @@ class ActionService {
 		}
 		return contact	
 	}
+
+	def getContactTiddlers = {user, contact ->
+		def tiddlers = Tiddler.findAllByOwnerAndContact(user, contact);
+		
+		def map = [:]
+		map.DelegatedActions = []
+		map.AssocActions = []
+		map.AssocProjects = []
+		map.AssocTicklers = []
+		map.DoneActions = []
+		map.DoneProjects = []
+		
+		tiddlers.each {
+			String key = null
+			if (it.done) {
+				key = it.class == Tickler.class? null : "Done${it.class.name}s";
+			} else {
+				switch (it.class) {
+					case Action.class:
+						key = it.state == State.WaitingFor? "DelegatedActions" : it.state == State.Next? "AssocActions" : null;
+						break
+
+					case Project.class:
+						key = "AssocProjects";
+						break 
+						
+					case Tickler.class:
+						key = "AssocTicklers";
+						break
+				}
+			}
+			if (key) map.get(key, []) << it;
+		}
+
+		return map;
+	}
+
 }

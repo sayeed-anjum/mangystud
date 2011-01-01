@@ -548,3 +548,11 @@ span.subtitle abbr {
 	text-decoration: none;
 	border: none;
 }
+
+.panel12, .panel22 {
+	width: 50%;
+}
+
+.panel1, .panel2, .panel3 {
+	width: 33.3%
+}

@@ -121,7 +121,7 @@
 						<a name="editTiddler" class="button command_editTiddler defaultCommand" title="Edit this tiddler" href="javascript:;">edit</a>
 						<a name="deleteTiddler" class="button command_deleteTiddler" title="Delete this tiddler" href="javascript:;">delete</a>
 					</span>
-					<span><a name="newHere" class="button" title="Create a new tiddler" href="javascript:;">new here</a></span>
+					<!--<span><a name="newHere" class="button" title="Create a new tiddler" href="javascript:;">new here</a></span>-->
 					<span style="padding: 1em;"></span>
 				</div>
 	        	<div class="toolbar editToolbar" style='display:none'>
@@ -273,6 +273,14 @@
 				</div>
         	</script>
 
+			<script id="contactViewTemplate" type="text/x-jquery-tmpl"> 
+	        	<div id="td_contct_{{= contact.id}}" class="tiddler" tabIndex="{{= tabIndex}}">
+	        		{{tmpl '#toolbarTemplate'}}
+	        		<div class="title td_title">{{= contact.name}}</div>
+					{{tmpl({contact: contact, prefix: prefix, tiddlers: tiddlers}) '#contactDetails'}}
+				</div>
+        	</script>
+
 			<script id="ticklerViewTemplate" type="text/x-jquery-tmpl"> 
 	        	<div id="td_ticklr_{{= tickler.id}}" class="tiddler" tabIndex="{{= tabIndex}}">
 	        		{{tmpl '#toolbarTemplate'}}
@@ -325,16 +333,33 @@
         		<div class="projectDetails">
         			<table class="panel">
         			<tr>
-        			<td><div class="panel1">
+        			<td class="panel1">
 						{{tmpl({title:'Next Actions', ctxList:tiddlers.NextActions, n:"on", w:"off", f:"off", stateName: 'Next', prefix: prefix, groupBy:'ctx'}) '#showActionListByContext'}}
 						{{tmpl({title:'Waiting Actions', ctxList:tiddlers.WaitingForActions, n:"off", w:"on", f:"off", stateName:'WaitingFor', prefix: prefix, groupBy:'contact'}) '#showActionListByContext'}}
-					</div></td>
-        			<td><div class="panel2">
+					</td>
+        			<td class="panel2">
 						{{tmpl({title:'Future Actions', ctxList:tiddlers.FutureActions, n:"off", w:"off", f:"on", stateName: 'Future', prefix: prefix, groupBy:'ctx'}) '#showActionListByContext'}}
-					</div></td>
-        			<td><div class="panel3">
+					</td>
+        			<td class="panel3">
 						{{tmpl({title:'Upcoming Ticklers', ticklers:tiddlers.upcomingTicklers, prefix: prefix}) '#showTicklers'}}
-					</div></td>
+					</td>
+        			</tr>
+        			</table>
+        		</div>
+			</script>
+
+   			<script id="contactDetails" type="text/x-jquery-tmpl"> 
+        		<div class="contactDetails">
+        			<table class="panel">
+        			<tr>
+        			<td class="panel12">
+						{{tmpl({title:'Delegated Actions', actions:tiddlers.DelegatedActions, n:"off", w:"on", f:"off", prefix: prefix}) '#showActionListPlain'}}
+						{{tmpl({title:'Associated Actions', actions:tiddlers.AssocActions, n:"on", w:"off", f:"off", prefix: prefix}) '#showActionListPlain'}}
+					</td>
+        			<td class="panel22">
+						{{tmpl({title:'Associated Ticklers', ticklers:tiddlers.AssocTicklers, prefix: prefix}) '#showTicklers'}}
+						{{tmpl({title:'Done Actions', actions:tiddlers.DoneActions, prefix: prefix}) '#showDoneActions'}}
+					</td>
         			</tr>
         			</table>
         		</div>
@@ -345,24 +370,50 @@
 				<div class='mgtdList'><h1 class='dc_state_{{= stateName}}'>{{= title}} <a class='action_link new_action'>+</a></h1>
 				{{each(key,ctx) ctxList}}
 					<div class='innerList'><h2 class='dc_{{= groupBy}} dc_state_{{= stateName}}'>{{= key}} <a class='action_link new_action'>+</a></h2>
-						{{each(i,action) ctx}}
-							<span class='link-container action'>
-							<input type='checkbox' class='chkOptionInput' {{if action.done}}checked='checked'{{/if}}>
-							<a class='button Next {{= n}}' href='javascript:;' title='Next'>n</a><a class='button WaitingFor {{= w}}' href='javascript:;' title='Waiting For'>w</a><a class='button Future {{= f}}' href='javascript:;' title='Future'>f</a>
-							<a class='button Starred {{if action.star}}on{{else}}off{{/if}}' href='javascript:;' title='Starred'>★</a><span>&nbsp;</span><a class='tiddlyLink tiddlyLinkExisting' href='javascript:;' tiddlyLink='tl_viewAction' id='tl_{{= prefix}}{{= action.id}}'>{{= action.title}}</a>
-							<a class='deleteActionButton' href='javascript:;' title='Delete action'>×</a>
-							</span><br>
-						{{/each}}
+						{{tmpl({actions: ctx, n: n, w: w, f: f, prefix: prefix}) '#showActionListItems'}}
 					</div>
 				{{/each}}					
 				</div>			
 				</div>
 			</script> 
 
+			<script id="showActionListPlain" type="text/x-jquery-tmpl">
+				<div class='viewer'>
+				<div class='mgtdList'><h1>{{= title}} <a class='action_link new_action'>+</a></h1>
+					{{tmpl({actions: actions, n: n, w: w, f: f, prefix: prefix}) '#showActionListItems'}}
+				</div>
+				</div>
+			</script>
+
+			<script id="showDoneActions" type="text/x-jquery-tmpl">
+				<div class='viewer'>
+				<div class='mgtdList'><h1>{{= title}}</h1><br><div class='doneList'>
+				{{each(i,action) actions}}
+					<span class='link-container action'>
+					<input type='checkbox' class='chkOptionInput' {{if action.done}}checked='checked'{{/if}}>  
+					<span>&nbsp;</span>
+					<a class='tiddlyLink tiddlyLinkExisting' href='javascript:;' tiddlyLink='tl_viewAction' id='tl_{{= prefix}}@{{= action.id}}'>{{= action.title}}</a>
+					<a class='deleteActionButton' href='javascript:;' title='Delete action'>×</a>
+					</span><br>
+				{{/each}}
+				</div></div></div>
+			</script>
+
+			<script id="showActionListItems" type="text/x-jquery-tmpl">
+				{{each(i,action) actions}}
+					<span class='link-container action'>
+					<input type='checkbox' class='chkOptionInput' {{if action.done}}checked='checked'{{/if}}>
+					<a class='button Next {{= n}}' href='javascript:;' title='Next'>n</a><a class='button WaitingFor {{= w}}' href='javascript:;' title='Waiting For'>w</a><a class='button Future {{= f}}' href='javascript:;' title='Future'>f</a>
+					<a class='button Starred {{if action.star}}on{{else}}off{{/if}}' href='javascript:;' title='Starred'>★</a><span>&nbsp;</span><a class='tiddlyLink tiddlyLinkExisting' href='javascript:;' tiddlyLink='tl_viewAction' id='tl_{{= prefix}}{{= action.id}}'>{{= action.title}}</a>
+					<a class='deleteActionButton' href='javascript:;' title='Delete action'>×</a>
+					</span><br>
+				{{/each}}
+			</script> 
+
 			<script id="showTicklers" type="text/x-jquery-tmpl">
 				<div class='viewer'>
 				<div class='mgtdList'><h1>{{= title}}</h1>
-				<div class='innerList'><h2>{{= key}}</h2>
+				<div class='innerList'>
 				{{each(key,tickler) ticklers}}
 					<span class='link-container tickler'>
 					{{if tickler.period.name == 'Once'}}
@@ -378,6 +429,7 @@
 					</span><br>
 				{{/each}}					
 				</div>			
+				</div>
 				</div>
 			</script> 
    </body>
