@@ -135,6 +135,13 @@ manager = {
 			refreshProjectView(event.id, (event.event=='newProject'));
 		}
 	}, 
+
+	contactUpdateListener : function(manager, event) {
+		refreshContactView(event.id);
+		manager.updateCache(function() {
+			manager.updateRealmCache(manager, event);
+		});
+	}, 
 	
 	tmpl : function(name, data) {
 		 return $.tmpl(this.templates[name], data);		
@@ -173,6 +180,7 @@ manager = {
 		this.eventListeners.actionUpdate = [this.actionUpdateListener];
 		this.eventListeners.ticklerUpdate = [this.ticklerUpdateListener];
 		this.eventListeners.projectUpdate = [this.projectUpdateListener];
+		this.eventListeners.contactUpdate = [this.contactUpdateListener];
 		this.eventListeners.newContext = [this.updateRealmCache];
 		this.eventListeners.newArea = [this.updateRealmCache];
 		this.eventListeners.newContact = [this.updateRealmCache];
@@ -192,6 +200,8 @@ manager = {
 				type = "tickler";
 			} else if ($(controlDiv).hasClass("project")) {
 				type = "project";
+			} else if ($(controlDiv).hasClass("contact")) {
+				type = "contact";
 			}
 		}
 		return type;
@@ -838,6 +848,10 @@ function doneTiddler() {
 	var editor = $('.editor', tiddler);
 	var title = $.trim($('[name=title]', editor).val());
 	var content = $.trim($('[name=content]', editor).val());
+	var params = {id: id, title: title, content: content, type: type}
+	if (type == 'contact') {
+		params.email = $.trim($('[name=email]', editor).val());
+	}
 	if (title == '') {
 		alert('Please specify a proper title!');
 		return false;
@@ -845,7 +859,7 @@ function doneTiddler() {
 	if (id != null) {
 		$.ajax({
 			url: serverUrl + "tiddler/update",
-			data: {id: id, title: title, content: content}, 
+			data: params, 
 			type: "POST",
 			dataType: "json",
 			success: function(data) {
@@ -862,7 +876,7 @@ function editTiddler() {
 	$('.viewToolbar', tiddler).hide();
 	$('.viewer', tiddler).hide();
 	$('.content', tiddler).hide();
-	$('.projectDetails', tiddler).hide();
+	$('.tiddlerDetails', tiddler).hide();
 	$('.editToolbar', tiddler).show();
 	$(editor).show();
 	$('[name=title]', editor).select().focus();
@@ -877,7 +891,7 @@ function cancelTiddler() {
 	$('.viewToolbar', tiddler).show();
 	$('.viewer', tiddler).show();
 	$('.content', tiddler).show();
-	$('.projectDetails', tiddler).show();
+	$('.tiddlerDetails', tiddler).show();
 	$('.editToolbar', tiddler).hide();
 	$('.editor', tiddler).hide();
 	$('.td_title', tiddler).empty();
@@ -1010,6 +1024,7 @@ function tl_viewContact(contactId, inFocus) {
 		var contact = data.contact;
 		prefix =  "______" + contact.id;
 		prefix = 'c' + prefix.substr(prefix.length-5) + '@';
+		contact.title = contact.name
 
 		var data = {
 			contact: contact, 

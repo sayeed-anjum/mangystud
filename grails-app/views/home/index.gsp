@@ -182,6 +182,11 @@
 					<label>Title</label>
 					<input name='title' maxlength='100' value="{{= tiddler.title}}" tabindex='1'>
 					<br/>
+					{{if class='contact'}}
+					<label>Email</label>
+					<input name='email' maxlength='100' value="{{= tiddler.email}}" tabindex='1'>
+					<br/>
+					{{/if}}
 					<label>Content</label>
 					<textarea name='content' rows='10' tabindex='2'>{{= tiddler.notes}}</textarea>
 				</div>
@@ -276,8 +281,12 @@
 			<script id="contactViewTemplate" type="text/x-jquery-tmpl"> 
 	        	<div id="td_contct_{{= contact.id}}" class="tiddler" tabIndex="{{= tabIndex}}">
 	        		{{tmpl '#toolbarTemplate'}}
-	        		<div class="title td_title">{{= contact.name}}</div>
+	        		<div class="title td_title tiddlerContent">{{= contact.name}}</div>
+	        		<div class="viewer controls contact" id="contct_{{= contact.id}}">
+						<div>{{= contact.email}}</div>
+					</div>
 					{{tmpl({contact: contact, prefix: prefix, tiddlers: tiddlers}) '#contactDetails'}}
+	        		{{tmpl({tiddler:contact, class: 'contact'}) '#editorTemplate'}}
 				</div>
         	</script>
 
@@ -330,7 +339,7 @@
         	</script>
    
    			<script id="projectDetails" type="text/x-jquery-tmpl"> 
-        		<div class="projectDetails">
+        		<div class="tiddlerDetails">
         			<table class="panel">
         			<tr>
         			<td class="panel1">
@@ -349,7 +358,7 @@
 			</script>
 
    			<script id="contactDetails" type="text/x-jquery-tmpl"> 
-        		<div class="contactDetails">
+        		<div class="tiddlerDetails">
         			<table class="panel">
         			<tr>
         			<td class="panel12">

@@ -8,19 +8,54 @@ class TiddlerController {
 	
 	def update = {
 		def tid = params.int("id")
-		def title = params.title
-		def content = params.content
+		def type = params.type
 		
 		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
+
+		def tiddler = getUpdator(type)(user, tid, params)
+		
+		def model = [success: true, tiddler: tiddler, realm: tiddler.realm]
+		render model as JSON
+	}
+	
+	def getUpdator = {type ->
+		switch (type) {
+			case 'contact':
+				return updateContact
+			default:
+				return updateTiddler 
+		}
+	}
+	
+	def updateTiddler = {user, tid, params ->
+		def title = params.title
+		def content = params.content
+
 		def tiddler = Tiddler.findByOwnerAndId(user, tid)
 		
 		tiddler.title = title;
 		tiddler.notes = content;
 		tiddler.save(failOnError: true)
 		
-		def model = [success: true, tiddler: tiddler]
-		render model as JSON
+		return tiddler;
 	}
+	
+	def updateContact = {user, tid, params ->
+		def title = params.title
+		def content = params.content
+		def email = params.email
+
+		def contact = Contact.get(tid)
+		
+		if (contact && contact.realm.user == user) {
+			contact.name = title;
+			contact.notes = content;
+			contact.email = email;
+			contact.save(failOnError: true)
+		}
+		
+		return contact;
+	} 
 		
 	
 	def realmChange = {
