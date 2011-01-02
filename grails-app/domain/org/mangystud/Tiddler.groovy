@@ -8,7 +8,10 @@ import org.apache.catalina.deploy.ContextService;
 
 
 class Tiddler {
-	static searchable = true
+	static searchable = {
+        root true
+        owner component: [prefix:'user_']
+    }
 	
     static constraints = {
 		realm(nullable:false)

@@ -258,9 +258,11 @@ class ActionController {
 			return [:]
 		}
 		
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
+
 		def results = [] 
 		try {
-			String term = params.term?.trim() + "*"
+			String term = params.term?.trim() + "* Tiddler.owner.id:" + user.id;
 			def searchResult = searchableService.search(term, [offset: 0, max: 20])
 			results = searchResult.results.collect {
 				return [value: "td_${getTiddlerType(it)}_${it.id}", label: "${it.title} [${getTiddlerType(it)}]"]

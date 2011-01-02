@@ -130,11 +130,16 @@ class NimbleBootStrap {
 if (!Realm.count()) {
 	createRealm "Work", admin, ["Phone", "Email", "Meeting", "Offline"], ["Management", "Finance", "Sales", "HR"], ["Bob", "Girish"]
 	createRealm "Home", admin, ["Call", "Play", "Chore"], ["Kids", "Home Finance"], ["Ann", "Mark"]
-	
+	createRealm "Work", user, ["Phone", "Email", "Meeting", "Offline"], ["Management", "Finance", "Sales", "HR"], ["Ravi", "Suraj"]
+	createRealm "Home", user, ["Call", "Play", "Chore"], ["Kids", "Home Finance"], ["Sammie", "Clancy"]
+
 	addAction "Work", admin, 'my first action', State.Next, ["Phone"]  
 	addAction "Work", admin, 'my second action', State.WaitingFor, ["Email"]  
-		addAction "Work", admin, 'my third action', State.Future, ["Meeting"]  
-	}
+	addAction "Work", admin, 'my third action', State.Future, ["Meeting"]
+	
+	addAction "Work", user, 'user first action', State.Next, ["Phone"]
+	addAction "Work", user, 'user second action', State.WaitingFor, ["Email"]
+}
 
 	addInboxItem admin, "admin@xyz.com", "inbox item #1", "please look into this one"
 	addInboxItem admin, "admin@xyz.com", "inbox item #2", "please look into this two"
