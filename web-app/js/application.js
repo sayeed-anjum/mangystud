@@ -296,6 +296,7 @@ function isContextPresent(action, context) {
 
 function openTiddler(event, ui) {
 	var id = ui.item.value;
+	// $('#searchBox').val(ui.item.label);
 	var type = id.substr(3, 6);
 	id = id.substr(10);
 	if (type == 'action') {
@@ -307,6 +308,7 @@ function openTiddler(event, ui) {
 	if (type == 'ticklr') {
 		openTicklerView(id, true);
 	}
+	return false;
 }
 
 function openTicklerView(id) {
@@ -1181,6 +1183,10 @@ function initTiddlerManager() {
 	$('#searchBox').autocomplete({
 		source: serverUrl + "action/csearch",
 		minLength: 2,
+		focus: function(event,ui) {
+			// $('#searchBox').val(ui.item.label);
+			return false;
+		},
 		select: openTiddler
 	});
 }
