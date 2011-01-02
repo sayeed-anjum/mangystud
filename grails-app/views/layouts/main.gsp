@@ -3,8 +3,8 @@
         <title><g:layoutTitle default="Grails" /></title>
         <p:css name='bundled'/>
         <link rel="shortcut icon" href="${resource(dir:'images',file:'favicon.ico')}" type="image/x-icon" />
-		<p:javascript src="jquery/jquery-1.4.4.min"/>
-		<p:javascript src="jquery/jquery-ui-1.8.7.custom.min"/>
+		<g:javascript library="jquery" plugin="jquery"/>
+		<jqui:resources/>        
 		<p:javascript src="jquery/jquery.tmpl.min"/>
 		<p:javascript src="jquery/jquery.timeago"/>
 		<p:javascript src="app.all"/>
