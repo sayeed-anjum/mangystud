@@ -1,6 +1,6 @@
 package org.mangystud
 
-
+import org.apache.commons.lang.StringUtils;
 import grails.converters.JSON 
 import org.apache.shiro.SecurityUtils 
 
@@ -28,8 +28,8 @@ class TiddlerController {
 	}
 	
 	def updateTiddler = {user, tid, params ->
-		def title = params.title
-		def content = params.content
+		def title = StringUtils.abbreviate(params.title, 100)
+		def content = StringUtils.abbreviate(params.content, 2000)
 
 		def tiddler = Tiddler.findByOwnerAndId(user, tid)
 		

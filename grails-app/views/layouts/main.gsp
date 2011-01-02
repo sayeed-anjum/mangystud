@@ -15,6 +15,7 @@
     </head>
     <body>
 		<div id="header">
+			 <div id='searchBoxDiv' style='display:none;'><input type='text' id='searchBox' size='15'/></div>
 		     <div id="appname"><g:link url="[action:'index',controller:'home']"><p:image src='logo.png' alt='aajkaaj'/></g:link></div>
 			 <div id="user"><g:message code="nimble.label.usergreeting" /> <n:principalName /> |
 			 <g:link url="[action:'index',controller:'inbox']">Inbox</g:link> |

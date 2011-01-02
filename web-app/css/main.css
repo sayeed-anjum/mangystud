@@ -556,3 +556,11 @@ span.subtitle abbr {
 .panel1, .panel2, .panel3 {
 	width: 33.3%
 }
+
+#searchBoxDiv {
+	width: 280px;
+	position: absolute;
+	right:10px;
+	margin-top: 10px;
+	margin-right: 10px;
+}

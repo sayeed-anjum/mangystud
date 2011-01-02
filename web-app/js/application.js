@@ -294,6 +294,30 @@ function isContextPresent(action, context) {
 	return result;
 }
 
+function openTiddler(event, ui) {
+	var id = ui.item.value;
+	var type = id.substr(3, 6);
+	id = id.substr(10);
+	if (type == 'action') {
+		openActionView(id, true);
+	}
+	if (type == 'projct') {
+		openProjectView(id, true);
+	}
+	if (type == 'ticklr') {
+		openTicklerView(id, true);
+	}
+}
+
+function openTicklerView(id) {
+	var tiddler = $('#td_ticklr_' + id);
+	if (tiddler.length > 0) {
+		tiddler.focus();
+	} else {
+		tl_viewTickler(id, true);
+	}
+}
+
 function openActionView(id) {
 	var tiddler = $('#td_action_' + id);
 	if (tiddler.length > 0) {
@@ -983,7 +1007,7 @@ function tl_viewTickler(ticklerId, inFocus) {
 			minLength: 2,
 			select: saveProjectAction
 		});
-		jQuery("abbr.timeago").timeago();	
+		jQuery("abbr.timeago").timeago();
 	});
 	
 }
@@ -1151,7 +1175,14 @@ function initTiddlerManager() {
 	addTiddlerActionHandlers();
 	addRealmActionHandlers();
 	checkForActiveTicklers();
-	jQuery("abbr.timeago").timeago();	
+	jQuery("abbr.timeago").timeago();
+	
+	$('#searchBoxDiv').show();
+	$('#searchBox').autocomplete({
+		source: serverUrl + "action/csearch",
+		minLength: 2,
+		select: openTiddler
+	});
 }
 
 function formatTicklerDate(s) {

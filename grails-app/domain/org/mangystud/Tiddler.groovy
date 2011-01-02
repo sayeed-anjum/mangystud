@@ -8,7 +8,8 @@ import org.apache.catalina.deploy.ContextService;
 
 
 class Tiddler {
-
+	static searchable = true
+	
     static constraints = {
 		realm(nullable:false)
 		title(size:3..100, blank: false)

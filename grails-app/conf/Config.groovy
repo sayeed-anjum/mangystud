@@ -88,8 +88,8 @@ log4j = {
     warn   'org.mortbay.log'
 	
 	debug  'NimbleBootStrap',
-		   'grails.app'
-
+		   'grails.app',
+		   'org.codehaus.groovy.grails.plugins.searchable'
    root {
 	   warn 'stdout', 'file'
 	   additivity = true

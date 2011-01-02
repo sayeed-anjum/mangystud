@@ -9,5 +9,10 @@ class UrlMappings {
 
 		"/"(controller: "home")
 		"500"(view:'/error')
+		
+		"/action/show/$id" {
+			controller = "action"
+			action = "show"
+		}
 	}
 }

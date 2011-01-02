@@ -2,10 +2,12 @@ package org.mangystud
 
 import grails.converters.JSON 
 import org.apache.shiro.SecurityUtils 
+import org.compass.core.engine.SearchEngineQueryParseException;
 
 class ActionController {
 	def realmService
 	def actionService
+	def searchableService;
 	
 	def add = {
 		def title = params.title
@@ -54,12 +56,20 @@ class ActionController {
 	
 	def view = {
 		def actionId = params.int("actionId")
-
+		return getAction(actionId)
+	}
+	
+	def show = {
+		def actionId = params.int("id")
+		return getAction(actionId)
+	}
+	
+	def getAction = {actionId ->
 		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def action = Action.findByOwnerAndId(user, actionId)
 		
 		def dependsOn = null
-		if (action?.dependsOn) { 
+		if (action?.dependsOn) {
 			dependsOn = Action.findByOwnerAndId(user, action.dependsOn.id)
 		}
 		def project = null
@@ -241,6 +251,41 @@ class ActionController {
 		def model = [success: true];
 		model.tickler = actionService.makeTickler(actionId, user);
 		render model as JSON
-
+	}
+	
+	def csearch = {
+		if (!params.term?.trim()) {
+			return [:]
+		}
+		
+		def results = [] 
+		try {
+			String term = params.term?.trim() + "*"
+			def searchResult = searchableService.search(term, [offset: 0, max: 20])
+			results = searchResult.results.collect {
+				return [value: "td_${getTiddlerType(it)}_${it.id}", label: "${it.title} [${getTiddlerType(it)}]"]
+			}
+			// model.hits = tiddlers
+		} catch (SearchEngineQueryParseException ex) {
+			log.error "search error", ex
+		}
+		render results as JSON
+	}
+	
+	def getTiddlerType = {tiddler ->
+		switch (tiddler.class) {
+			case Action.class:
+				return "action";
+				break;
+			case Project.class:
+				return "projct";
+				break;
+			case Tickler.class:
+				return "ticklr";
+				break;
+			default:
+				return "tiddlr";
+				break;
+		}
 	}
 }
