@@ -644,16 +644,19 @@ function deleteTiddlerCommand() {
 }
 
 function deleteActionButton() {
+	// TODO: replace with deleteTiddlerCommand()
 	var actionId = manager.determineTiddlerId(this);
 	deleteAction(actionId);
 }
 
 function deleteTicklerButton() {
+	// TODO: replace with deleteTiddlerCommand()
 	var ticklerId = manager.determineTiddlerId(this);
 	deleteTickler(ticklerId);
 }
 
 function deleteProjectButton() {
+	// TODO: replace with deleteTiddlerCommand()
 	var projectId = manager.determineTiddlerId(this);
 	deleteProject(projectId);
 }
@@ -668,7 +671,6 @@ function doneCloseTiddler() {
 		closeTiddler.call(this);
 	}
 }
-
 
 function closeTiddler() {
 	var tiddler = $(this).closest('.tiddler');
