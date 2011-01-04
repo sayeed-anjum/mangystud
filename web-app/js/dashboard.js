@@ -1,7 +1,5 @@
-DashboardView = function() {};
-
-$.extend(DashboardView.prototype, {
-	init : function(options) {
+$.Class.extend("Dashboard", {}, {
+	init : function(manager, options) {
 		this.name = options.name;
 		this.title = options.title;
 		this.url = options.url;
@@ -49,8 +47,7 @@ $.extend(DashboardView.prototype, {
 });
 
 function tl_actionDashboard() {
-	var dashboard = new DashboardView();
-	dashboard.init({
+	var dashboard = new DashboardView(manager, {
 		name: 'actionDashboard', 
 		title: 'Action Dashboard By Context', 
 		url: 'action/dashboard',
@@ -67,8 +64,7 @@ function tl_actionDashboard() {
 }
 
 function tl_nextActions() {
-	var dashboard = new DashboardView();
-	dashboard.init({
+	var dashboard = new DashboardView(manager, {
 		name: 'nextActions', 
 		title: 'Next Actions By Context', 
 		url: 'action/nextActions',
@@ -80,8 +76,7 @@ function tl_nextActions() {
 }
 
 function tl_nextAndWaiting() {
-	var dashboard = new DashboardView();
-	dashboard.init({
+	var dashboard = new DashboardView(manager, {
 		name: 'nextAndWaiting', 
 		title: 'Next And Waiting Actions By Context', 
 		url: 'action/next_waiting',
@@ -141,8 +136,7 @@ function getDoneActionsHtml(doneActions, title, prefix) {
 }
 
 function tl_ticklerDashboard() {
-	var dashboard = new DashboardView();
-	dashboard.init({
+	var dashboard = new DashboardView(manager, {
 		name: 'ticklerDashboard', 
 		title: 'Tickler Dashboard', 
 		url: 'tickler/dashboard',
@@ -157,8 +151,7 @@ function tl_ticklerDashboard() {
 }
 
 function tl_activeTicklerDashboard() {
-	var dashboard = new DashboardView();
-	dashboard.init({
+	var dashboard = new DashboardView(manager, {
 		name: 'activeTicklerDashboard', 
 		title: 'Ticklers Requiring Action', 
 		url: 'tickler/dashboard',
@@ -218,8 +211,7 @@ function getDoneTicklerHtml(ticklers, title, prefix) {
 }
 
 function tl_projectDashboard() {
-	var dashboard = new DashboardView();
-	dashboard.init({
+	var dashboard = new DashboardView(manager, {
 		name: 'projectDashboard', 
 		title: 'Project Dashboard', 
 		url: 'project/dashboard',
@@ -276,8 +268,7 @@ function getDoneProjectHtml(projects, title, prefix) {
 }
 
 function tl_doneActionDashboard() {
-	var dashboard = new DashboardView();
-	dashboard.init({
+	var dashboard = new DashboardView(manager, {
 		name: 'doneActionDashboard', 
 		title: 'Done Actions By Date', 
 		url: 'action/doneByDateActions',
