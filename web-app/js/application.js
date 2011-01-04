@@ -76,21 +76,11 @@ manager = {
 		}
 	},
 
-	actionUpdateListener : function(manager, event) {
-		if (event.event == 'delete') {
-			$('#td_action_' + event.id).remove();
-		} else {
-			refreshActionView(event.id, (event.event=='newAction'));
-			refreshProjectDetailsView(event)
-		}
-	}, 
-	
 	ticklerUpdateListener : function(manager, event) {
 		if (event.event == 'delete') {
 			$('#td_ticklr_' + event.id).remove();
 		} else {
 			refreshTicklerView(event.id, (event.event=='newTickler'));
-			refreshProjectDetailsView(event)
 		}
 	}, 
 
@@ -139,7 +129,6 @@ manager = {
 			}
 		});
 
-		this.addListener('actionUpdate', this.actionUpdateListener, 'mgr_aulist');
 		this.addListener('ticklerUpdate', this.ticklerUpdateListener, 'mgr_tulist');
 		this.addListener('projectUpdate', this.projectUpdateListener, 'mgr_pulist');
 		this.addListener('contactUpdate', this.contactUpdateListener, 'mgr_culist');
@@ -322,20 +311,6 @@ function tl_viewProject(id, focus) {
 
 function tl_viewContact(id, focus) {
 	manager.getViewer('td_contct_').refresh(id, focus);
-}
-
-function refreshProjectDetailsView(event) {
-	var views = $('.viewer.project').parents('.tiddler');
-	var projectViews = [];
-	$.each(views, function(index, value){
-		projectViews.push(value);
-	});
-
-	var viewer = manager.getViewer('td_projct_');
-	for (var j = 0; j < projectViews.length; j++) {
-		var viewId = projectViews[j].id.substr(10); 
-		viewer.refresh(viewId);
-	}
 }
 
 function getOpenActionIdsForRealm(id) {

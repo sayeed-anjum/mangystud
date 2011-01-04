@@ -76,8 +76,18 @@ Viewer.extend("ActionViewer", {}, {
 		this.templateName = "actionViewTemplate";
 		this.manager = manager;
 		manager.addTemplate(this.templateName);
+		manager.addListener('actionUpdate', this.actionUpdateListener, 'actionViewerListener', {viewer: this});
 		return this;
-	},  
+	},
+	
+	actionUpdateListener : function(manager, event, data) {
+		var me = data.viewer;
+		if (event.event == 'delete') {
+			$('#td_action_' + event.id).remove();
+		} else {
+			me.refresh(event.id, (event.event=='newAction'));
+		}
+	},
 	
 	dataCallback : function(data) {
 		var action = data.action; 
@@ -150,8 +160,24 @@ Viewer.extend("ProjectViewer", {}, {
 		this.templateName = "projectViewTemplate";
 		this.manager = manager;
 		manager.addTemplate(this.templateName);
+		manager.addListener('actionUpdate', this.refreshProjectDetails, 'projectViewer_actionUpdateListener', {viewer: this});
+		manager.addListener('ticklerUpdate', this.refreshProjectDetails, 'projectViewer_ticklerUpdateListener', {viewer: this});
 		return this;
 	},  
+	
+	refreshProjectDetails : function(manager, event, data) {
+		var me = data.viewer;
+		var views = $('.viewer.project').parents('.tiddler');
+		var projectViews = [];
+		$.each(views, function(index, value){
+			projectViews.push(value);
+		});
+
+		for (var j = 0; j < projectViews.length; j++) {
+			var viewId = projectViews[j].id.substr(10); 
+			me.refresh(viewId);
+		}
+	},
 	
 	dataCallback : function(data) {
 		var project = data.project;
