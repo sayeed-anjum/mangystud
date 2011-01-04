@@ -137,12 +137,39 @@ Viewer.extend("ActionViewer", {}, {
 	
 	postLoad : function(template, data) {
 		$('[name=dependsOn]', template).autocomplete({
-			source: dependsOnSource,
+			source: this.dependsOnSource,
 			minLength: 2,
-			select: saveDependsOnAction
+			select: this.saveDependsOnAction
 		});
 	},
 	
+	dependsOnSource : function( request, response ) {
+		var actionId = manager.getCurrentActionId();
+		if (actionId != null) {
+			$.ajax({
+				url: serverUrl + "action/search",
+				dataType: "json",
+				data: {actionId: actionId, term: request.term},
+				success: response
+			});
+		}
+	},
+
+	saveDependsOnAction : function(event, ui) {
+		var actionId = manager.determineTiddlerId(event.currentTarget.activeElement);
+		if (actionId != null) {
+			$.ajax({
+				url: serverUrl + "action/dependsOnUpdate",
+				data: {actionId: actionId, dependsOn: ui.item.value}, 
+				type: "POST",
+				dataType: "json",
+				success: function(data) {
+					manager.raiseEvent('actionUpdate', {event: 'dependOnUpdate', id: actionId, item: ui.item});
+				}
+			});
+		}
+	},
+
 	loadView : function(id, focus) {
 		this.viewLoader("action/view", {actionId: id}, focus);
 	}

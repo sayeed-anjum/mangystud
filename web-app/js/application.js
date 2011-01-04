@@ -261,7 +261,7 @@ function getOpenActionIdsForRealm(id) {
 	var actionIds = [];
 	$.each($('.controls .realm'), function(index, value) {
 		if ($(this).val() == id) {
-			actionIds.push(manager.determinTiddlerId(this))
+			actionIds.push(manager.determineTiddlerId(this))
 		}
 	});
 	return actionIds;
@@ -279,7 +279,7 @@ function getOpenTiddlerIdsForRealm(id) {
 
 function completeAction() {
 	var done = $(this).is(':checked');
-	var actionId =  manager.determinTiddlerId(this);
+	var actionId =  manager.determineTiddlerId(this);
 	if (actionId != null) {
 		$.ajax({
 			url: serverUrl + "action/complete",
@@ -340,7 +340,7 @@ function futureAction() {
 
 function updateStatusAction(obj, status) {
 	if ($(obj).hasClass('on')) return;
-	var actionId = manager.determinTiddlerId(obj);
+	var actionId = manager.determineTiddlerId(obj);
 	if (actionId != null) {
 		$.ajax({
 			url: serverUrl + "action/status",
@@ -356,7 +356,7 @@ function updateStatusAction(obj, status) {
 
 
 function updateTicklerDate(dateText, inst) {
-	var ticklerId = manager.determinTiddlerId(this);
+	var ticklerId = manager.determineTiddlerId(this);
 	var date = inst.selectedYear + "-" + (inst.selectedMonth+1) + "-" + inst.selectedDay;
 	if (ticklerId != null) {
 		$.ajax({
@@ -504,7 +504,7 @@ function toggleStar() {
 function updateContextState(event) {
 	var checked = $(this).is(':checked');
 	var context = $(this).val();
-	var actionId = manager.determinTiddlerId(this);
+	var actionId = manager.determineTiddlerId(this);
 	if (actionId != null) {
 		$.ajax({
 			url: serverUrl + "action/updateContext",
@@ -513,33 +513,6 @@ function updateContextState(event) {
 			dataType: "json",
 			success: function(data) {
 				manager.raiseEvent('actionUpdate', {event: 'updateContext', id: actionId, context: context, checked: checked});
-			}
-		});
-	}
-}
-
-function  dependsOnSource ( request, response ) {
-	var actionId = manager.getCurrentActionId();
-	if (actionId != null) {
-		$.ajax({
-			url: serverUrl + "action/search",
-			dataType: "json",
-			data: {actionId: actionId, term: request.term},
-			success: response
-		});
-	}
-}
-
-function saveDependsOnAction(event, ui) {
-	var actionId = manager.determinTiddlerId(event.currentTarget.activeElement);
-	if (actionId != null) {
-		$.ajax({
-			url: serverUrl + "action/dependsOnUpdate",
-			data: {actionId: actionId, dependsOn: ui.item.value}, 
-			type: "POST",
-			dataType: "json",
-			success: function(data) {
-				manager.raiseEvent('actionUpdate', {event: 'dependOnUpdate', id: actionId, item: ui.item});
 			}
 		});
 	}
@@ -588,7 +561,7 @@ function makeAction() {
 }
 
 function deleteDependency() {
-	var actionId = manager.determinTiddlerId(this);
+	var actionId = manager.determineTiddlerId(this);
 	if (actionId != null) {
 		$.ajax({
 			url: serverUrl + "action/deleteDependency",
@@ -671,12 +644,12 @@ function deleteTiddlerCommand() {
 }
 
 function deleteActionButton() {
-	var actionId = manager.determinTiddlerId(this);
+	var actionId = manager.determineTiddlerId(this);
 	deleteAction(actionId);
 }
 
 function deleteTicklerButton() {
-	var ticklerId = manager.determinTiddlerId(this);
+	var ticklerId = manager.determineTiddlerId(this);
 	deleteTickler(ticklerId);
 }
 
