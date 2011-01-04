@@ -76,21 +76,6 @@ manager = {
 		}
 	},
 
-	projectUpdateListener : function(manager, event) {
-		if (event.event == 'delete') {
-			$('#td_projct_' + event.id).remove();
-		} else {
-			refreshProjectView(event.id, (event.event=='newProject'));
-		}
-	}, 
-
-	contactUpdateListener : function(manager, event) {
-		refreshContactView(event.id);
-		manager.updateCache(function() {
-			manager.updateRealmCache(manager, event);
-		});
-	},
-	
 	addTemplate : function(name) {
 		this.templates[name] = $.template(null, $("#" + name));
 	},
@@ -121,8 +106,6 @@ manager = {
 			}
 		});
 
-		this.addListener('projectUpdate', this.projectUpdateListener, 'mgr_pulist');
-		this.addListener('contactUpdate', this.contactUpdateListener, 'mgr_culist');
 		this.addListener('newContext', this.updateRealmCache, 'mgr_nclist');
 		this.addListener('newArea', this.updateRealmCache, 'mgr_nalist');
 		this.addListener('newContact', this.updateRealmCache, 'mgr_ncolist');
@@ -278,14 +261,6 @@ function refreshActionView(id, isNew) {
 
 function refreshTicklerView(id, isNew) {
 	manager.getViewer('td_ticklr_').refresh(id, isNew);
-}
-
-function refreshProjectView(id, isNew) {
-	manager.getViewer('td_projct_').refresh(id, isNew);
-}
-
-function refreshContactView(id, isNew) {
-	manager.getViewer('td_contct_').refresh(id, isNew);
 }
 
 function tl_viewAction(id, focus) {

@@ -172,8 +172,18 @@ Viewer.extend("ProjectViewer", {}, {
 		manager.addTemplate(this.templateName);
 		manager.addListener('actionUpdate', this.refreshProjectDetails, 'projectViewer_actionUpdateListener', {viewer: this});
 		manager.addListener('ticklerUpdate', this.refreshProjectDetails, 'projectViewer_ticklerUpdateListener', {viewer: this});
+		manager.addListener('projectUpdate', this.projectUpdateListener, 'projectViewer_projectUpdateListener', {viewer: this});
 		return this;
 	},  
+	
+	projectUpdateListener : function(manager, event, data) {
+		var me = data.viewer;
+		if (event.event == 'delete') {
+			$('#td_projct_' + event.id).remove();
+		} else {
+			me.refresh(event.id, (event.event=='newProject'));
+		}
+	},
 	
 	refreshProjectDetails : function(manager, event, data) {
 		var me = data.viewer;
@@ -218,8 +228,17 @@ Viewer.extend("ContactViewer", {}, {
 		this.templateName = "contactViewTemplate";
 		this.manager = manager;
 		manager.addTemplate(this.templateName);
+		manager.addListener('contactUpdate', this.contactUpdateListener, 'contactViewer_contactUpdateListener', {viewer: this});
 		return this;
-	}, 
+	},  
+	
+	contactUpdateListener : function(manager, event, data) {
+		var me = data.viewer;
+		me.refresh(event.id);
+		manager.updateCache(function() {
+			manager.updateRealmCache(manager, event);
+		});
+	},
 	
 	dataCallback : function(data) {
 		var contact = data.contact;
