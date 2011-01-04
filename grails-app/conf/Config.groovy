@@ -99,7 +99,7 @@ log4j = {
 uiperformance.bundles = [
 	[type: 'js',
 	 name: 'app.all',
-	 files: ['application','dashboard','dialogs', 'inbox', 'viewer']],
+	 files: ['application','dashboard','dialogs', 'inbox', 'viewer', 'action_dashboard', 'project_dashboard', 'tickler_dashboard']],
 	[type: 'css',
 	 name: 'bundled',
 	 files: ['ui-lightness/jquery-ui-1.8.7.custom','main']]
