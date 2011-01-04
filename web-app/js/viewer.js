@@ -1,10 +1,11 @@
-Viewer = function(manager) {
-	this.prefix = 'td_tiddlr_';
-	this.templateName = null;
-	this.manager = manager;
-}
-
-$.extend(Viewer.prototype, { 
+// uses JavaScriptMVC class (see http://jupiterjs.com/news/a-simple-powerful-lightweight-class-for-jquery))
+$.Class.extend("Viewer", {}, {
+	prefix : 'td_tiddlr_',
+	
+	init : function(manager) {
+		this.manager = manager;
+	},
+	
 	viewLoader : function(url, data, inFocus) {
 		var me = this;
 		var manager = this.manager;
@@ -39,7 +40,7 @@ $.extend(Viewer.prototype, {
 			}
 		});
 	}, 
-	
+
 	show : function(id) {
 		var tiddler = $('#' + this.prefix + id);
 		if (tiddler.length) {
@@ -69,15 +70,15 @@ $.extend(Viewer.prototype, {
 	}
 });
 
-ActionViewer = function(manager) {
-	this.prefix = 'td_action_';
-	this.templateName = "actionViewTemplate";
-	this.manager = manager;
-	manager.addTemplate(this.templateName);
-	return this;
-} 
+Viewer.extend("ActionViewer", {}, {
+	init: function(manager) {
+		this.prefix = 'td_action_';
+		this.templateName = "actionViewTemplate";
+		this.manager = manager;
+		manager.addTemplate(this.templateName);
+		return this;
+	},  
 	
-ActionViewer.prototype = $.extend({}, Viewer.prototype, {
 	dataCallback : function(data) {
 		var action = data.action; 
 		var data = {
@@ -108,15 +109,15 @@ ActionViewer.prototype = $.extend({}, Viewer.prototype, {
 	}
 });
 
-TicklerViewer = function(manager) {
-	this.prefix = 'td_ticklr_';
-	this.templateName = "ticklerViewTemplate";
-	this.manager = manager;
-	manager.addTemplate(this.templateName);
-	return this;
-} 
+Viewer.extend("TicklerViewer", {}, {
+	init: function(manager) {
+		this.prefix = 'td_ticklr_';
+		this.templateName = "ticklerViewTemplate";
+		this.manager = manager;
+		manager.addTemplate(this.templateName);
+		return this;
+	},
 	
-TicklerViewer.prototype = $.extend({}, Viewer.prototype, {
 	dataCallback : function(data) {
 		return {
 			tickler: data.tickler, 
@@ -143,15 +144,15 @@ TicklerViewer.prototype = $.extend({}, Viewer.prototype, {
 	}
 });
 
-ProjectViewer = function(manager) {
-	this.prefix = 'td_projct_';
-	this.templateName = "projectViewTemplate";
-	this.manager = manager;
-	manager.addTemplate(this.templateName);
-	return this;
-} 
+Viewer.extend("ProjectViewer", {}, {
+	init: function(manager) {
+		this.prefix = 'td_projct_';
+		this.templateName = "projectViewTemplate";
+		this.manager = manager;
+		manager.addTemplate(this.templateName);
+		return this;
+	},  
 	
-ProjectViewer.prototype = $.extend({}, Viewer.prototype, {
 	dataCallback : function(data) {
 		var project = data.project;
 		prefix =  "______" + project.id;
@@ -175,15 +176,15 @@ ProjectViewer.prototype = $.extend({}, Viewer.prototype, {
 	}
 });
 
-ContactViewer = function(manager) {
-	this.prefix = 'td_contct_';
-	this.templateName = "contactViewTemplate";
-	this.manager = manager;
-	manager.addTemplate(this.templateName);
-	return this;
-} 
+Viewer.extend("ContactViewer", {}, {
+	init: function(manager) {
+		this.prefix = 'td_contct_';
+		this.templateName = "contactViewTemplate";
+		this.manager = manager;
+		manager.addTemplate(this.templateName);
+		return this;
+	}, 
 	
-ContactViewer.prototype = $.extend({}, Viewer.prototype, {
 	dataCallback : function(data) {
 		var contact = data.contact;
 		prefix =  "______" + contact.id;

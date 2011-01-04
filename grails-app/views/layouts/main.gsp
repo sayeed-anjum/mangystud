@@ -6,6 +6,7 @@
 		<g:javascript library="jquery" plugin="jquery"/>
 		<jqui:resources/>        
 		<p:javascript src="jquery/jquery.tmpl.min"/>
+		<p:javascript src="jquery/jquery.class.min"/>
 		<p:javascript src="jquery/jquery.timeago"/>
 		<p:javascript src="app.all"/>
 		<g:javascript>
