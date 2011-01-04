@@ -6,6 +6,7 @@ manager = {
 	ticklerDashboards : {},
 	projectDashboards: {},
 	dialogs : {},
+	viewers : {},
 	
 	updateCache : function(callback) {
 		var manager = this;
@@ -141,7 +142,11 @@ manager = {
 		manager.updateCache(function() {
 			manager.updateRealmCache(manager, event);
 		});
-	}, 
+	},
+	
+	addTemplate : function(name) {
+		this.templates[name] = $.template(null, $("#" + name));
+	},
 	
 	tmpl : function(name, data) {
 		 return $.tmpl(this.templates[name], data);		
@@ -167,11 +172,19 @@ manager = {
 		$.extend(this.projectDashboards, {			
 			"projectDashboard": tl_projectDashboard 
 		});
+		
+		$.extend(this.viewers, {
+			"td_action_" : new ActionViewer(this),
+			"td_ticklr_" : new TicklerViewer(this),
+			"td_projct_" : new ProjectViewer(this),
+			"td_contact_" : new ContactViewer(this)
+		});
+
+		$.each(data.templates, function(index, name) {
+			manager.addTemplate(name);
+		});
 
 		this.updateCache(function() {
-			$.each(data.templates, function(index, name) {
-				manager.templates[name] = $.template(null, $("#" + name));
-			});
 			if ($.isFunction(data.initialView)) {
 				data.initialView();
 			}
@@ -210,44 +223,24 @@ manager = {
 	determineTiddlerId : function(obj) {
 		var id = null;
 		var tiddler = $(obj).closest('.tiddler');
-		var controlDiv = $('.controls', tiddler);
-		if (controlDiv.length > 0) {
-			id = controlDiv[0].id.substr(7);
+		var link = $(obj).siblings('.tiddlyLink');
+		if (link.length) {
+			id = link[0].id.substr(10);
 		} else {
-			var link = $(obj).siblings('.tiddlyLink');
-			if (link.length > 0) {
-				id = link[0].id.substr(10);
+			var controlDiv = $('.controls', tiddler);
+			if (controlDiv.length) {
+				id = controlDiv[0].id.substr(7);
 			}
-		} 
+		}
 		return id;
 	},
 	
 	determineActionId : function (obj) {
-		var controlDiv = $(obj).closest('.controls');
-		var actionId = null;
-		if (controlDiv.length > 0) {
-			actionId = controlDiv[0].id.substr(7);
-		} else {
-			var link = $(obj).siblings('.tiddlyLink');
-			if (link.length > 0) {
-				actionId = link[0].id.substr(10);
-			}
-		} 
-		return actionId;
+		return this.determineTiddlerId(obj);
 	},
 
 	determineTicklerId : function (obj) {
-		var controlDiv = $(obj).closest('.controls');
-		var ticklerId = null;
-		if (controlDiv.length > 0) {
-			ticklerId = controlDiv[0].id.substr(7);
-		} else {
-			var link = $(obj).siblings('.tiddlyLink');
-			if (link.length > 0) {
-				ticklerId = link[0].id.substr(10);
-			}
-		} 
-		return ticklerId;
+		return this.determineTiddlerId(obj);
 	},
 	
 	showDialogByName : function(dialogName, event) {
@@ -280,6 +273,10 @@ manager = {
 			}
 		}
 		return null;
+	}, 
+	
+	getViewer : function(id) {
+		return this.viewers[id];
 	}
 };
 
@@ -296,83 +293,60 @@ function isContextPresent(action, context) {
 
 function openTiddler(event, ui) {
 	var id = ui.item.value;
-	// $('#searchBox').val(ui.item.label);
-	var type = id.substr(3, 6);
 	id = id.substr(10);
-	if (type == 'action') {
-		openActionView(id, true);
-	}
-	if (type == 'projct') {
-		openProjectView(id, true);
-	}
-	if (type == 'ticklr') {
-		openTicklerView(id, true);
-	}
+	var viewer = manager.getViewer(ui.item.value);
+	if (viewer) viewer.show(id);
 	return false;
 }
 
+/*
 function openTicklerView(id) {
-	var tiddler = $('#td_ticklr_' + id);
-	if (tiddler.length > 0) {
-		tiddler.focus();
-	} else {
-		tl_viewTickler(id, true);
-	}
+	manager.getViewer('td_ticklr_').show(id);
 }
 
 function openActionView(id) {
-	var tiddler = $('#td_action_' + id);
-	if (tiddler.length > 0) {
-		tiddler.focus();
-	} else {
-		tl_viewAction(id, true);
-	}
-}
-
-function openProjectView(id) {
-	var tiddler = $('#td_projct_' + id);
-	if (tiddler.length > 0) {
-		tiddler.focus();
-	} else {
-		tl_viewProject(id, true);
-	}
+	manager.getViewer('td_action_').show(id);
 }
 
 function openContactView(id) {
-	var tiddler = $('#td_contct_' + id);
-	if (tiddler.length > 0) {
-		tiddler.focus();
-	} else {
-		tl_viewContact(id, true);
-	}
+	manager.getViewer('td_contct_').show(id);
+}
+*/
+
+function openProjectView(id) {
+	manager.getViewer('td_projct_').show(id);
 }
 
-function refreshActionView(actionId, isNew) {
-	var tiddler = $('#td_action_' + actionId);
-	if (isNew || tiddler.length > 0) {
-		tl_viewAction(actionId);
-	}
+function refreshActionView(id, isNew) {
+	manager.getViewer('td_action_').refresh(id, isNew);
 }
 
 function refreshTicklerView(id, isNew) {
-	var tiddler = $('#td_ticklr_' + id);
-	if (isNew || tiddler.length > 0) {
-		tl_viewTickler(id);
-	}
+	manager.getViewer('td_ticklr_').refresh(id, isNew);
 }
 
 function refreshProjectView(id, isNew) {
-	var tiddler = $('#td_projct_' + id);
-	if (isNew || tiddler.length > 0) {
-		tl_viewProject(id);
-	}
+	manager.getViewer('td_projct_').refresh(id, isNew);
 }
 
 function refreshContactView(id, isNew) {
-	var tiddler = $('#td_contct_' + id);
-	if (isNew || tiddler.length > 0) {
-		tl_viewContact(id);
-	}
+	manager.getViewer('td_contct_').refresh(id, isNew);
+}
+
+function tl_viewAction(id, focus) {
+	manager.getViewer('td_action_').loadView(id, focus);
+}
+
+function tl_viewTickler(id, focus) {
+	manager.getViewer('td_ticklr_').refresh(id, focus);
+}
+
+function tl_viewProject(id, focus) {
+	manager.getViewer('td_projct_').refresh(id, focus);
+}
+
+function tl_viewContact(id, focus) {
+	manager.getViewer('td_contct_').refresh(id, focus);
 }
 
 function refreshProjectDetailsView(event) {
@@ -382,12 +356,12 @@ function refreshProjectDetailsView(event) {
 		projectViews.push(value);
 	});
 
+	var viewer = manager.getViewer('td_projct_');
 	for (var j = 0; j < projectViews.length; j++) {
 		var viewId = projectViews[j].id.substr(10); 
-		tl_viewProject(viewId);
+		viewer.refresh(viewId);
 	}
 }
-
 
 function getOpenActionIdsForRealm(id) {
 	var actionIds = [];
@@ -923,158 +897,6 @@ function cancelTiddler() {
 	$('.td_title', tiddler).empty();
 }
 
-function tl_viewAction(actionId, inFocus) {
-	viewLoader("action/view", {actionId: actionId}, function(data) {
-		var action = data.action; 
-
-		var data = {
-			action: action, 
-			dependsOn : data.dependsOn,
-			project: data.project,
-			contexts: manager.getContexts(action.realm.id),
-			areas: manager.getAreas(action.realm.id),
-			contacts: manager.getContacts(action.realm.id),
-			realms: manager.getRealms(), 
-			tabIndex: 1
-		};
-		
-		var template = manager.tmpl("actionViewTemplate", data);
-
-		var tiddler = $('#td_action_' + action.id);
-		if (tiddler.length) {
-			tiddler.replaceWith(template);
-		} else {
-			template.appendTo('#stage');
-		} 
-		if (inFocus) {
-			$(template).focus();
-		}
-		$('[name=dependsOn]', template).autocomplete({
-			source: dependsOnSource,
-			minLength: 2,
-			select: saveDependsOnAction
-		});
-		$('[name=project]', template).autocomplete({
-			source: projectSource,
-			minLength: 2,
-			select: saveProjectAction
-		});
-		jQuery("abbr.timeago").timeago();	
-	});
-	
-}
-
-function viewLoader(url, data, callback) {
-	$.ajax({
-		url: serverUrl + url,
-		data: data, 
-		type: "GET",
-		dataType: "json",
-		success: function(data) {
-			callback(data);
-		}
-	});
-}
-
-function tl_viewTickler(ticklerId, inFocus) {
-	viewLoader("tickler/view", {ticklerId: ticklerId}, function(data) {
-		var tickler = data.tickler; 
-
-		var data = {
-			tickler: tickler, 
-			project: data.project,
-			areas: manager.getAreas(tickler.realm.id),
-			contacts: manager.getContacts(tickler.realm.id),
-			realms: manager.getRealms(), 
-			tabIndex: 1
-		};
-		
-		var template = manager.tmpl("ticklerViewTemplate", data);
-
-		var tiddler = $('#td_ticklr_' + tickler.id);
-		if (tiddler.length) {
-			tiddler.replaceWith(template);
-		} else {
-			template.appendTo('#stage');
-		} 
-		if (inFocus) {
-			$(template).focus();
-		}
-		$('.dateBox').datepicker({
-			dateFormat: 'D, d-M-y',
-			onSelect: updateTicklerDate
-		});
-		$('[name=project]', template).autocomplete({
-			source: projectSource,
-			minLength: 2,
-			select: saveProjectAction
-		});
-		jQuery("abbr.timeago").timeago();
-	});
-	
-}
-
-function tl_viewProject(projectId, inFocus) {
-	viewLoader("project/view", {projectId: projectId}, function(data) {
-		var project = data.project;
-		prefix =  "______" + project.id;
-		prefix = 'p' + prefix.substr(prefix.length-5) + '@';
-
-		var data = {
-			project: project, 
-			prefix: prefix,
-			tiddlers: data.tiddlers,
-			areas: manager.getAreas(project.realm.id),
-			contacts: manager.getContacts(project.realm.id),
-			realms: manager.getRealms(), 
-			tabIndex: 1
-		};
-		
-		var template = manager.tmpl("projectViewTemplate", data);
-
-		var tiddler = $('#td_projct_' + project.id);
-		if (tiddler.length) {
-			tiddler.replaceWith(template);
-		} else {
-			template.appendTo('#stage');
-		} 
-		if (inFocus) {
-			$(template).focus();
-		}
-		jQuery("abbr.timeago").timeago();	
-	});
-}
-
-function tl_viewContact(contactId, inFocus) {
-	viewLoader("realm/contactDashboard", {contactId: contactId}, function(data) {
-		var contact = data.contact;
-		prefix =  "______" + contact.id;
-		prefix = 'c' + prefix.substr(prefix.length-5) + '@';
-		contact.title = contact.name
-
-		var data = {
-			contact: contact, 
-			prefix: prefix,
-			tiddlers: data.tiddlers,
-			realms: manager.getRealms(), 
-			tabIndex: 1
-		};
-		
-		var template = manager.tmpl("contactViewTemplate", data);
-
-		var tiddler = $('#td_contct_' + contact.id);
-		if (tiddler.length) {
-			tiddler.replaceWith(template);
-		} else {
-			template.appendTo('#stage');
-		} 
-		if (inFocus) {
-			$(template).focus();
-		}
-		jQuery("abbr.timeago").timeago();	
-	});
-}
-
 function addTiddlerActionHandlers() {
 	$('.tiddler').live('mouseenter', function() {
 		$(this).addClass("selected");
@@ -1159,9 +981,7 @@ function checkForActiveTicklers() {
 
 function initTiddlerManager() {
 	manager.init({
-		templates: ["actionViewTemplate", "dashboardTemplate", 
-		            "ticklerViewTemplate", "projectViewTemplate", 
-		            "contactViewTemplate", "activeTicklerDashboard"],
+		templates: ["dashboardTemplate", "activeTicklerDashboard"],
 		dialogs: {
 			"realmDialog" : new RealmDialog().init(), 
 			"contextDialog" : new ContextDialog().init(),

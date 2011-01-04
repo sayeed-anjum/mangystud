@@ -96,7 +96,7 @@ class ActionController {
 		}
 		
 		action.done = done;
-		action.save(failOnError: true)
+		action.save(failOnError: true, flush: true)
 		
 		def model = [success: true]
 		render model as JSON
@@ -109,10 +109,12 @@ class ActionController {
 		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def action = Action.findByOwnerAndId(user, actionId)
 		
-		action.state = State.find { it.id == status }	
-		action.save(failOnError: true)
-		
-		def model = [success: true]
+		def model = [success: false]
+		if (action) {
+			action.state = State.find { it.id == status }	
+			action.save(failOnError: true, flush: true)
+			model.success = true
+		}
 		render model as JSON
 	}
 
@@ -130,7 +132,7 @@ class ActionController {
 			else action.removeContext(context)
 		}	
 	
-		action.save(failOnError: true)
+		action.save(failOnError: true, flush: true)
 		
 		def model = [success: true]
 		render model as JSON
