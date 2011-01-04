@@ -125,5 +125,3 @@ beans {
 		password = ''
 	}
 }
-
-jqueryUi.cdn = 'googlecode'

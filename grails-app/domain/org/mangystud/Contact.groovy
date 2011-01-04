@@ -19,6 +19,6 @@ class Contact {
 	
 	Person linkedUser;
 	
-	String getTitle = {return name;}
-	def setTitle = {t -> name = title; }
+	String getTitle() {return name;}
+	void setTitle(String title) { name = title; }
 }
