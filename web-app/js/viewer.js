@@ -39,7 +39,7 @@ $.Class.extend("Viewer", {}, {
 				jQuery("abbr.timeago").timeago();
 			}
 		});
-	}, 
+	},
 
 	show : function(id) {
 		var tiddler = $('#' + this.prefix + id);

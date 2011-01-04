@@ -4,9 +4,35 @@ $.Class.extend("Dashboard", {}, {
 		this.title = options.title;
 		this.url = options.url;
 		this.templateName = "dashboardTemplate";
+		this.manager = manager;
+		this.listeners = [];
 		this.onLoad = $.isFunction(options.onLoad)? options.onLoad : $.noop;
+		this.addListener('close', this.onClose);
 		return this;
 	},
+	
+	refresh : function(manager, event, data) {
+		var me = data.dashboard;
+		var tiddler = $('#' + me.name);
+		if (tiddler.length) {
+			me.load();
+		}
+	},
+	
+	addListener : function(event, callback) {
+		var listenerId = this.name + '_' + event + 'Listener';
+		this.listeners.push(listenerId);
+		this.manager.addListener(event, callback, listenerId, {dashboard: this});
+	},
+	
+	onClose : function(manager, event, data) {
+		var me = data.dashboard;
+		if (me && event.id == me.name) {
+			for (var j = 0; j < me.listeners.length; j++) {
+				manager.removeListener(me.listeners[j]);
+			}
+		}
+	},	
 	
 	load  : function(data) {
 		var me = this;

@@ -1,4 +1,8 @@
 Dashboard.extend("TicklerDashboard", {}, {
+	init : function(manager, options) {
+		this._super(manager, options);
+		this.addListener('ticklerUpdate', this.refresh);
+	} 
 });
 
 function tl_ticklerDashboard() {

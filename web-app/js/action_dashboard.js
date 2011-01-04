@@ -1,4 +1,8 @@
 Dashboard.extend("ActionDashboard", {}, {
+	init : function(manager, options) {
+		this._super(manager, options);
+		this.addListener('actionUpdate', this.refresh);
+	} 
 });
 
 function tl_actionDashboard() {

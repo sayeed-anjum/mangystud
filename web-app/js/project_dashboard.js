@@ -1,4 +1,8 @@
 Dashboard.extend("ProjectDashboard", {}, {
+	init : function(manager, options) {
+		this._super(manager, options);
+		this.addListener('projectUpdate', this.refresh);
+	}
 });
 
 function tl_projectDashboard() {

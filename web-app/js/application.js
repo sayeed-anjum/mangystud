@@ -1,10 +1,15 @@
+$.Class.extend("AKListener", {}, {
+	init : function(callback, key, data) {
+		this.callback = $.isFunction(callback)? callback : $.noop;
+		this.data = data? data : {};
+		this.key = key;
+	}
+});
+
 manager = {
 	templates : {},
 	realmCache : {},
 	eventListeners : {},
-	staticTiddlers : {},
-	ticklerDashboards : {},
-	projectDashboards: {},
 	dialogs : {},
 	viewers : {},
 	
@@ -64,52 +69,14 @@ manager = {
 	raiseEvent : function(name, event) {
 		var listeners = this.eventListeners[name]
 		if (listeners) {
-			for (var j = 0; j < listeners.length; j++) {
-				if ($.isFunction(listeners[j])) {
-					listeners[j](this, event);
-				}
-			}
-		}
-	},
-
-	updateStaticActionTiddlers : function() {
-		for (var key in this.staticTiddlers) {
-			var tiddler = $('#' + key);
-			if (tiddler.length) {
-				var fn = this.staticTiddlers[key];
-				if ($.isFunction(fn)) {
-					fn();
-				}
-			}
-		}
-	},
-
-	updateTicklerDashboards : function() {
-		for (var key in this.ticklerDashboards) {
-			var tiddler = $('#' + key);
-			if (tiddler.length) {
-				var fn = this.ticklerDashboards[key];
-				if ($.isFunction(fn)) {
-					fn();
-				}
-			}
-		}
-	},
-
-	updateProjectDashboards : function() {
-		for (var key in this.projectDashboards) {
-			var tiddler = $('#' + key);
-			if (tiddler.length) {
-				var fn = this.projectDashboards[key];
-				if ($.isFunction(fn)) {
-					fn();
-				}
+			for (var key in listeners) {
+				var listener = listeners[key];
+				listener.callback(this, event, listener.data);
 			}
 		}
 	},
 
 	actionUpdateListener : function(manager, event) {
-		manager.updateStaticActionTiddlers();
 		if (event.event == 'delete') {
 			$('#td_action_' + event.id).remove();
 		} else {
@@ -119,7 +86,6 @@ manager = {
 	}, 
 	
 	ticklerUpdateListener : function(manager, event) {
-		manager.updateTicklerDashboards();
 		if (event.event == 'delete') {
 			$('#td_ticklr_' + event.id).remove();
 		} else {
@@ -129,7 +95,6 @@ manager = {
 	}, 
 
 	projectUpdateListener : function(manager, event) {
-		manager.updateProjectDashboards();
 		if (event.event == 'delete') {
 			$('#td_projct_' + event.id).remove();
 		} else {
@@ -157,22 +122,6 @@ manager = {
 		
 		this.dialogs = data.dialogs;
 
-		$.extend(this.staticTiddlers, {			
-			"nextActions": tl_nextActions, 
-			"actionDashboard": tl_actionDashboard, 
-			"nextAndWaiting" : tl_nextAndWaiting,
-			"doneActionDashboard" : tl_doneActionDashboard
-		});
-		
-		$.extend(this.ticklerDashboards, {			
-			"ticklerDashboard": tl_ticklerDashboard, 
-			"activeTicklerDashboard": tl_activeTicklerDashboard 
-		});
-
-		$.extend(this.projectDashboards, {			
-			"projectDashboard": tl_projectDashboard 
-		});
-		
 		$.extend(this.viewers, {
 			"td_action_" : new ActionViewer(this),
 			"td_ticklr_" : new TicklerViewer(this),
@@ -190,14 +139,40 @@ manager = {
 			}
 		});
 
-		this.eventListeners.actionUpdate = [this.actionUpdateListener];
-		this.eventListeners.ticklerUpdate = [this.ticklerUpdateListener];
-		this.eventListeners.projectUpdate = [this.projectUpdateListener];
-		this.eventListeners.contactUpdate = [this.contactUpdateListener];
-		this.eventListeners.newContext = [this.updateRealmCache];
-		this.eventListeners.newArea = [this.updateRealmCache];
-		this.eventListeners.newContact = [this.updateRealmCache];
-	}, 
+		this.addListener('actionUpdate', this.actionUpdateListener, 'mgr_aulist');
+		this.addListener('ticklerUpdate', this.ticklerUpdateListener, 'mgr_tulist');
+		this.addListener('projectUpdate', this.projectUpdateListener, 'mgr_pulist');
+		this.addListener('contactUpdate', this.contactUpdateListener, 'mgr_culist');
+		this.addListener('newContext', this.updateRealmCache, 'mgr_nclist');
+		this.addListener('newArea', this.updateRealmCache, 'mgr_nalist');
+		this.addListener('newContact', this.updateRealmCache, 'mgr_ncolist');
+	},
+	
+	addListener : function(eventName, listener, key, data) {
+		if (this.eventListeners[eventName] == undefined) {
+			this.eventListeners[eventName] = {};
+		}
+		this.eventListeners[eventName][key] = new AKListener(listener, key, data);
+	},
+	
+	removeListener : function(listenerName) {
+		// this.printListeners('--------- before remove');
+		for (var event in this.eventListeners) {
+			delete this.eventListeners[event][listenerName];
+		}
+		// this.printListeners('--------- after remove');
+	},
+	
+	printListeners : function(s) {
+		console.log(s);
+		for (var event in this.eventListeners) {
+			console.log('event: ' + event);
+			for (var l in this.eventListeners[event]) {
+				var listener = this.eventListeners[event][l];
+				console.log('  > listener: ' + listener.key);
+			}
+		}
+	},
 	
 	determineTiddlerType : function(obj) {
 		var type = "";
@@ -830,7 +805,10 @@ function doneCloseTiddler() {
 
 
 function closeTiddler() {
-	$(this).closest('.tiddler').remove();
+	var tiddler = $(this).closest('.tiddler');
+	var id = $(tiddler).attr('id');
+	$(tiddler).remove();
+	manager.raiseEvent('close', {event: 'closeTiddler', id: id, tiddler: tiddler});
 }
 
 function closeOtherTiddlers() {
