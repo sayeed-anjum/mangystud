@@ -76,14 +76,6 @@ manager = {
 		}
 	},
 
-	ticklerUpdateListener : function(manager, event) {
-		if (event.event == 'delete') {
-			$('#td_ticklr_' + event.id).remove();
-		} else {
-			refreshTicklerView(event.id, (event.event=='newTickler'));
-		}
-	}, 
-
 	projectUpdateListener : function(manager, event) {
 		if (event.event == 'delete') {
 			$('#td_projct_' + event.id).remove();
@@ -129,7 +121,6 @@ manager = {
 			}
 		});
 
-		this.addListener('ticklerUpdate', this.ticklerUpdateListener, 'mgr_tulist');
 		this.addListener('projectUpdate', this.projectUpdateListener, 'mgr_pulist');
 		this.addListener('contactUpdate', this.contactUpdateListener, 'mgr_culist');
 		this.addListener('newContext', this.updateRealmCache, 'mgr_nclist');

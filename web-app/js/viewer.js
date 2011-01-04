@@ -76,7 +76,7 @@ Viewer.extend("ActionViewer", {}, {
 		this.templateName = "actionViewTemplate";
 		this.manager = manager;
 		manager.addTemplate(this.templateName);
-		manager.addListener('actionUpdate', this.actionUpdateListener, 'actionViewerListener', {viewer: this});
+		manager.addListener('actionUpdate', this.actionUpdateListener, 'actionViewer_actionUpdateListener', {viewer: this});
 		return this;
 	},
 	
@@ -125,7 +125,17 @@ Viewer.extend("TicklerViewer", {}, {
 		this.templateName = "ticklerViewTemplate";
 		this.manager = manager;
 		manager.addTemplate(this.templateName);
+		manager.addListener('ticklerUpdate', this.ticklerUpdateListener, 'ticklerViewer_ticklerUpdateListener', {viewer: this});
 		return this;
+	},
+	
+	ticklerUpdateListener : function(manager, event, data) {
+		var me = data.viewer;
+		if (event.event == 'delete') {
+			$('#td_ticklr_' + event.id).remove();
+		} else {
+			me.refresh(event.id, (event.event=='newTickler'));
+		}
 	},
 	
 	dataCallback : function(data) {
