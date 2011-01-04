@@ -86,15 +86,8 @@ manager = {
 	
 	init : function(data) {
 		var manager = this;
-		
 		this.dialogs = data.dialogs;
-
-		$.extend(this.viewers, {
-			"td_action_" : new ActionViewer(this),
-			"td_ticklr_" : new TicklerViewer(this),
-			"td_projct_" : new ProjectViewer(this),
-			"td_contact_" : new ContactViewer(this)
-		});
+		this.viewers = data.viewers;
 
 		$.each(data.templates, function(index, name) {
 			manager.addTemplate(name);
@@ -836,6 +829,12 @@ function initTiddlerManager() {
 			"ticklerDialog" : new TicklerDialog().init(),
 			"projectDialog" : new ProjectDialog().init(),
 			"actionDialog" : new ActionDialog().init()
+		},
+		viewers : {
+			"td_action_" : new ActionViewer(manager),
+			"td_ticklr_" : new TicklerViewer(manager),
+			"td_projct_" : new ProjectViewer(manager),
+			"td_contact_" : new ContactViewer(manager)
 		},
 		initialView: tl_nextAndWaiting
 	});
