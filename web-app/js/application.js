@@ -173,14 +173,6 @@ manager = {
 		return id;
 	},
 	
-	determineActionId : function (obj) {
-		return this.determineTiddlerId(obj);
-	},
-
-	determineTicklerId : function (obj) {
-		return this.determineTiddlerId(obj);
-	},
-	
 	showDialogByName : function(dialogName, event) {
 		var dialog = this.dialogs[dialogName];
 		if (dialog) {
@@ -237,20 +229,6 @@ function openTiddler(event, ui) {
 	return false;
 }
 
-/*
-function openTicklerView(id) {
-	manager.getViewer('td_ticklr_').show(id);
-}
-
-function openActionView(id) {
-	manager.getViewer('td_action_').show(id);
-}
-
-function openContactView(id) {
-	manager.getViewer('td_contct_').show(id);
-}
-*/
-
 function openProjectView(id) {
 	manager.getViewer('td_projct_').show(id);
 }
@@ -283,7 +261,7 @@ function getOpenActionIdsForRealm(id) {
 	var actionIds = [];
 	$.each($('.controls .realm'), function(index, value) {
 		if ($(this).val() == id) {
-			actionIds.push(manager.determineActionId(this))
+			actionIds.push(manager.determinTiddlerId(this))
 		}
 	});
 	return actionIds;
@@ -301,7 +279,7 @@ function getOpenTiddlerIdsForRealm(id) {
 
 function completeAction() {
 	var done = $(this).is(':checked');
-	var actionId =  manager.determineActionId(this);
+	var actionId =  manager.determinTiddlerId(this);
 	if (actionId != null) {
 		$.ajax({
 			url: serverUrl + "action/complete",
@@ -362,7 +340,7 @@ function futureAction() {
 
 function updateStatusAction(obj, status) {
 	if ($(obj).hasClass('on')) return;
-	var actionId = manager.determineActionId(obj);
+	var actionId = manager.determinTiddlerId(obj);
 	if (actionId != null) {
 		$.ajax({
 			url: serverUrl + "action/status",
@@ -378,7 +356,7 @@ function updateStatusAction(obj, status) {
 
 
 function updateTicklerDate(dateText, inst) {
-	var ticklerId = manager.determineTicklerId(this);
+	var ticklerId = manager.determinTiddlerId(this);
 	var date = inst.selectedYear + "-" + (inst.selectedMonth+1) + "-" + inst.selectedDay;
 	if (ticklerId != null) {
 		$.ajax({
@@ -526,7 +504,7 @@ function toggleStar() {
 function updateContextState(event) {
 	var checked = $(this).is(':checked');
 	var context = $(this).val();
-	var actionId = manager.determineActionId(this);
+	var actionId = manager.determinTiddlerId(this);
 	if (actionId != null) {
 		$.ajax({
 			url: serverUrl + "action/updateContext",
@@ -553,7 +531,7 @@ function  dependsOnSource ( request, response ) {
 }
 
 function saveDependsOnAction(event, ui) {
-	var actionId = manager.determineActionId(event.currentTarget.activeElement);
+	var actionId = manager.determinTiddlerId(event.currentTarget.activeElement);
 	if (actionId != null) {
 		$.ajax({
 			url: serverUrl + "action/dependsOnUpdate",
@@ -562,32 +540,6 @@ function saveDependsOnAction(event, ui) {
 			dataType: "json",
 			success: function(data) {
 				manager.raiseEvent('actionUpdate', {event: 'dependOnUpdate', id: actionId, item: ui.item});
-			}
-		});
-	}
-}
-
-function  projectSource ( request, response ) {
-	$.ajax({
-		url: serverUrl + "project/search",
-		dataType: "json",
-		data: {term: request.term},
-		success: response
-	});
-}
-
-function saveProjectAction(event, ui) {
-	var obj = event.currentTarget.activeElement;
-	var type = manager.determineTiddlerType(obj);
-	var id = manager.determineTiddlerId(obj);
-	if (id != null) {
-		$.ajax({
-			url: serverUrl + "tiddler/projectUpdate",
-			data: {id: id, projectId: ui.item.value}, 
-			type: "POST",
-			dataType: "json",
-			success: function(data) {
-				manager.raiseEvent(type + 'Update', {event: 'projectUpdate', id: id, item: ui.item});
 			}
 		});
 	}
@@ -636,7 +588,7 @@ function makeAction() {
 }
 
 function deleteDependency() {
-	var actionId = manager.determineActionId(this);
+	var actionId = manager.determinTiddlerId(this);
 	if (actionId != null) {
 		$.ajax({
 			url: serverUrl + "action/deleteDependency",
@@ -719,12 +671,12 @@ function deleteTiddlerCommand() {
 }
 
 function deleteActionButton() {
-	var actionId = manager.determineActionId(this);
+	var actionId = manager.determinTiddlerId(this);
 	deleteAction(actionId);
 }
 
 function deleteTicklerButton() {
-	var ticklerId = manager.determineTicklerId(this);
+	var ticklerId = manager.determinTiddlerId(this);
 	deleteTickler(ticklerId);
 }
 

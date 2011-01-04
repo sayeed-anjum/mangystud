@@ -2,8 +2,11 @@
 $.Class.extend("Viewer", {}, {
 	prefix : 'td_tiddlr_',
 	
-	init : function(manager) {
+	init : function(manager, options) {
 		this.manager = manager;
+		this.prefix = options.prefix;
+		this.templateName = options.templateName;
+		manager.addTemplate(this.templateName);
 	},
 	
 	viewLoader : function(url, data, inFocus) {
@@ -36,9 +39,40 @@ $.Class.extend("Viewer", {}, {
 				}
 
 				me.postLoad(template, data);
+				$('[name=project]', template).autocomplete({
+					source: me.projectSource,
+					minLength: 2,
+					select: me.saveProjectAction
+				});
 				jQuery("abbr.timeago").timeago();
 			}
 		});
+	},
+
+	projectSource : function( request, response ) {
+		$.ajax({
+			url: serverUrl + "project/search",
+			dataType: "json",
+			data: {term: request.term},
+			success: response
+		});
+	},
+
+	saveProjectAction : function(event, ui) {
+		var obj = event.currentTarget.activeElement;
+		var type = manager.determineTiddlerType(obj);
+		var id = manager.determineTiddlerId(obj);
+		if (id != null) {
+			$.ajax({
+				url: serverUrl + "tiddler/projectUpdate",
+				data: {id: id, projectId: ui.item.value}, 
+				type: "POST",
+				dataType: "json",
+				success: function(data) {
+					manager.raiseEvent(type + 'Update', {event: 'projectUpdate', id: id, item: ui.item});
+				}
+			});
+		}
 	},
 
 	show : function(id) {
@@ -72,10 +106,10 @@ $.Class.extend("Viewer", {}, {
 
 Viewer.extend("ActionViewer", {}, {
 	init: function(manager) {
-		this.prefix = 'td_action_';
-		this.templateName = "actionViewTemplate";
-		this.manager = manager;
-		manager.addTemplate(this.templateName);
+		this._super(manager, {
+			prefix : 'td_action_',
+			templateName : "actionViewTemplate"
+		});
 		manager.addListener('actionUpdate', this.actionUpdateListener, 'actionViewer_actionUpdateListener', {viewer: this});
 		return this;
 	},
@@ -107,11 +141,6 @@ Viewer.extend("ActionViewer", {}, {
 			minLength: 2,
 			select: saveDependsOnAction
 		});
-		$('[name=project]', template).autocomplete({
-			source: projectSource,
-			minLength: 2,
-			select: saveProjectAction
-		});
 	},
 	
 	loadView : function(id, focus) {
@@ -121,10 +150,10 @@ Viewer.extend("ActionViewer", {}, {
 
 Viewer.extend("TicklerViewer", {}, {
 	init: function(manager) {
-		this.prefix = 'td_ticklr_';
-		this.templateName = "ticklerViewTemplate";
-		this.manager = manager;
-		manager.addTemplate(this.templateName);
+		this._super(manager, {
+			prefix : 'td_ticklr_',
+			templateName : "ticklerViewTemplate"
+		});
 		manager.addListener('ticklerUpdate', this.ticklerUpdateListener, 'ticklerViewer_ticklerUpdateListener', {viewer: this});
 		return this;
 	},
@@ -152,11 +181,6 @@ Viewer.extend("TicklerViewer", {}, {
 			dateFormat: 'D, d-M-y',
 			onSelect: updateTicklerDate
 		});
-		$('[name=project]', template).autocomplete({
-			source: projectSource,
-			minLength: 2,
-			select: saveProjectAction
-		});
 	},
 	
 	loadView : function(id, focus) {
@@ -166,10 +190,10 @@ Viewer.extend("TicklerViewer", {}, {
 
 Viewer.extend("ProjectViewer", {}, {
 	init: function(manager) {
-		this.prefix = 'td_projct_';
-		this.templateName = "projectViewTemplate";
-		this.manager = manager;
-		manager.addTemplate(this.templateName);
+		this._super(manager, {
+			prefix : 'td_projct_',
+			templateName : "projectViewTemplate"
+		});
 		manager.addListener('actionUpdate', this.refreshProjectDetails, 'projectViewer_actionUpdateListener', {viewer: this});
 		manager.addListener('ticklerUpdate', this.refreshProjectDetails, 'projectViewer_ticklerUpdateListener', {viewer: this});
 		manager.addListener('projectUpdate', this.projectUpdateListener, 'projectViewer_projectUpdateListener', {viewer: this});
@@ -224,10 +248,10 @@ Viewer.extend("ProjectViewer", {}, {
 
 Viewer.extend("ContactViewer", {}, {
 	init: function(manager) {
-		this.prefix = 'td_contct_';
-		this.templateName = "contactViewTemplate";
-		this.manager = manager;
-		manager.addTemplate(this.templateName);
+		this._super(manager, {
+			prefix : 'td_contct_',
+			templateName : "contactViewTemplate"
+		});
 		manager.addListener('contactUpdate', this.contactUpdateListener, 'contactViewer_contactUpdateListener', {viewer: this});
 		return this;
 	},  
