@@ -813,7 +813,7 @@ function checkForActiveTicklers() {
 		success: function(data) {
 			data.count > 0? $('#ticklerAlert').show() : $('#ticklerAlert').hide();
 			data.inboxCount > 0? $('#inboxAlert').show() : $('#inboxAlert').hide();
-			setTimeout(checkForActiveTicklers, 300000);
+			setTimeout(checkForActiveTicklers, 120000);
 		}
 	});
 }

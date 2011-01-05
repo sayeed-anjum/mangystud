@@ -5,7 +5,7 @@ class ReadEmailJob {
 	def inboxService
 
 	static triggers = {
-		cron name: 'readEmailTrigger', cronExpression: "0 0/10 * * * ?"
+		cron name: 'readEmailTrigger', cronExpression: "0 0/2 * * * ?"
 	}
  
 	def execute() {
