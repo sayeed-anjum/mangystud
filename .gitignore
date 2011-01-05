@@ -1,3 +1,4 @@
 /target
 /web-app/WEB-INF/classes
 *.log
+*.sh
