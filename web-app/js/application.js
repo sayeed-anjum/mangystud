@@ -216,8 +216,9 @@ function isContextPresent(action, context) {
 
 function openTiddler(event, ui) {
 	var id = ui.item.value;
+	var viewerId = id.substr(0, 10);
 	id = id.substr(10);
-	var viewer = manager.getViewer(ui.item.value);
+	var viewer = manager.getViewer(viewerId);
 	if (viewer) viewer.show(id);
 	return false;
 }
