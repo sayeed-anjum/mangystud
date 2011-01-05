@@ -5,9 +5,7 @@
         <link rel="shortcut icon" href="${resource(dir:'images',file:'favicon.ico')}" type="image/x-icon" />
 		<g:javascript library="jquery" plugin="jquery"/>
 		<jqui:resources/>        
-		<p:javascript src="jquery/jquery.tmpl.min"/>
-		<p:javascript src="jquery/jquery.class.min"/>
-		<p:javascript src="jquery/jquery.timeago"/>
+		<p:javascript src="jquery.plugins"/>
 		<p:javascript src="app.all"/>
 		<g:javascript>
 			serverUrl = "${resource(dir:'/')}";
