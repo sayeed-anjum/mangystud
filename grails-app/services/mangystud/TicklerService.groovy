@@ -22,6 +22,7 @@ class TicklerService {
 			eq('owner', user)
 			eq('overdue', state)
 			'in'('realm', realms)
+			order('date', 'asc')
 		}
 	}
 
@@ -31,6 +32,7 @@ class TicklerService {
 			eq('done', true)
 			eq('owner', user)
 			'in'('realm', realms)
+			order('date', 'asc')
 		}
 	}
 	
