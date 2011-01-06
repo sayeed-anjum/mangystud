@@ -16,7 +16,7 @@
 			   	<span id="Action" class="action_link new_action">+action</span> 
 			   	<span id="Project" class="action_link new_project">+project</span> 
 			   	<span id="Tickler" class="action_link new_tickler">+tickler</span> 
-			   	<span id="Reference" class="action_link">+reference</span>
+			   	<span id="Reference" class="action_link new_reference">+reference</span>
 			   	<span class="spacer"></span>
 			</div>
 		</content>
@@ -35,6 +35,7 @@
 		   			<a class="tiddlyLink tiddlyLinkExisting" href="javascript:;" tiddlylink="tl_actionDashboard">Action Dashboard</a>
 		   			<a class="tiddlyLink tiddlyLinkExisting" href="javascript:;" tiddlylink="tl_ticklerDashboard">Tickler Dashboard</a>
 		   			<a class="tiddlyLink tiddlyLinkExisting" href="javascript:;" tiddlylink="tl_projectDashboard">Project Dashboard</a>
+		   			<a class="tiddlyLink tiddlyLinkExisting" href="javascript:;" tiddlylink="tl_referenceDashboard">Reference Items</a>
 		   			<a class="tiddlyLink tiddlyLinkExisting" href="javascript:;" tiddlylink="tl_doneActionDashboard">Done Actions</a>
 	   			</div>
    			</div>
@@ -79,6 +80,14 @@
 			          update="[success:'message',failure:'error']" name="newContextForm"
 			          onSuccess="manager.dialogSuccess('projectDialog', data, textStatus)">
 	        	<input type="hidden" name="status" value=""/>
+	        	<input type="text" name="title" value="" size="40"/>
+			</g:formRemote >
+        </div>
+        
+        <div id="reference_dialog" style="display:none">
+			<g:formRemote url="[controller:'reference',action:'add']" 
+			          update="[success:'message',failure:'error']" name="newReferenceForm"
+			          onSuccess="manager.dialogSuccess('referenceDialog', data, textStatus)">
 	        	<input type="text" name="title" value="" size="40"/>
 			</g:formRemote >
         </div>
@@ -338,6 +347,27 @@
 				</div>
         	</script>
    
+			<script id="referenceViewTemplate" type="text/x-jquery-tmpl"> 
+	        	<div id="td_refrnc_{{= reference.id}}" class="tiddler" tabIndex="{{= tabIndex}}">
+	        		{{tmpl '#toolbarTemplate'}}
+	        		<div class="title td_title"></div>
+	        		<div class="viewer controls reference" id="ticklr_{{= reference.id}}">
+	        			{{tmpl({realms:realms, action:reference}) '#realmTemplate'}}
+						<div>
+		       				<span class="title vw_title">{{= reference.title}}</span>
+		       				<span><a class="button Starred {{if reference.star}}on{{else}}off{{/if}}" title="Starred" href="javascript:;">★</a></span>
+		       				<span class="subtitle">
+								Updated <abbr class='timeago' title='{{= reference.lastUpdated}}'>{{= jQuery.timeago(reference.lastUpdated)}}</abbr>
+								(Created <abbr class='timeago' title='{{= reference.dateCreated}}'>{{= jQuery.timeago(reference.dateCreated)}}</abbr>)
+							</span>
+						</div>
+						{{tmpl({action: reference, areas: areas, contacts: [], project: project}) '#combosTemplate'}}
+					</div>
+					<div class='content tiddlerContent'><pre>{{= reference.notes}}</pre></div>
+	        		{{tmpl({tiddler:reference, class: 'reference'}) '#editorTemplate'}}
+				</div>
+        	</script>
+
    			<script id="projectDetails" type="text/x-jquery-tmpl"> 
         		<div class="tiddlerDetails">
         			<table class="panel">

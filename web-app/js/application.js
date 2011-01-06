@@ -146,6 +146,8 @@ manager = {
 				type = "project";
 			} else if ($(controlDiv).hasClass("contact")) {
 				type = "contact";
+			} else if ($(controlDiv).hasClass("refrnc")) {
+				type = "reference";
 			}
 		}
 		return type;
@@ -245,6 +247,10 @@ function tl_viewTickler(id, focus) {
 
 function tl_viewProject(id, focus) {
 	manager.getViewer('td_projct_').refresh(id, focus);
+}
+
+function tl_viewReference(id, focus) {
+	manager.getViewer('td_refrnc_').refresh(id, focus);
 }
 
 function tl_viewContact(id, focus) {
@@ -619,6 +625,10 @@ function deleteTiddler(type, id) {
 	}
 }
 
+function deleteReference(id) {
+	deleteTiddler("reference", id);
+}
+
 function deleteProject(id) {
 	deleteTiddler("project", id);
 }
@@ -653,6 +663,12 @@ function deleteProjectButton() {
 	// TODO: replace with deleteTiddlerCommand()
 	var projectId = manager.determineTiddlerId(this);
 	deleteProject(projectId);
+}
+
+function deleteReferenceButton() {
+	// TODO: replace with deleteTiddlerCommand()
+	var id = manager.determineTiddlerId(this);
+	deleteReference(id);
 }
 
 function cancelCloseTiddler() {
@@ -758,6 +774,7 @@ function addTiddlerActionHandlers() {
 	$('.tiddler .deleteActionButton').live('click', deleteActionButton);
 	$('.tiddler .deleteTicklerButton').live('click', deleteTicklerButton);
 	$('.tiddler .deleteProjectButton').live('click', deleteProjectButton);
+	$('.tiddler .deleteReferenceButton').live('click', deleteReferenceButton);
 
 	$('.action .chkOptionInput').live('click', completeAction);
 	$('.tickler .chkOptionInput').live('click', completeTickler);
@@ -782,6 +799,7 @@ function addTiddlerActionHandlers() {
 	$(".new_action").live('click', {manager:manager, dialog:'actionDialog', type:'Action'}, manager.showDialog);
 	$('.new_tickler').live('click', {manager:manager, dialog:'ticklerDialog', type:'Tickler'}, manager.showDialog);
 	$('.new_project').live('click', {manager:manager, dialog:'projectDialog', type:'Project'}, manager.showDialog);
+	$('.new_reference').live('click', {manager:manager, dialog:'referenceDialog', type:'Reference'}, manager.showDialog);
 	$('.contextAdd').live('click', {manager:manager, dialog:'contextDialog'}, manager.showDialog);
 	$('.controls .chkContext').live('click', updateContextState);
 	$('.controls .area').live('change', updateArea);
@@ -829,12 +847,14 @@ function initTiddlerManager() {
 			"contactDialog" : new ContactDialog().init(),
 			"ticklerDialog" : new TicklerDialog().init(),
 			"projectDialog" : new ProjectDialog().init(),
+			"referenceDialog" : new ReferenceDialog().init(),
 			"actionDialog" : new ActionDialog().init()
 		},
 		viewers : {
 			"td_action_" : new ActionViewer(manager),
 			"td_ticklr_" : new TicklerViewer(manager),
 			"td_projct_" : new ProjectViewer(manager),
+			"td_refrnc_" : new ReferenceViewer(manager),
 			"td_contact_" : new ContactViewer(manager)
 		},
 		initialView: tl_nextAndWaiting

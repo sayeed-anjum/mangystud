@@ -310,3 +310,35 @@ ProjectDialog.prototype = $.extend({}, Dialog.prototype, {
 		manager.raiseEvent('projectUpdate', {event: 'newProject', data: data, id: data.project.id});
 	}
 });
+
+ReferenceDialog = function() {
+	this.name = 'reference_dialog';
+	this.title = 'New Reference';
+	return this;
+};
+
+ReferenceDialog.prototype = $.extend({}, Dialog.prototype, {
+	isValid : function() {
+	   var name = $('[name=title]', this.el).val();
+	   if (name.trim() === "") {
+			alert('Please enter a title');
+			return false;
+	   }
+	  return true;
+	},
+
+	updateContext : function(obj) {
+	},
+	
+	beforeShow : function(event) {
+		var obj = event.currentTarget;
+		this.updateContext(obj);
+		$('[name=title]', this.el).val('');
+		this.el.dialog("option", "title", this.title);
+	}, 
+	
+	onSuccess : function(data, textStatus) {
+		this.close();
+		manager.raiseEvent('referenceUpdate', {event: 'newReference', data: data, id: data.reference.id});
+	}
+});

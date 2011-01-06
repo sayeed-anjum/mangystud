@@ -273,6 +273,39 @@ Viewer.extend("ProjectViewer", {}, {
 	}
 });
 
+Viewer.extend("ReferenceViewer", {}, {
+	init: function(manager) {
+		this._super(manager, {
+			prefix : 'td_refrnc_',
+			templateName : "referenceViewTemplate"
+		});
+		manager.addListener('referenceUpdate', this.updateListener, 'referenceViewer_updateListener', {viewer: this});
+		return this;
+	},
+	
+	updateListener : function(manager, event, data) {
+		var me = data.viewer;
+		if (event.event == 'delete') {
+			$('#td_refrnc_' + event.id).remove();
+		} else {
+			me.refresh(event.id, (event.event=='newReference'));
+		}
+	},
+	
+	dataCallback : function(data) {
+		return {
+			reference: data.reference, 
+			id: data.reference.id,
+			realmId : data.reference.realm.id,
+			project: data.project
+		};
+	}, 
+	
+	loadView : function(id, focus) {
+		this.viewLoader("reference/view", {id: id}, focus);
+	}
+});
+
 Viewer.extend("ContactViewer", {}, {
 	init: function(manager) {
 		this._super(manager, {

@@ -1,8 +1,9 @@
-#Tue Jan 04 10:11:31 IST 2011
+#Thu Jan 06 21:30:55 IST 2011
 eclipse.preferences.version=1
 encoding//grails-app/views/home/index.gsp=UTF-8
 encoding//web-app/js/action_dashboard.js=UTF-8
 encoding//web-app/js/application.js=UTF-8
 encoding//web-app/js/dashboard.js=UTF-8
 encoding//web-app/js/project_dashboard.js=UTF-8
+encoding//web-app/js/reference_dashboard.js=UTF-8
 encoding//web-app/js/tickler_dashboard.js=UTF-8

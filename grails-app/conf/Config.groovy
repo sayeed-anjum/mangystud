@@ -102,7 +102,7 @@ uiperformance.bundles = [
 	 files: ['jquery/jquery.class.min','jquery/jquery.timeago','jquery/jquery.tmpl.min']],
 	[type: 'js',
 	 name: 'app.all',
-	 files: ['application','dashboard','dialogs', 'inbox', 'viewer', 'action_dashboard', 'project_dashboard', 'tickler_dashboard']],
+	 files: ['application','dashboard','dialogs', 'inbox', 'viewer', 'action_dashboard', 'project_dashboard', 'tickler_dashboard', 'reference_dashboard']],
 	[type: 'css',
 	 name: 'bundled',
 	 files: ['ui-lightness/jquery-ui-1.8.7.custom','main']]
