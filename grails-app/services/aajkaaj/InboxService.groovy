@@ -57,13 +57,13 @@ class InboxService {
 	
 	def processInboxMessage = {msg ->
 		def from = msg.from.address[0]
-		def subject = msg.subject
+		def subject = msg.subject.encodeAsSanitizedMarkup()
 		def body = getText(msg)
 		
 		def mailbox = Mailbox.findByEmailAndValid(from, true);
 		if (mailbox) {
 			log.debug "Saving new message from source: ${from} - subject: ${subject} owner: ${mailbox.owner.username}"
-			def text = StringUtils.abbreviate(body, 1999); 
+			def text = StringUtils.abbreviate(body.encodeAsSanitizedMarkup(), 1999); 
 			new InboxMessage(source: from, subject: subject, body: text, owner: mailbox.owner).save(failOnError: true, flush:true)
 		} else {
 			log.warn "Unable to locate a mailbox for source: ${from} - subject: ${subject}"
@@ -72,7 +72,7 @@ class InboxService {
 
 	def verifyMailbox = {msg ->
 		def from = msg.from.address[0]
-		def subject = msg.subject
+		def subject = msg.subject.encodeAsSanitizedMarkup()
 		
 		def mailbox = Mailbox.findByEmailAndDigest(from, subject);
 		if (mailbox) {

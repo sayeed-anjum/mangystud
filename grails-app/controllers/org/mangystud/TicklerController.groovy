@@ -19,6 +19,7 @@ class TicklerController {
 		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def realm = realmService.getActiveRealm(user)
 
+		tickler.title = tickler.title.encodeAsSanitizedMarkup()
 		tickler.owner = user;		
 		tickler.realm = realm;
 		
@@ -27,8 +28,11 @@ class TicklerController {
 		
 		def model = [success: false]
 		try {
-			if (tickler.save(failOnError: true)) {
-				model = [tickler: tickler, realm: realm, success: true];
+			if (tickler.validate()) {
+				tickler.save(failOnError: true)
+				model = [tickler: tickler, realm: realm, success: true]
+			} else {
+				model.message = "The input validation failed!"
 			}
 		} catch (Exception e) {
 			model.message = e.message;

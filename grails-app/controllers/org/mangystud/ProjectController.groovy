@@ -9,7 +9,7 @@ class ProjectController {
 	def actionService
 	
 	def add = {
-		def title = params.title
+		def title = params.title.encodeAsSanitizedMarkup()
 		def status = params.status
 		
 		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
@@ -27,8 +27,11 @@ class ProjectController {
 			if (projectStatus) {
 				project.projectStatus = projectStatus;
 			}
-			if (project.save(failOnError: true)) {
-				model = [project: project, realm: realm, success:true];
+			if (project.validate()) {
+				project.save(failOnError: true)
+				model = [project: project, realm: realm, success:true]
+			} else {
+				model.message = "The input validation failed!"
 			}
 		} catch (Exception e) {
 			model.message = e.message

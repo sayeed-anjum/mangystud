@@ -146,7 +146,7 @@ manager = {
 				type = "project";
 			} else if ($(controlDiv).hasClass("contact")) {
 				type = "contact";
-			} else if ($(controlDiv).hasClass("refrnc")) {
+			} else if ($(controlDiv).hasClass("reference")) {
 				type = "reference";
 			}
 		}
@@ -875,6 +875,7 @@ function initTiddlerManager() {
 		},
 		select: openTiddler
 	});
+	// manager.printListeners('--------- after init');
 }
 
 function formatTicklerDate(s) {

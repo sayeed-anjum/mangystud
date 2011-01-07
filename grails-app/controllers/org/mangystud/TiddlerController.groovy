@@ -28,14 +28,17 @@ class TiddlerController {
 	}
 	
 	def updateTiddler = {user, tid, params ->
-		def title = StringUtils.abbreviate(params.title, 100)
-		def content = StringUtils.abbreviate(params.content, 2000)
+		def title = StringUtils.abbreviate(params.title.encodeAsSanitizedMarkup(), 100)
+		def content = StringUtils.abbreviate(params.content.encodeAsSanitizedMarkup(), 2000)
 
 		def tiddler = Tiddler.findByOwnerAndId(user, tid)
 		
-		tiddler.title = title;
-		tiddler.notes = content;
-		tiddler.save(failOnError: true)
+		tiddler.title = title
+		tiddler.notes = content
+		
+		if (tiddler.validate()) {
+			tiddler.save(failOnError: true)
+		}
 		
 		return tiddler;
 	}

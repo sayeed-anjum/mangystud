@@ -10,7 +10,7 @@ class ActionController {
 	def searchableService;
 	
 	def add = {
-		def title = params.title
+		def title = params.title.encodeAsSanitizedMarkup()
 		def stateId  = params.state
 		def contextId = params.context
 		def contactName = params.contact
@@ -44,8 +44,12 @@ class ActionController {
 			if (projectId) {
 				action.project = Project.findByIdAndOwner(projectId, user);
 			}
-			if (action.save(failOnError: true, flush:true)) {
+			
+			if (action.validate()) {
+				action.save(failOnError: true, flush:true) 
 				model = [action: action, realm: realm, success: true];
+			} else {
+				model.message = "The input validation failed!"
 			}
 		} catch (Exception e) {
 			model.message = e.message;

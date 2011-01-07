@@ -18,11 +18,15 @@ class ReferenceController {
 
 		reference.owner = user;		
 		reference.realm = realm;
+		reference.title = reference.title.encodeAsSanitizedMarkup()
 		
 		def model = [success: false]
 		try {
-			if (reference.save(failOnError: true)) {
-				model = [reference: reference, realm: realm, success: true];
+			if (reference.validate()) {
+				reference.save(failOnError: true)
+				model = [reference: reference, realm: realm, success: true]
+			} else {
+				model.message = "The input validation failed!"
 			}
 		} catch (Exception e) {
 			model.message = e.message;
