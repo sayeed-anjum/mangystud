@@ -381,6 +381,7 @@
 					</td>
         			<td class="panel3">
 						{{tmpl({title:'Upcoming Ticklers', ticklers:tiddlers.upcomingTicklers, prefix: prefix}) '#showTicklers'}}
+						{{tmpl({title:'Reference Items', references:tiddlers.references, prefix: prefix}) '#showReferences'}}
 					</td>
         			</tr>
         			</table>
@@ -433,6 +434,17 @@
 					<span>&nbsp;</span>
 					<a class='tiddlyLink tiddlyLinkExisting' href='javascript:;' tiddlyLink='tl_viewAction' id='tl_{{= prefix}}@{{= action.id}}'>{{= action.title}}</a>
 					<a class='deleteActionButton' href='javascript:;' title='Delete action'>×</a>
+					</span><br>
+				{{/each}}
+				</div></div></div>
+			</script>
+
+			<script id="showReferences" type="text/x-jquery-tmpl">
+				<div class='viewer'>
+				<div class='mgtdList'><h1>{{= title}}</h1>
+				{{each(i,ref) references}}
+					<span class='link-container reference'>
+					<a class='tiddlyLink tiddlyLinkExisting' href='javascript:;' tiddlyLink='tl_viewReference' id='tl_{{= prefix}}{{= ref.id}}'>{{= ref.title}}</a>
 					</span><br>
 				{{/each}}
 				</div></div></div>

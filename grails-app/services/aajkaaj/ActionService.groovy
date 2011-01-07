@@ -145,6 +145,7 @@ class ActionService {
 		map.FutureActions = []
 		map.WaitingForActions = []
 		map.subProjects = []
+		map.references = []
 		map.upcomingTicklers = []
 		
 		tiddlers.each {
@@ -159,6 +160,10 @@ class ActionService {
 
 					case Project.class:
 						key = "subProjects";
+						break
+						
+					case Reference.class:
+						key = "references";
 						break
 						
 					case Tickler.class:
@@ -206,6 +211,7 @@ class ActionService {
 		map.AssocActions = []
 		map.AssocProjects = []
 		map.AssocTicklers = []
+		map.AssocReferences = []
 		map.DoneActions = []
 		map.DoneProjects = []
 		
@@ -226,6 +232,10 @@ class ActionService {
 					case Tickler.class:
 						key = "AssocTicklers";
 						break
+
+					case Reference.class:
+						key = "AssocReferences";
+						break 
 				}
 			}
 			if (key) map.get(key, []) << it;

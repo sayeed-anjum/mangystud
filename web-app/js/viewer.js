@@ -224,6 +224,7 @@ Viewer.extend("ProjectViewer", {}, {
 		manager.addListener('actionUpdate', this.refreshProjectDetails, 'projectViewer_actionUpdateListener', {viewer: this});
 		manager.addListener('ticklerUpdate', this.refreshProjectDetails, 'projectViewer_ticklerUpdateListener', {viewer: this});
 		manager.addListener('projectUpdate', this.projectUpdateListener, 'projectViewer_projectUpdateListener', {viewer: this});
+		manager.addListener('referenceUpdate', this.refreshProjectDetails, 'projectViewer_referenceUpdateListener', {viewer: this});
 		return this;
 	},  
 	
