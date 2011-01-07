@@ -564,3 +564,17 @@ span.subtitle abbr {
 	margin-top: 10px;
 	margin-right: 10px;
 }
+
+#footer {
+	margin-top: 50px;
+	border-top: 4px solid #27303F;
+	background-color: #5F5F5F;
+	height: 450px;
+}
+
+#footer .version {
+	width: 500px;
+	margin: 0 auto;
+	text-align: center;
+	color: #AAAAAA;
+}

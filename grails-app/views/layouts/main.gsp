@@ -25,5 +25,8 @@
     	<div id="content">
         	<g:layoutBody />
         </div>
+        <div id='footer'>
+        	<div class='version'>version ${grailsApplication.config.app.version}</div>
+        </div>
     </body>
 </html>
