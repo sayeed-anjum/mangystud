@@ -26,7 +26,7 @@
         	<g:layoutBody />
         </div>
         <div id='footer'>
-        	<div class='version'>version ${grailsApplication.config.app.version}</div>
+        	<div class='version'>version <g:meta name="app.version"/></div>
         </div>
     </body>
 </html>
