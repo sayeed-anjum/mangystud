@@ -9,6 +9,7 @@ import org.mangystud.Realm
 class ReferenceController {
 	def realmService
 	def referenceService
+	def tiddlerService
 	
 	def add = {
 		Reference reference = new Reference(params)
@@ -36,16 +37,10 @@ class ReferenceController {
 	}
 
 	def view = {
-		def refId = params.int("id")
+		def tid = params.int("id")
+
 		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
-		Reference reference = Reference.findByOwnerAndId(user, refId)
-
-		def project = null
-		if (reference?.project) {
-			project = Project.findByOwnerAndId(user, reference.project.id)
-		}
-
-		def model = [reference: reference, project: project]
+		def model = tiddlerService.tiddlerViewModel(user, tid)
 		
 		render model as JSON
 	}

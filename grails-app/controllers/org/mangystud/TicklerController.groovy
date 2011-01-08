@@ -7,11 +7,10 @@ import org.apache.shiro.SecurityUtils
 
 import aajkaaj.InboxMessage;
 
-
-
 class TicklerController {
 	def realmService
 	def ticklerService
+	def tiddlerService
 	
 	def add = {
 		Tickler tickler = new Tickler(params)
@@ -117,17 +116,11 @@ class TicklerController {
 	}
 
 	def view = {
-		def ticklerId = params.int("ticklerId")
+		def tid = params.int("id")
+
 		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
-		Tickler tickler = Tickler.findByOwnerAndId(user, ticklerId)
+		def model = tiddlerService.tiddlerViewModel(user, tid)
 
-		def project = null
-		if (tickler?.project) {
-			project = Project.findByOwnerAndId(user, tickler.project.id)
-		}
-
-		def model = [tickler: tickler, project: project]
-		
 		render model as JSON
 	}
 	

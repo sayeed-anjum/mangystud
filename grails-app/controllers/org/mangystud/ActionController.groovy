@@ -7,7 +7,8 @@ import org.compass.core.engine.SearchEngineQueryParseException;
 class ActionController {
 	def realmService
 	def actionService
-	def searchableService;
+	def searchableService
+	def tiddlerService
 	
 	def add = {
 		def title = params.title.encodeAsSanitizedMarkup()
@@ -59,30 +60,16 @@ class ActionController {
 	}
 	
 	def view = {
-		def actionId = params.int("actionId")
-		return getAction(actionId)
+		def tid = params.int("id")
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
+		def model = tiddlerService.tiddlerViewModel(user, tid)
+		render model as JSON
 	}
 	
 	def show = {
-		def actionId = params.int("id")
-		return getAction(actionId)
-	}
-	
-	def getAction = {actionId ->
+		def tid = params.int("id")
 		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
-		def action = Action.findByOwnerAndId(user, actionId)
-		
-		def dependsOn = null
-		if (action?.dependsOn) {
-			dependsOn = Action.findByOwnerAndId(user, action.dependsOn.id)
-		}
-		def project = null
-		if (action?.project) {
-			project = Project.findByOwnerAndId(user, action.project.id)
-		}
-
-		def model = [action: action, dependsOn: dependsOn, project: project]
-		
+		def model = tiddlerService.tiddlerViewModel(user, tid)
 		render model as JSON
 	}
 	

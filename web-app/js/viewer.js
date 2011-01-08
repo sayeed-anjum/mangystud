@@ -124,7 +124,7 @@ Viewer.extend("ActionViewer", {}, {
 	},
 	
 	dataCallback : function(data) {
-		var action = data.action; 
+		var action = data.tiddler; 
 		var data = {
 			id: action.id,
 			realmId : action.realm.id,
@@ -171,7 +171,7 @@ Viewer.extend("ActionViewer", {}, {
 	},
 
 	loadView : function(id, focus) {
-		this.viewLoader("action/view", {actionId: id}, focus);
+		this.viewLoader("action/view", {id: id}, focus);
 	}
 });
 
@@ -196,9 +196,9 @@ Viewer.extend("TicklerViewer", {}, {
 	
 	dataCallback : function(data) {
 		return {
-			tickler: data.tickler, 
-			id: data.tickler.id,
-			realmId : data.tickler.realm.id,
+			tickler: data.tiddler, 
+			id: data.tiddler.id,
+			realmId : data.tiddler.realm.id,
 			project: data.project
 		};
 	}, 
@@ -211,7 +211,7 @@ Viewer.extend("TicklerViewer", {}, {
 	},
 	
 	loadView : function(id, focus) {
-		this.viewLoader("tickler/view", {ticklerId: id}, focus);
+		this.viewLoader("tickler/view", {id: id}, focus);
 	}
 });
 
@@ -252,7 +252,7 @@ Viewer.extend("ProjectViewer", {}, {
 	},
 	
 	dataCallback : function(data) {
-		var project = data.project;
+		var project = data.tiddler;
 		prefix =  "______" + project.id;
 		prefix = 'p' + prefix.substr(prefix.length-5) + '@';
 
@@ -270,7 +270,7 @@ Viewer.extend("ProjectViewer", {}, {
 	},
 	
 	loadView : function(id, focus) {
-		this.viewLoader("project/view", {projectId: id}, focus);
+		this.viewLoader("project/view", {id: id}, focus);
 	}
 });
 
@@ -295,9 +295,9 @@ Viewer.extend("ReferenceViewer", {}, {
 	
 	dataCallback : function(data) {
 		return {
-			reference: data.reference, 
-			id: data.reference.id,
-			realmId : data.reference.realm.id,
+			reference: data.tiddler, 
+			id: data.tiddler.id,
+			realmId : data.tiddler.realm.id,
 			project: data.project
 		};
 	}, 

@@ -7,6 +7,7 @@ class ProjectController {
 
 	def realmService
 	def actionService
+	def tiddlerService
 	
 	def add = {
 		def title = params.title.encodeAsSanitizedMarkup()
@@ -41,15 +42,12 @@ class ProjectController {
 	}
 	
 	def view = {
-		def projectId = params.int("projectId")
+		def tid = params.int("id")
 
 		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
-		def project = Project.findByOwnerAndId(user, projectId)
+		def model = tiddlerService.tiddlerViewModel(user, tid)
 		
-		def tiddlers = actionService.getProjectTiddlers(user, project)
-		
-		def model = [project: project, tiddlers: tiddlers]
-		
+		model.tiddlers = actionService.getProjectTiddlers(user, model.tiddler)
 		render model as JSON
 	}
 
