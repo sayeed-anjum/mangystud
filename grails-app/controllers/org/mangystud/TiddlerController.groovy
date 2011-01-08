@@ -3,6 +3,8 @@ package org.mangystud
 import org.apache.commons.lang.StringUtils;
 import grails.converters.JSON 
 import org.apache.shiro.SecurityUtils 
+import org.owasp.esapi.ESAPI 
+import org.owasp.esapi.Validator 
 
 class TiddlerController {
 	
@@ -28,9 +30,16 @@ class TiddlerController {
 	}
 	
 	def updateTiddler = {user, tid, params ->
-		def title = StringUtils.abbreviate(params.title.encodeAsSanitizedMarkup(), 100)
-		def content = StringUtils.abbreviate(params.content.encodeAsSanitizedMarkup(), 2000)
+		def title = params.title;
+		def content = params.content
+		
+		title = StringUtils.abbreviate(title, 100)
+		content = StringUtils.abbreviate(content, 2000)
 
+		Validator instance = ESAPI.validator();
+		title = instance.getValidSafeHTML("title", title, 100, false)
+		content = content != ''? instance.getValidSafeHTML("content", content, 2000, false) : ""
+		
 		def tiddler = Tiddler.findByOwnerAndId(user, tid)
 		
 		tiddler.title = title

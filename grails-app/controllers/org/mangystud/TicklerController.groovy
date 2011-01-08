@@ -4,8 +4,9 @@ import java.util.Date;
 
 import grails.converters.JSON 
 import org.apache.shiro.SecurityUtils 
+import org.owasp.esapi.ESAPI 
+import org.owasp.esapi.Validator 
 
-import aajkaaj.InboxMessage;
 
 class TicklerController {
 	def realmService
@@ -18,7 +19,8 @@ class TicklerController {
 		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def realm = realmService.getActiveRealm(user)
 
-		tickler.title = tickler.title.encodeAsSanitizedMarkup()
+		Validator instance = ESAPI.validator();
+		tickler.title = instance.getValidSafeHTML("title", tickler.title, 100, false)
 		tickler.owner = user;		
 		tickler.realm = realm;
 		

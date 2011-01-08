@@ -253,7 +253,7 @@
 							{{if dependsOn}}<a href='javascript:openActionView({{= dependsOn.id}})'>>></a>  <a class='deleteDependency' href='javascript:;' title='Remove dependency'>×</a>{{/if}}
 						</div>
 					</div>
-					<div class='content tiddlerContent'><pre>{{= action.notes}}</pre></div>
+					<div class='content tiddlerContent'>{{html notesHtml}}</div>
 	        		{{tmpl({tiddler:action, class: 'action'}) '#editorTemplate'}}
 				</div>
         	</script>
@@ -282,6 +282,7 @@
 						</div>
 						{{tmpl({action: project, areas: areas, contacts: contacts}) '#combosTemplate'}}
 					</div>
+					<div class='content tiddlerContent'>{{html notesHtml}}</div>
 					{{tmpl({project: project, prefix: prefix, tiddlers: tiddlers}) '#projectDetails'}}
 	        		{{tmpl({tiddler:project, class: 'project'}) '#editorTemplate'}}
 				</div>
@@ -342,7 +343,7 @@
 						</div>
 						{{tmpl({action: tickler, areas: areas, contacts: contacts, project: project}) '#combosTemplate'}}
 					</div>
-					<div class='content tiddlerContent'><pre>{{= tickler.notes}}</pre></div>
+					<div class='content tiddlerContent'>{{html notesHtml}}</div>
 	        		{{tmpl({tiddler:tickler, class: 'tickler'}) '#editorTemplate'}}
 				</div>
         	</script>
@@ -363,7 +364,7 @@
 						</div>
 						{{tmpl({action: reference, areas: areas, contacts: [], project: project}) '#combosTemplate'}}
 					</div>
-					<div class='content tiddlerContent'><pre>{{= reference.notes}}</pre></div>
+					<div class='content tiddlerContent'>{{html notesHtml}}</div>
 	        		{{tmpl({tiddler:reference, class: 'reference'}) '#editorTemplate'}}
 				</div>
         	</script>

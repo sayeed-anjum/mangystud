@@ -3,8 +3,9 @@ package aajkaaj
 import grails.converters.JSON 
 import org.apache.shiro.SecurityUtils 
 import org.mangystud.Person 
-import org.mangystud.Project 
 import org.mangystud.Realm 
+import org.owasp.esapi.ESAPI 
+import org.owasp.esapi.Validator 
 
 class ReferenceController {
 	def realmService
@@ -19,7 +20,8 @@ class ReferenceController {
 
 		reference.owner = user;		
 		reference.realm = realm;
-		reference.title = reference.title.encodeAsSanitizedMarkup()
+		Validator instance = ESAPI.validator();
+		reference.title = instance.getValidSafeHTML("title", reference.title, 100, false)
 		
 		def model = [success: false]
 		try {

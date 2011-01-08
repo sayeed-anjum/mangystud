@@ -3,6 +3,8 @@ package org.mangystud
 import grails.converters.JSON 
 import org.apache.shiro.SecurityUtils 
 import org.compass.core.engine.SearchEngineQueryParseException;
+import org.owasp.esapi.ESAPI 
+import org.owasp.esapi.Validator 
 
 class ActionController {
 	def realmService
@@ -11,11 +13,14 @@ class ActionController {
 	def tiddlerService
 	
 	def add = {
-		def title = params.title.encodeAsSanitizedMarkup()
+		def title = params.title
 		def stateId  = params.state
 		def contextId = params.context
 		def contactName = params.contact
 		def projectId = params.int("project")
+		
+		Validator instance = ESAPI.validator();
+		title = instance.getValidSafeHTML("title", title, 100, false)
 		
 		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def realm = realmService.getActiveRealm(user)

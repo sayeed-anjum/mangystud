@@ -23,7 +23,7 @@ $.Class.extend("Viewer", {}, {
 					contexts: manager.getContexts(data.realmId),
 					areas: manager.getAreas(data.realmId),
 					contacts: manager.getContacts(data.realmId),
-					realms: manager.getRealms(), 
+					realms: manager.getRealms(),
 					tabIndex: 1
 				});
 				var template = manager.tmpl(me.templateName, data);
@@ -129,6 +129,7 @@ Viewer.extend("ActionViewer", {}, {
 			id: action.id,
 			realmId : action.realm.id,
 			action: action, 
+			notesHtml: data.notesHtml,
 			dependsOn : data.dependsOn,
 			project: data.project
 		};
@@ -197,6 +198,7 @@ Viewer.extend("TicklerViewer", {}, {
 	dataCallback : function(data) {
 		return {
 			tickler: data.tiddler, 
+			notesHtml: data.notesHtml,
 			id: data.tiddler.id,
 			realmId : data.tiddler.realm.id,
 			project: data.project
@@ -258,6 +260,7 @@ Viewer.extend("ProjectViewer", {}, {
 
 		var data = {
 			project: project, 
+			notesHtml: data.notesHtml,
 			realmId : project.realm.id,
 			id: project.id,
 			prefix: prefix,
@@ -296,6 +299,7 @@ Viewer.extend("ReferenceViewer", {}, {
 	dataCallback : function(data) {
 		return {
 			reference: data.tiddler, 
+			notesHtml: data.notesHtml,
 			id: data.tiddler.id,
 			realmId : data.tiddler.realm.id,
 			project: data.project

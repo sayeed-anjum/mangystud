@@ -25,7 +25,10 @@ grails.project.dependency.resolution = {
     }
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
-
-        runtime 'mysql:mysql-connector-java:5.1.5'
+		compile 'commons-logging:commons-logging:1.1.1'
+		compile('org.owasp.esapi:esapi:2.0_rc10') {
+			excludes 'xmlParserAPIs'
+		}
+		runtime 'mysql:mysql-connector-java:5.1.5'
     }
 }

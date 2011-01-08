@@ -578,3 +578,18 @@ span.subtitle abbr {
 	text-align: center;
 	color: #AAAAAA;
 }
+
+.content {
+	margin-top: 5px;
+	padding: 5px;
+}
+	
+	
+.content p, .content ol, .content ul {
+	margin: 10px 0;
+}
+
+.content h1, .content h2, .content h3, .content h4, .content h5 {
+	color: #BF5500;
+	margin-top: 0.6em;
+} 

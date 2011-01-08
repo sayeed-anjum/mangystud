@@ -44,10 +44,6 @@
         <wb-resource deploy-path="/" source-path="/shiro-1.1.1-grails-app-taglib"/>
         <wb-resource deploy-path="/" source-path="/shiro-1.1.1-src-java"/>
         <wb-resource deploy-path="/" source-path="/shiro-1.1.1-src-groovy"/>
-        <wb-resource deploy-path="/" source-path="/sanitizer-0.3-grails-app-conf"/>
-        <wb-resource deploy-path="/" source-path="/sanitizer-0.3-grails-app-services"/>
-        <wb-resource deploy-path="/" source-path="/sanitizer-0.3-grails-app-utils"/>
-        <wb-resource deploy-path="/" source-path="/sanitizer-0.3-src-java"/>
-        <wb-resource deploy-path="/" source-path="/sanitizer-0.3-src-groovy"/>
+        <wb-resource deploy-path="/" source-path="/wikitext-0.1.2-grails-app-taglib"/>
     </wb-module>
 </project-modules>

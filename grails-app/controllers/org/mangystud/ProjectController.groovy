@@ -2,6 +2,8 @@ package org.mangystud
 
 import grails.converters.JSON 
 import org.apache.shiro.SecurityUtils 
+import org.owasp.esapi.ESAPI 
+import org.owasp.esapi.Validator 
 
 class ProjectController {
 
@@ -10,8 +12,11 @@ class ProjectController {
 	def tiddlerService
 	
 	def add = {
-		def title = params.title.encodeAsSanitizedMarkup()
+		def title = params.title
 		def status = params.status
+
+		Validator instance = ESAPI.validator();
+		title = instance.getValidSafeHTML("title", title, 100, false)
 		
 		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
 		def realm = realmService.getActiveRealm(user)
