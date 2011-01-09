@@ -593,4 +593,10 @@ span.subtitle abbr {
 .content h1, .content h2, .content h3, .content h4, .content h5 {
 	color: #BF5500;
 	margin-top: 0.6em;
-} 
+}
+
+.doneList {
+	overflow: auto;
+	height: 150px;
+}
+	

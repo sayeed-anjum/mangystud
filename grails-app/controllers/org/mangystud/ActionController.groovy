@@ -174,7 +174,7 @@ class ActionController {
 		def doneActions = []
 		if (realms.size() > 0) {
 			result2 = actionService.getActionsByStateAndRealms(user, [State.Next, State.Future, State.WaitingFor], realms)
-			doneActions = getDoneActions(user, realms)
+			doneActions = actionService.getDoneActions(user, realms)
 		}
 		
 		def model = [state: result2, done: doneActions]
@@ -230,15 +230,6 @@ class ActionController {
 		def result = actionService.search(actionId, term, user)		
 		
 		render result as JSON
-	}
-	
-	def getDoneActions = {user, realms ->
-		def c = Action.createCriteria()
-		return c.list {
-			eq('done', true)
-			eq('owner', user)
-			'in'('realm', realms)
-		}
 	}
 	
 	def makeTickler = {

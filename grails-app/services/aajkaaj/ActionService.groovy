@@ -48,11 +48,10 @@ class ActionService {
 			eq('done', true)
 			ge('lastUpdated', cal.getTime())
 			'in'('realm', realms)
+			order('lastUpdated', 'desc')
 		}
 		def formatter = new java.text.SimpleDateFormat("yyyy-MM-dd")
-		def resultByDate = result.groupBy { formatter.format(it.lastUpdated) }
-		println resultByDate
-		return resultByDate
+		return result.groupBy { formatter.format(it.lastUpdated) }
 	}
 	
 	def getActionsByStateAndRealms = {user, states, realms ->
@@ -244,4 +243,14 @@ class ActionService {
 		return map;
 	}
 
+	def getDoneActions = {user, realms ->
+		def c = Action.createCriteria()
+		return c.list {
+			eq('done', true)
+			eq('owner', user)
+			'in'('realm', realms)
+			order('lastUpdated', 'desc')
+		}
+	}
+	
 }
