@@ -232,16 +232,6 @@ class ActionController {
 		render result as JSON
 	}
 	
-	def makeTickler = {
-		def actionId = params.int("id")
-		
-		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
-		
-		def model = [success: true];
-		model.tickler = actionService.makeTickler(actionId, user);
-		render model as JSON
-	}
-	
 	def csearch = {
 		if (!params.term?.trim()) {
 			return [:]

@@ -7,6 +7,7 @@ import org.owasp.esapi.ESAPI
 import org.owasp.esapi.Validator 
 
 class TiddlerController {
+	def tiddlerService
 	
 	def update = {
 		def tid = params.int("id")
@@ -211,4 +212,33 @@ class TiddlerController {
 		render model as JSON
 	}
 
+	def makeAction = {
+		def tid = params.int("id")
+		
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
+		
+		def model = [success: true]
+		model.action = tiddlerService.makeAction(tid, user)
+		render model as JSON
+	}
+
+	def makeTickler = {
+		def tid = params.int("id")
+		
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
+		
+		def model = [success: true];
+		model.tickler = tiddlerService.makeTickler(tid, user);
+		render model as JSON
+	}
+	
+	def makeProject = {
+		def tid = params.int("id")
+		
+		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
+		
+		def model = [success: true];
+		model.project = tiddlerService.makeProject(tid, user);
+		render model as JSON
+	}
 }

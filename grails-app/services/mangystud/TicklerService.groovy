@@ -5,7 +5,6 @@ import org.mangystud.Action
 import org.mangystud.Tickler 
 
 class TicklerService {
-	def dataSource
 	
     static transactional = true
 
@@ -36,11 +35,4 @@ class TicklerService {
 		}
 	}
 	
-	def makeAction = {ticklerId, user ->
-		def db = new Sql(dataSource)
-		def sql = "update tiddler set class='" + Action.class.name + "' where id = " + ticklerId
-		db.execute(sql);
-		return Action.findByIdAndOwner(ticklerId, user);
-	}
-
 }

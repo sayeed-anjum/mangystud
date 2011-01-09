@@ -246,6 +246,7 @@
 						{{tmpl({action: action, contacts: contacts, project: project}) '#combosTemplate'}}
 						<div class='buttonDiv'>
 							<a class="button makeTickler off">make tickler</a>
+							<a class="button makeProject off">make project</a>
 						</div>
 						<div class='combos'>
 							<span class='label'>Depends On</span>
@@ -340,6 +341,7 @@
  						</div>
 						<div class='buttonDiv'>
 							<a class="button makeAction off">make action</a>
+							<a class="button makeProject off">make project</a>
 						</div>
 						{{tmpl({action: tickler, areas: areas, contacts: contacts, project: project}) '#combosTemplate'}}
 					</div>

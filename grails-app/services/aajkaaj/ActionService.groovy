@@ -12,7 +12,6 @@ import org.mangystud.Tiddler
 class ActionService {
 	def NO_CONTEXT = "(No Context)"
 	def NO_CONTACT = "(No Contact)"
-	def dataSource
 	
     static transactional = true
 	
@@ -109,13 +108,6 @@ class ActionService {
 		return contactMap;
 	}
 
-	def makeTickler = { actionId, user ->
-		def db = new Sql(dataSource)
-		def sql = "update tiddler set class='" + Tickler.class.name + "' where id = " + actionId
-		db.execute(sql);
-		return Tickler.findByIdAndOwner(actionId, user);
-	}
-	
 	def getProjectsByTypeAndRealms = {user, statuses, realms ->
 		def c = Project.createCriteria()
 		def result = c.list {

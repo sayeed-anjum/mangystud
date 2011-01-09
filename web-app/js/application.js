@@ -522,9 +522,9 @@ function makeTickler() {
 	var me = this;
 	var type = manager.determineTiddlerType(this);
 	var id = manager.determineTiddlerId(this);
-	if (type == 'action' && id != null) {
+	if (type != '' && type != 'tickler' && id != null) {
 		$.ajax({
-			url: serverUrl + "action/makeTickler",
+			url: serverUrl + "tiddler/makeTickler",
 			data: {id: id}, 
 			type: "POST",
 			dataType: "json",
@@ -532,7 +532,7 @@ function makeTickler() {
 				$(me).closest('.tiddler').remove();
 				tl_viewTickler(data.tickler.id, true);
 				var event = {event: 'makeTickler', id: id};
-				manager.raiseEvent('actionUpdate', event);
+				manager.raiseEvent(type + 'Update', event);
 				manager.raiseEvent('ticklerUpdate', event);
 			}
 		});
@@ -543,9 +543,9 @@ function makeAction() {
 	var me = this;
 	var type = manager.determineTiddlerType(this);
 	var id = manager.determineTiddlerId(this);
-	if (type == 'tickler' && id != null) {
+	if (type != '' && type != 'action' && id != null) {
 		$.ajax({
-			url: serverUrl + "tickler/makeAction",
+			url: serverUrl + "tiddler/makeAction",
 			data: {id: id}, 
 			type: "POST",
 			dataType: "json",
@@ -553,8 +553,29 @@ function makeAction() {
 				$(me).closest('.tiddler').remove();
 				tl_viewAction(data.action.id, true);
 				var event = {event: 'makeAction', id: id};
+				manager.raiseEvent(type + 'Update', event);
 				manager.raiseEvent('actionUpdate', event);
-				manager.raiseEvent('ticklerUpdate', event);
+			}
+		});
+	}
+}
+
+function makeProject() {
+	var me = this;
+	var type = manager.determineTiddlerType(this);
+	var id = manager.determineTiddlerId(this);
+	if (type != '' && type != 'project' && id != null) {
+		$.ajax({
+			url: serverUrl + "tiddler/makeProject",
+			data: {id: id}, 
+			type: "POST",
+			dataType: "json",
+			success: function(data) {
+				$(me).closest('.tiddler').remove();
+				tl_viewProject(data.project.id, true);
+				var event = {event: 'makeProject', id: id};
+				manager.raiseEvent(type + 'Update', event);
+				manager.raiseEvent('projectUpdate', event);
 			}
 		});
 	}
@@ -814,6 +835,7 @@ function addTiddlerActionHandlers() {
 	});
 	$('.makeTickler').live('click', makeTickler);
 	$('.makeAction').live('click', makeAction);
+	$('.makeProject').live('click', makeProject);
 	$('.realm-tab').addClass("ui-corner-tl ui-corner-tr");
 	$('.realm-add').addClass("ui-corner-tl ui-corner-tr");
 }
