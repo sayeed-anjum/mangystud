@@ -197,7 +197,7 @@
 					<br/>
 					{{/if}}
 					<label>Content</label>
-					<textarea name='content' rows='10' tabindex='2'>{{= tiddler.notes}}</textarea>
+					<textarea name='content' cols='80' rows='8' tabindex='2'>{{= tiddler.notes}}</textarea>
 				</div>
 			</script>
 

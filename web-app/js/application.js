@@ -758,6 +758,7 @@ function editTiddler() {
 	$(editor).show();
 	$('[name=title]', editor).select().focus();
 	$('.td_title', tiddler).text($('[name=oldTitle]', editor).val());
+	$('textarea', editor).autoResizeTextAreaQ({"max_rows":15, debug: true});
 }
 
 function cancelTiddler() {

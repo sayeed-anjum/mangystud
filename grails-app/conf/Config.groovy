@@ -99,7 +99,7 @@ log4j = {
 uiperformance.bundles = [
 	[type: 'js',
 	 name: 'jquery.plugins',
-	 files: ['jquery/jquery.class.min','jquery/jquery.timeago','jquery/jquery.tmpl.min']],
+	 files: ['jquery/jquery.class.min','jquery/jquery.timeago','jquery/jquery.tmpl.min', 'jquery/jquery.autoResizeTextAreaQ-0.1']],
 	[type: 'js',
 	 name: 'app.all',
 	 files: ['application','dashboard','dialogs', 'inbox', 'viewer', 'action_dashboard', 'project_dashboard', 'tickler_dashboard', 'reference_dashboard']],
