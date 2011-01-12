@@ -1,6 +1,8 @@
 package aajkaaj
 
 import org.apache.commons.lang.StringUtils;
+import org.owasp.esapi.ESAPI 
+import org.owasp.esapi.Validator 
 
 import javax.mail.*
 import javax.mail.search.*
@@ -57,13 +59,17 @@ class InboxService {
 	
 	def processInboxMessage = {msg ->
 		def from = msg.from.address[0]
-		def subject = msg.subject.encodeAsSanitizedMarkup()
+		def subject = msg.subject
 		def body = getText(msg)
-		
+
+		Validator instance = ESAPI.validator();
+		subject = subject.length > 0? instance.getValidSafeHTML("subject", subject, 100, false) : ""
+
 		def mailbox = Mailbox.findByEmailAndValid(from, true);
 		if (mailbox) {
 			log.debug "Saving new message from source: ${from} - subject: ${subject} owner: ${mailbox.owner.username}"
-			def text = StringUtils.abbreviate(body.encodeAsSanitizedMarkup(), 1999); 
+			def text = StringUtils.abbreviate(body, 1999);
+			text = instance.getValidSafeHTML("body", text, 1999, false)
 			new InboxMessage(source: from, subject: subject, body: text, owner: mailbox.owner).save(failOnError: true, flush:true)
 		} else {
 			log.warn "Unable to locate a mailbox for source: ${from} - subject: ${subject}"
@@ -72,8 +78,10 @@ class InboxService {
 
 	def verifyMailbox = {msg ->
 		def from = msg.from.address[0]
-		def subject = msg.subject.encodeAsSanitizedMarkup()
-		
+		def subject = msg.subject
+		Validator instance = ESAPI.validator();
+		subject = subject.length > 0? instance.getValidSafeHTML("subject", subject, 100, false) : ""
+
 		def mailbox = Mailbox.findByEmailAndDigest(from, subject);
 		if (mailbox) {
 			mailbox.valid = true
