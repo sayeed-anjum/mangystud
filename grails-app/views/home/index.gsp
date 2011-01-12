@@ -243,7 +243,7 @@
 							{{/each}}
 							<span class="contextAdd button off">+</span>
 						</div>
-						{{tmpl({action: action, contacts: contacts, project: project}) '#combosTemplate'}}
+						{{tmpl({action: action, areas: areas, contacts: contacts, project: project}) '#combosTemplate'}}
 						<div class='buttonDiv'>
 							<a class="button makeTickler off">make tickler</a>
 							<a class="button makeProject off">make project</a>
