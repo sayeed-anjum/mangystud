@@ -864,14 +864,14 @@ function initTiddlerManager() {
 	manager.init({
 		templates: ["dashboardTemplate", "activeTicklerDashboard"],
 		dialogs: {
-			"realmDialog" : new RealmDialog().init(), 
-			"contextDialog" : new ContextDialog().init(),
-			"areaDialog" : new AreaDialog().init(),
-			"contactDialog" : new ContactDialog().init(),
-			"ticklerDialog" : new TicklerDialog().init(),
-			"projectDialog" : new ProjectDialog().init(),
-			"referenceDialog" : new ReferenceDialog().init(),
-			"actionDialog" : new ActionDialog().init()
+			"realmDialog" : new RealmDialog(manager), 
+			"contextDialog" : new ContextDialog(manager),
+			"areaDialog" : new AreaDialog(manager),
+			"contactDialog" : new ContactDialog(manager),
+			"ticklerDialog" : new TicklerDialog(manager),
+			"projectDialog" : new ProjectDialog(manager),
+			"referenceDialog" : new ReferenceDialog(manager),
+			"actionDialog" : new ActionDialog(manager)
 		},
 		viewers : {
 			"td_action_" : new ActionViewer(manager),

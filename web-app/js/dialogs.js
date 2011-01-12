@@ -1,9 +1,7 @@
-Dialog = function(){
-	this.name = "_dialog";
-};
-
-$.extend(Dialog.prototype, {
-	init : function() {
+$.Class.extend("Dialog", {}, {
+	init : function(name, manager) {
+		this.manager = manager;
+		this.name = name;
 		this.el = $('#' + this.name);
 		$.data(this.el[0], 'parent', this);
 		this.el.dialog({
@@ -43,12 +41,12 @@ $.extend(Dialog.prototype, {
 	beforeShow : function() {}
 });
 
-RealmDialog = function() {
-	this.name = 'realm_dialog';
-	return this;
-};
-
-RealmDialog.prototype = $.extend({}, Dialog.prototype, {
+Dialog.extend("RealmDialog", {}, {
+	init : function(manager) {
+		this.title = 'New Realm';
+		this._super('realm_dialog', manager);
+ 	},
+ 	
 	isValid : function() {
 		var name = $('[name="name"]', this.el).val();
 		if (name.trim() === "") {
@@ -74,13 +72,12 @@ RealmDialog.prototype = $.extend({}, Dialog.prototype, {
 	}
 });
 
-ContextDialog = function() {
-	this.name = 'context_dialog';
-	this.title = 'New Context';
-	return this;
-};
-
-ContextDialog.prototype = $.extend({}, Dialog.prototype, {
+Dialog.extend("ContextDialog", {}, {
+	init : function(manager) {
+		this.title = 'New Context';
+		this._super('context_dialog', manager);
+ 	},
+ 	
 	isValid : function() {
 		var name = $('[name=name]', this.el).val();
 		if (name.trim() === "") {
@@ -112,12 +109,11 @@ ContextDialog.prototype = $.extend({}, Dialog.prototype, {
 	}
 });
 
-ActionDialog = function() {
-	this.name = 'action_dialog';
-	return this;
-};
-
-ActionDialog.prototype = $.extend({}, Dialog.prototype, {
+Dialog.extend("ActionDialog", {}, {
+	init : function(manager) {
+		this._super('action_dialog', manager);
+ 	},
+ 	
 	isValid : function() {
 		var name = $('[name=title]', this.el).val();
 		if (name.trim() === "") {
@@ -177,13 +173,12 @@ ActionDialog.prototype = $.extend({}, Dialog.prototype, {
 });
 
 
-AreaDialog = function() {
-	this.name = 'area_dialog';
-	this.title = 'New Area';
-	return this;
-};
-
-AreaDialog.prototype = $.extend({}, ContextDialog.prototype, {
+Dialog.extend("AreaDialog", {}, {
+	init : function(manager) {
+		this.title = 'New Area';
+		this._super('area_dialog', manager);
+ 	},
+ 	
 	isValid : function() {
 		var name = $('[name=name]', this.el).val();
 		if (name.trim() === "") {
@@ -209,13 +204,12 @@ AreaDialog.prototype = $.extend({}, ContextDialog.prototype, {
 	}
 });
 
-ContactDialog = function() {
-	this.name = 'contact_dialog';
-	this.title = 'New Contact';
-	return this;
-};
-
-ContactDialog.prototype = $.extend({}, Dialog.prototype, {
+Dialog.extend("ContactDialog", {}, {
+	init : function(manager) {
+		this.title = 'New Contact';
+		this._super('contact_dialog', manager);
+ 	},
+ 	
 	isValid : function() {
 		var name = $('[name=name]', this.el).val();
 		if (name.trim() === "") {
@@ -242,13 +236,12 @@ ContactDialog.prototype = $.extend({}, Dialog.prototype, {
 	}
 });
 
-TicklerDialog = function() {
-	this.name = 'tickler_dialog';
-	this.title = 'New Tickler';
-	return this;
-};
-
-TicklerDialog.prototype = $.extend({}, Dialog.prototype, {
+Dialog.extend("TicklerDialog", {}, {
+	init : function(manager) {
+		this.title = 'New Tickler';
+		this._super('tickler_dialog', manager);
+ 	},
+ 	
 	isValid : function() {
 	   var name = $('[name=title]', this.el).val();
 	   if (name.trim() === "") {
@@ -276,13 +269,12 @@ TicklerDialog.prototype = $.extend({}, Dialog.prototype, {
 	}
 });
 
-ProjectDialog = function() {
-	this.name = 'project_dialog';
-	this.title = 'New Project';
-	return this;
-};
-
-ProjectDialog.prototype = $.extend({}, Dialog.prototype, {
+Dialog.extend("ProjectDialog", {}, {
+	init : function(manager) {
+		this.title = 'New Project';
+		this._super('project_dialog', manager);
+ 	},
+ 	
 	isValid : function() {
 	   var name = $('[name=title]', this.el).val();
 	   if (name.trim() === "") {
@@ -311,13 +303,12 @@ ProjectDialog.prototype = $.extend({}, Dialog.prototype, {
 	}
 });
 
-ReferenceDialog = function() {
-	this.name = 'reference_dialog';
-	this.title = 'New Reference';
-	return this;
-};
-
-ReferenceDialog.prototype = $.extend({}, Dialog.prototype, {
+Dialog.extend("ReferenceDialog", {}, {
+	init : function(manager) {
+		this.title = 'New Reference';
+		this._super('reference_dialog', manager);
+ 	},
+ 	
 	isValid : function() {
 	   var name = $('[name=title]', this.el).val();
 	   if (name.trim() === "") {
