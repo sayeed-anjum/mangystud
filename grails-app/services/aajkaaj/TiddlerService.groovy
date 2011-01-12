@@ -14,6 +14,7 @@ import org.mangystud.Tiddler
 
 class TiddlerService {
 	def dataSource
+	def searchableService
 	
     static transactional = true
 	
@@ -62,5 +63,34 @@ class TiddlerService {
 		def sql = "update tiddler set class='" + what + "' where id = " + tid + " and owner_id = " + user.id
 		db.execute(sql);
 		return Tiddler.findByIdAndOwner(tid, user);
+	}
+	
+	def csearch = {user, qterm ->
+		String term = qterm?.trim() + "* Tiddler.owner.id:" + user.id;
+		def searchResult = searchableService.search(term, [offset: 0, max: 20])
+		results = searchResult.results.collect {
+			return [value: "td_${getTiddlerType(it)}_${it.id}", label: "${it.title} [${getTiddlerType(it)}]"]
+		}
+		return results
+	}
+
+	def getTiddlerType = {tiddler ->
+		switch (tiddler.class) {
+			case Action.class:
+				return "action";
+				break;
+			case Project.class:
+				return "projct";
+				break;
+			case Tickler.class:
+				return "ticklr";
+				break;
+			case Reference.class:
+				return "refrnc";
+				break;
+			default:
+				return "tiddlr";
+				break;
+		}
 	}
 }

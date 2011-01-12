@@ -9,7 +9,6 @@ import org.owasp.esapi.Validator
 class ActionController {
 	def realmService
 	def actionService
-	def searchableService
 	def tiddlerService
 	
 	def add = {
@@ -238,35 +237,14 @@ class ActionController {
 		}
 		
 		def user = Person.get(SecurityUtils.getSubject()?.getPrincipal())
-
+		
 		def results = [] 
 		try {
-			String term = params.term?.trim() + "* Tiddler.owner.id:" + user.id;
-			def searchResult = searchableService.search(term, [offset: 0, max: 20])
-			results = searchResult.results.collect {
-				return [value: "td_${getTiddlerType(it)}_${it.id}", label: "${it.title} [${getTiddlerType(it)}]"]
-			}
-			// model.hits = tiddlers
+			results = tiddlerService.csearch(user, term) 
 		} catch (SearchEngineQueryParseException ex) {
 			log.error "search error", ex
 		}
+
 		render results as JSON
-	}
-	
-	def getTiddlerType = {tiddler ->
-		switch (tiddler.class) {
-			case Action.class:
-				return "action";
-				break;
-			case Project.class:
-				return "projct";
-				break;
-			case Tickler.class:
-				return "ticklr";
-				break;
-			default:
-				return "tiddlr";
-				break;
-		}
 	}
 }
