@@ -64,7 +64,6 @@ class InboxService {
 
 		Validator instance = ESAPI.validator();
 		subject = subject.length() > 0? instance.getValidSafeHTML("subject", subject, 100, false) : ""
-
 		def mailbox = Mailbox.findByEmailAndValid(from, true);
 		if (mailbox) {
 			log.debug "Saving new message from source: ${from} - subject: ${subject} owner: ${mailbox.owner.username}"
@@ -81,7 +80,6 @@ class InboxService {
 		def subject = msg.subject
 		Validator instance = ESAPI.validator();
 		subject = subject.length() > 0? instance.getValidSafeHTML("subject", subject, 100, false) : ""
-
 		def mailbox = Mailbox.findByEmailAndDigest(from, subject);
 		if (mailbox) {
 			mailbox.valid = true
