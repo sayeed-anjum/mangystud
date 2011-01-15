@@ -68,7 +68,7 @@ class TiddlerService {
 	def csearch = {user, qterm ->
 		String term = qterm?.trim() + "* Tiddler.owner.id:" + user.id;
 		def searchResult = searchableService.search(term, [offset: 0, max: 20])
-		results = searchResult.results.collect {
+		def results = searchResult.results.collect {
 			return [value: "td_${getTiddlerType(it)}_${it.id}", label: "${it.title} [${getTiddlerType(it)}]"]
 		}
 		return results

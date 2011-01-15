@@ -232,7 +232,8 @@ class ActionController {
 	}
 	
 	def csearch = {
-		if (!params.term?.trim()) {
+		def term = params.term?.trim()
+		if (!term) {
 			return [:]
 		}
 		
